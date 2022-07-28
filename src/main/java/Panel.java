@@ -19,63 +19,63 @@ public class Panel extends JPanel implements ActionListener {
     static final int GAME_SPEED = UNIT_SIZE*10;
     static final int GAME_SPEED_NITRO = GAME_SPEED / 3;
 
-    // Helper variable flags to trigger events
+    // Helper variables to trigger events
     static boolean running = false;
     static boolean initialPause = true;
     static boolean pause = false;
-    static boolean stopHs = false;
+    static boolean stopScoreLog = false;
     static boolean nitro = false;
 
-    // Helper variables for track dynamic information
-    static long startTime;
-    static long[][] highScoreArray;
-    static int finalScore = 0;
-    static int playerXLocation;
-    static int playerYLocation;
+    // Helper variables to track dynamic data that needs a global scope
+    static int money;
     static char direction;
     static char oldDirection;
-    static int money = 0;
-    static int copXLocation;
-    static int copYLocation;
-    static int elapsedMins; // Make public
-    static int elapsedSecondsRemainder; // Make public
+    static long startTime;
     static Timer myTimer;
 
+    // Variables to track graphic locations
+    static int playerXLocation;
+    static int playerYLocation;
+    static int copXLocation;
+    static int copYLocation;
+
     // Menus
-    // Pause Menu
     public static JPopupMenu pauseMenu = new JPopupMenu();
-    // Game Over Menu
     public static JPopupMenu gameOverMenu = new JPopupMenu();
-    // High Score Menu
     public static JPopupMenu highScoreMenu = new JPopupMenu();
-    public static JLabel highScoreMenuLabel = new JLabel(); //buffer
 
     // Create game panel (constructor)
     Panel() {
-
         // Panel details
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
-        this.setFocusable(true); // Events are only dispatched to the component that has focus. So your KeyEvent will only be dispatched to the panel if it is "focusable"
+        this.setFocusable(true);
 
-        // Add Timer
-        myTimer = new Timer(GAME_SPEED, this); // creates a new object (this) after every delay time
-        myTimer.start(); // Start timer to begin creating objects after every delay, this makes the actionPerformed function keep running its inner functions
+        // Add Game Timer
+        myTimer = new Timer(GAME_SPEED, this); // note: creates a new object (this) after every delay time
+        myTimer.start();
 
-        // Map Keys to Action responses
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction"); // KeyEvent responds to a right key, lower case, and false for it being pressed rather than released
+        // Map Keys to Action response classes for the Panel
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction"); // KeyEvent responds to a right key, lower case, and false for it being pressed rather than released
         this.getActionMap().put("rightAction", new RightAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false),"leftAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false),"leftAction");
         this.getActionMap().put("leftAction", new LeftAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false),"upAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false),"upAction");
         this.getActionMap().put("upAction", new UpAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false),"downAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false),"downAction");
         this.getActionMap().put("downAction", new DownAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),"enterAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),"enterAction");
         this.getActionMap().put("enterAction", new EnterAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0, false),"deleteAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0, false),"deleteAction");
         this.getActionMap().put("deleteAction", new DeleteAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false),"spaceAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false),"spaceAction");
         this.getActionMap().put("spaceAction", new SpaceAction());
 //        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
 //        this.getActionMap().put("eAction", new eAction());
@@ -84,17 +84,38 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     public static void startGame() {
-        resetPlayer();
-        gameOverMenu.setVisible(false); // Close menu in case it's open
-        initialPause = false; // reset (to remove initial pause menu)
-        pause = false; // reset (to remove the pause menu if restarted during a pause)
-        stopHs = false; // reset (to allow final score to be printed again if restarted)
-        running = true; // Launch graphic drawings and action listener
-        pauseMenu.setVisible(false);
+        // Reset player and NPC
+        generateNewPlayerLocation();
         generateNewCopLocation();
+
+        // Reset trigger variables
+        running = true;
+        initialPause = false;
+        pause = false;
+        stopScoreLog = false;
+        nitro = false;
+        myTimer.setDelay(GAME_SPEED);
+
+        // Hide menu that can stay open
+        pauseMenu.setVisible(false);
+
+        // Restart money at 1
+        money = 1;
 
         // Start stopwatch
         startTime = System.currentTimeMillis();
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Continually run these functions
+        if(running) {
+            movePlayer();
+            checkCopCollision();
+            checkWallCollision();
+            checkGameOver();
+            repaint();
+        }
     }
 
     @ Override
@@ -113,7 +134,7 @@ public class Panel extends JPanel implements ActionListener {
             g.setFont(new Font("Serif", Font.ITALIC, 50));
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
-        // Image Icons - only draw after the game starts
+        // Image Icons - only draw this after the game starts
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
             String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + ".png";
@@ -130,29 +151,20 @@ public class Panel extends JPanel implements ActionListener {
             // Display stop watch
             g.setColor(Color.GRAY);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
-            g.drawString("Time Elapsed: " + elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds",30,112); // coordinates start in the top left
+            g.drawString(getTimePassed(),30,112);
+            // TODO - Only display the control menu when the game is paused?
             // Display control menu
             int menuSize = 320;
             String filePathControlMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/control_menu.png";
             ImageIcon controlMenu = new ImageIcon(new ImageIcon(filePathControlMenu).getImage().getScaledInstance(menuSize, menuSize, Image.SCALE_DEFAULT));
             controlMenu.paintIcon(this, g, SCREEN_WIDTH-menuSize-10, 10);
-            // For ad hoc checks
+            // For ad hoc checks on the grid
 //            for(int i = 0;i<SCREEN_HEIGHT/UNIT_SIZE;i++){
 //                g.drawLine(i*UNIT_SIZE,0,i*UNIT_SIZE,SCREEN_HEIGHT);
 //                g.drawLine(0,i*UNIT_SIZE,SCREEN_WIDTH,i*UNIT_SIZE);
 //            }
 //            g.drawOval(playerXLocation,playerYLocation,UNIT_SIZE,UNIT_SIZE);
 //            g.drawOval(copXLocation,copYLocation,UNIT_SIZE,UNIT_SIZE);
-        }
-    }
-
-    public static void generateNewCopLocation(){ // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
-        copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
-        copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
-        // Generate a new location if the cop spawns on the wall (for improved UX)
-        if(copXLocation == 0 || copYLocation == 0
-                || copXLocation == SCREEN_WIDTH || copYLocation == SCREEN_HEIGHT) {
-            generateNewCopLocation();
         }
     }
 
@@ -181,15 +193,21 @@ public class Panel extends JPanel implements ActionListener {
         pauseMenu.setVisible(false);
     }
 
-    public static void quitGame() {
-        System.exit(0);
-    }
-
-    public static void resetPlayer() {
+    public static void generateNewPlayerLocation() {
         playerXLocation = 200;
         playerYLocation = 200;
         direction = 'R';
         oldDirection = 'R';
+    }
+
+    public static void generateNewCopLocation(){ // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
+        copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
+        copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
+        // Generate a new location if the cop spawns on the wall (for improved UX)
+        if(copXLocation == 0 || copYLocation == 0
+                || copXLocation == SCREEN_WIDTH || copYLocation == SCREEN_HEIGHT) {
+            generateNewCopLocation();
+        }
     }
 
     // Method to update the player's coordinates
@@ -215,7 +233,7 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
-    // Check if the units that comprise the image collide
+    // Check if the units that comprise the image for the Car and Cop collide
     public static void checkCopCollision() {
         if(playerXLocation == copXLocation
                 && (playerYLocation == copYLocation
@@ -226,15 +244,68 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
-    public static void checkStopWatch() {
+    public static void checkWallCollision() {
+        // check for the head colliding with one of the 4 borders
+        if(playerXLocation <= 0
+                || playerXLocation >= SCREEN_WIDTH
+                || playerYLocation <= 0
+                || playerYLocation >= SCREEN_HEIGHT) {
+            running = false; // stop the game (which triggers end game message)
+            System.out.println("* GAME OVER (Out of Bounds)");
+        }
+    }
+
+    public static void checkGameOver() {
+        // When the game ends, log the final score if the game ends with a minimum score achieved
+        if(running == false && pause == false && initialPause == false && stopScoreLog == false) {
+
+            // Log final score in the CSV file if it's past a certain minimum
+            if (money >= 20) {
+                logFinalScore(money);
+            }
+
+            // TODO -- Potentially return a HashMap instead of void
+            getHighScores();
+
+            // Create Game Over Menu
+            gameOverMenu = new JPopupMenu();
+            gameOverMenu.setLocation(600, 300);
+            gameOverMenu.setBackground(Color.WHITE);
+            gameOverMenu.setFocusable(false);
+            JLabel gameOverMenuLabel = new JLabel("WASTED");
+            gameOverMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 100));
+            gameOverMenuLabel.setForeground(Color.RED.darker());
+            gameOverMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
+            gameOverMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
+            gameOverMenu.add(gameOverMenuLabel);
+            gameOverMenu.setVisible(true);
+
+            // Create High Score Menu
+            highScoreMenu = new JPopupMenu();
+            highScoreMenu.setLocation(710, 450);
+            highScoreMenu.setBackground(Color.orange);
+            highScoreMenu.setBorder(BorderFactory.createLineBorder(Color.white));
+            highScoreMenu.setFocusable(false);
+            JLabel highScoreMenuLabel = new JLabel("High Scores:");
+            highScoreMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 30)); // Buffer
+            highScoreMenuLabel.setForeground(Color.WHITE);
+            highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
+            highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
+            highScoreMenu.add(highScoreMenuLabel);
+            highScoreMenu.setVisible(true);
+        }
+    }
+
+    public static String getTimePassed() {
         long now = System.currentTimeMillis();
         int elapsedTime = (int) (now - startTime); // Convert timestamp difference to seconds
-        elapsedMins = (int) Math.floor(elapsedTime / 1000 / 60);
-        elapsedSecondsRemainder = (int) Math.floor(elapsedTime / 1000 % 60);
+        int elapsedMins = (int) Math.floor(elapsedTime / 1000 / 60);
+        int elapsedSecondsRemainder = (int) Math.floor(elapsedTime / 1000 % 60);
+        return "Time Elapsed: " + elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
     }
 
     // Append final score to text file
-    public static void logFinalScore() {
+    public static void logFinalScore(int finalScore) {
         try {
             // Create or append file
             FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
@@ -243,7 +314,7 @@ public class Panel extends JPanel implements ActionListener {
             write.println(); // Skip to new row
             write.print(finalScore);
             write.print(","); // comma separate to print to the next column
-            write.print(System.currentTimeMillis()); // print current date
+            write.print(System.currentTimeMillis());
             // Close and finish the job
             write.close();
         } catch(IOException e){
@@ -252,101 +323,51 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     // Read high score file
-    public static void generateHighScoreArray() {
+    public static void getHighScores() {
         // Reset/create Array
-        highScoreArray = new long[5000][2];
+        // TODO -- Change to HashMap for connecting unique scores to a timestamp or name.
+        long[][] highScoreArray = new long[5000][2];
         try {
             // Create file object
             File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
             // Create scanner object
             Scanner myScanner = new Scanner(fileObj);
-            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as dilimiters to read the csv properly (\n = line break, s = whitespace, $ = until end of line, an anchor to ensure that the entire string is matched instead of just a substring). Reads results as string
+            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as dilimiters to read the csv
             // Fill Array by reading the file
-            for(int i = 0; myScanner.hasNext(); i++) { // loop for rows
-                for(int a = 0; a <= 1; a++) { // loop for columns
+            for(int i = 0; myScanner.hasNext(); i++) {
+                for(int a = 0; a <= 1; a++) {
                     highScoreArray[i][a] = ((long)Long.parseLong(myScanner.next().trim()));
                 }
             }
             // Sort Array in ascending order
-            Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0])); // Lamba function that compares numbers
+            Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0]));
             myScanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred finding the file.");
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        if(running) {
-            movePlayer();
-            checkCopCollision();
-            checkStopWatch();
-            repaint();
-        }
-
-        // When the game ends, log the final score if the game ends with a minimum score achieved
-        if(running == false && pause == false && initialPause == false && stopHs == false) {
-
-            // Update the final score variable
-            finalScore = money;
-
-            // Log final score in the CSV file if it's past a certain minimum
-            if(finalScore >= 20) {
-                logFinalScore();
-            }
-
-            // Generate Array of Scores from the current CSV file
-            generateHighScoreArray();
 
             // Get info on the top 3 scores
-            int score1 = (int) highScoreArray[highScoreArray.length-1][0]; //Array is sorted in ascending order
+            int score1 = (int) highScoreArray[highScoreArray.length - 1][0];
             Timestamp ts1 = new Timestamp(highScoreArray[highScoreArray.length - 1][1]);
-            int score2 = (int) highScoreArray[highScoreArray.length-2][0];
-            Timestamp ts2 = new Timestamp(highScoreArray[highScoreArray.length-2][1]);
-            int score3 = (int) highScoreArray[highScoreArray.length-3][0];
-            Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length-3][1]);
+            int score2 = (int) highScoreArray[highScoreArray.length - 2][0];
+            Timestamp ts2 = new Timestamp(highScoreArray[highScoreArray.length - 2][1]);
+            int score3 = (int) highScoreArray[highScoreArray.length - 3][0];
+            Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
 
             // Special message if the player reached a top 3 high score
-            System.out.println("* Your final score is " + finalScore); // Array is sorted in ascending order
-            if(finalScore > score3 && finalScore >= 20) {
-                System.out.println("* CONGRATS! That's a new high score. That puts you at top 3 all time."); // Array is sorted in ascending order
+            System.out.println("* Your final score is " + money);
+            if (money > score3 && money >= 20) {
+                System.out.println("* CONGRATS! That's a new high score. That puts you at top 3 all time.");
             } else {
-                System.out.println("* Sorry, your score was not good enough for top 3 all time."); // Array is sorted in ascending order
+                System.out.println("* Sorry, your score was not good enough for top 3 all time.");
             }
 
             // Show top 3 high scores and the times they were achieved
             System.out.println("1st place: " + score1 + " on " + ts1);
             System.out.println("2nd place: " + score2 + " on " + ts2);
             System.out.println("3rd place: " + score3 + " on " + ts3);
-
             // End this process
-            stopHs = true;
-
-            // Lose game Menu
-            if(running == false && pause == false && initialPause == false) {
-                // Create Game Over Menu
-                gameOverMenu.setLocation(600,300);
-                gameOverMenu.setBackground(Color.red);
-                gameOverMenu.setBorder(BorderFactory.createLineBorder(Color.white));
-                gameOverMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
-
-                // Create High Score Menu
-                highScoreMenu = new JPopupMenu();
-                highScoreMenu.setLocation(1000,60);
-                highScoreMenu.setBackground(Color.orange.darker());
-                highScoreMenu.setBorder(BorderFactory.createLineBorder(Color.white));
-                highScoreMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
-                highScoreMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 30)); // Buffer
-                highScoreMenuLabel.setForeground(Color.WHITE);
-                highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
-                highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
-                highScoreMenu.add(highScoreMenuLabel);
-                highScoreMenu.setVisible(true); // Prevent the menu from taking focus from the panel
-            }
-
-            // Continually rerun the graphics
-            repaint();
+            stopScoreLog = true;
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred finding the file.");
+            e.printStackTrace();
         }
     }
 
@@ -358,6 +379,7 @@ public class Panel extends JPanel implements ActionListener {
             direction = 'R';
         }
     }
+
     public static class LeftAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -365,6 +387,7 @@ public class Panel extends JPanel implements ActionListener {
             direction = 'L';
         }
     }
+
     public static class UpAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -372,6 +395,7 @@ public class Panel extends JPanel implements ActionListener {
             direction = 'U';
         }
     }
+
     public static class DownAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -379,6 +403,7 @@ public class Panel extends JPanel implements ActionListener {
             direction = 'D';
         }
     }
+
     public static class EnterAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -388,15 +413,17 @@ public class Panel extends JPanel implements ActionListener {
             }
         }
     }
+
     public static class DeleteAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Delete key to quit game (if stopped)
             if (running == false){
-                quitGame();
+                System.exit(0);
             }
         }
     }
+
     public static class SpaceAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -408,16 +435,17 @@ public class Panel extends JPanel implements ActionListener {
             }
         }
     }
+
     public static class rAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
             // The r key toggles nitro activation
             if(nitro == false) {
-                myTimer.setDelay(GAME_SPEED_NITRO);
                 nitro = true;
+                myTimer.setDelay(GAME_SPEED_NITRO);
             } else{
-                myTimer.setDelay(GAME_SPEED);
                 nitro = false;
+                myTimer.setDelay(GAME_SPEED);
             }
         }
     }
@@ -428,8 +456,6 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 AIs
-1) Add Car gridpoints
-2) Add Cop gridpoints
 3) grid - create road tiles
 4) grid - create building tiles
 5) grid - create road end tiles on the walls
@@ -437,10 +463,10 @@ AIs
 7) grid Physics - car and cop do not respawn on building
 8) bullet that comes out of car based on dir
 9) bullet movement goes offscrean unless it hits NPC
-10) NPC "dies" by disappearing into money dropped
-11) Player collects money for high score (random amount of money)
-12) Lose menu shows WASTED
-13) menus
+10) NPC "dies" by disappearing and turning into money (random amount)
+11) Player collects money by driving over it for high score
+12) player blows up when dying from bullet or collision
+13) readme documentation
 
 Ideas:
 cop shoots randomly?
