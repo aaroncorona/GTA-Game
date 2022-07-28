@@ -79,7 +79,7 @@ public class Panel extends JPanel implements ActionListener {
         this.getActionMap().put("spaceAction", new SpaceAction());
 //        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
 //        this.getActionMap().put("eAction", new eAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"rAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false),"rAction");
         this.getActionMap().put("rAction", new rAction());
     }
 
@@ -445,6 +445,6 @@ AIs
 Ideas:
 cop shoots randomly?
 Data structure: Queue for movements?
-Data structure: HashSet to map NPC to alive status?
-Data structure: HashSet to grid to obj?
+Data structure: HashMap to map NPC to alive status?
+Data structure: HashMap to map high score int to time or name?
  */
