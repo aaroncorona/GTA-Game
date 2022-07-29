@@ -11,19 +11,22 @@ import java.util.*;
 
 public class Panel extends JPanel implements ActionListener {
 
-    // Constants
+    // Constants for particle sizes
     static final int UNIT_SIZE = 25;
     static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
+    static final int ROAD_SIZE = UNIT_SIZE*6;
+    static final int WATER_SIZE = UNIT_SIZE*2;
+    static final int SIDEWALK_SIZE = UNIT_SIZE;
     static final int SCREEN_WIDTH = 1400;
     static final int SCREEN_HEIGHT = 900;
+
+    // Constants for game speed
     static final int GAME_SPEED = UNIT_SIZE*10;
     static final int GAME_SPEED_NITRO = GAME_SPEED / 3;
 
     // Helper variables to trigger events
-    static boolean running = false;
-    static boolean initialPause = true;
-    static boolean pause = false;
-    static boolean stopScoreLog = false;
+    static boolean running;
+    static boolean pause;
     static boolean nitro = false;
 
     // Helper variables to track dynamic data that needs a global scope
@@ -31,13 +34,14 @@ public class Panel extends JPanel implements ActionListener {
     static char direction;
     static char oldDirection;
     static long startTime;
-    static Timer myTimer;
+    static Timer timer;
 
-    // Variables to track graphic locations
+    // Variables to track graphics
     static int playerXLocation;
     static int playerYLocation;
     static int copXLocation;
     static int copYLocation;
+    static int[][] grid; // all non-player particles
 
     // Menus
     public static JPopupMenu pauseMenu = new JPopupMenu();
@@ -52,10 +56,11 @@ public class Panel extends JPanel implements ActionListener {
         this.setFocusable(true);
 
         // Add Game Timer
-        myTimer = new Timer(GAME_SPEED, this); // note: creates a new object (this) after every delay time
-        myTimer.start();
+        // Note: timer creates a new panel object (this) after every delay time
+        timer = new Timer(GAME_SPEED, this);
+        timer.start();
 
-        // Map Keys to Action response classes for the Panel
+        // Map Key Events in the Panel to Action response classes
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction"); // KeyEvent responds to a right key, lower case, and false for it being pressed rather than released
         this.getActionMap().put("rightAction", new RightAction());
@@ -77,7 +82,8 @@ public class Panel extends JPanel implements ActionListener {
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false),"spaceAction");
         this.getActionMap().put("spaceAction", new SpaceAction());
-//        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
+//        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+//                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
 //        this.getActionMap().put("eAction", new eAction());
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false),"rAction");
         this.getActionMap().put("rAction", new rAction());
@@ -90,14 +96,14 @@ public class Panel extends JPanel implements ActionListener {
 
         // Reset trigger variables
         running = true;
-        initialPause = false;
         pause = false;
-        stopScoreLog = false;
         nitro = false;
-        myTimer.setDelay(GAME_SPEED);
+        timer.setDelay(GAME_SPEED);
 
-        // Hide menu that can stay open
+        // Hide menus that may be open upon restarting
         pauseMenu.setVisible(false);
+        gameOverMenu.setVisible(false);
+        highScoreMenu.setVisible(false);
 
         // Restart money at 1
         money = 1;
@@ -123,8 +129,57 @@ public class Panel extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
 
+        /* Fill grid with this particle mapping
+           0 = sidewalk
+           1 = water
+           2 = road
+           3 = building
+         */
+        grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[i].length; j++) {
+                // Water to fill edges
+                if(i == 0
+                        || i == SCREEN_WIDTH - WATER_SIZE
+                        || j == 0
+                        || j == SCREEN_HEIGHT - WATER_SIZE) {
+                    grid[i][j] = 1;
+                }
+                // Sidewalk around edges
+                else if(i < WATER_SIZE + SIDEWALK_SIZE
+                        || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
+                        || j < WATER_SIZE + SIDEWALK_SIZE
+                        || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
+                    grid[i][j] = 0;
+                }
+                // Road vertical 1
+                else if(i == WATER_SIZE + SIDEWALK_SIZE) {
+                    grid[i][j] = 2;
+                }
+                // Road horizontal 1
+                else if(j == WATER_SIZE + SIDEWALK_SIZE) {
+                    grid[i][j] = 2;
+                }
+
+            }
+        }
+
+        // Paint panel based on the particle mapping from the grid
+        for(int i = 0; i < grid.length; i++) {
+            for(int j = 0; j < grid[i].length; j++) {
+                if(grid[i][j] == 1) {
+                    g.setColor(Color.BLUE.darker());
+                    g.fillRect(i, j, WATER_SIZE, WATER_SIZE);
+                }
+                else if(grid[i][j] == 2) {
+                    g.setColor(Color.GRAY.darker());
+                    g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
+                }
+            }
+        }
+
         // Initial Pause menu
-        if(initialPause == true) {
+        if(running == false && money == 0) {
             // Draw the pause menu
             String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/start_menu.png";
             ImageIcon startMenu = new ImageIcon(new ImageIcon(filePathStartMenu).getImage().getScaledInstance((SCREEN_WIDTH/2)+50, SCREEN_HEIGHT-50, Image.SCALE_DEFAULT));
@@ -134,7 +189,7 @@ public class Panel extends JPanel implements ActionListener {
             g.setFont(new Font("Serif", Font.ITALIC, 50));
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
-        // Image Icons - only draw this after the game starts
+        // Image Icons - draw this after the game starts
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
             String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + ".png";
@@ -144,27 +199,25 @@ public class Panel extends JPanel implements ActionListener {
             String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
             ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
             cop.paintIcon(this, g, copXLocation, copYLocation);
-            // Display current score
-            g.setColor(Color.GREEN.darker());
+            // Display current score (money)
+            g.setColor(Color.GREEN.brighter());
             g.setFont(new Font("Serif", Font.PLAIN, 50));
-            g.drawString("Bank Account: " + money,30,80); // coordinates start in the top left
+            g.drawString("Bank Account: $" + money,105,120); // coordinates start in the top left
             // Display stop watch
-            g.setColor(Color.GRAY);
+            g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
-            g.drawString(getTimePassed(),30,112);
-            // TODO - Only display the control menu when the game is paused?
+            g.drawString(getTimePassed(),105,150);
+            // TODO - Only display the control menu when the game is paused? or keep it as a building?
             // Display control menu
             int menuSize = 320;
             String filePathControlMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/control_menu.png";
             ImageIcon controlMenu = new ImageIcon(new ImageIcon(filePathControlMenu).getImage().getScaledInstance(menuSize, menuSize, Image.SCALE_DEFAULT));
             controlMenu.paintIcon(this, g, SCREEN_WIDTH-menuSize-10, 10);
-            // For ad hoc checks on the grid
-//            for(int i = 0;i<SCREEN_HEIGHT/UNIT_SIZE;i++){
+            // To see all units for ad hoc checks
+//            for(int i = 0;i<SCREEN_HEIGHT/UNIT_SIZE;i++) {
 //                g.drawLine(i*UNIT_SIZE,0,i*UNIT_SIZE,SCREEN_HEIGHT);
 //                g.drawLine(0,i*UNIT_SIZE,SCREEN_WIDTH,i*UNIT_SIZE);
 //            }
-//            g.drawOval(playerXLocation,playerYLocation,UNIT_SIZE,UNIT_SIZE);
-//            g.drawOval(copXLocation,copYLocation,UNIT_SIZE,UNIT_SIZE);
         }
     }
 
@@ -174,13 +227,13 @@ public class Panel extends JPanel implements ActionListener {
         pauseMenu = new JPopupMenu();
         pauseMenu.setLocation(600, 400);
         pauseMenu.setPreferredSize(new Dimension(500, 40));
-        pauseMenu.setBackground(Color.BLUE.darker());
+        pauseMenu.setBackground(Color.WHITE);
         pauseMenu.setBorder(BorderFactory.createLineBorder(Color.white));
         pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
         // Create Pause Menu Label
         JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
         pauseMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-        pauseMenuLabel.setForeground(Color.WHITE);
+        pauseMenuLabel.setForeground(Color.BLACK);
         pauseMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
         pauseMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
         pauseMenu.add(pauseMenuLabel);
@@ -194,13 +247,13 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     public static void generateNewPlayerLocation() {
-        playerXLocation = 200;
-        playerYLocation = 200;
+        playerXLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE; // spawn on the first road
+        playerYLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE;
         direction = 'R';
         oldDirection = 'R';
     }
 
-    public static void generateNewCopLocation(){ // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
+    public static void generateNewCopLocation() { // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
         copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
         // Generate a new location if the cop spawns on the wall (for improved UX)
@@ -240,16 +293,15 @@ public class Panel extends JPanel implements ActionListener {
                     || playerYLocation == copYLocation+UNIT_SIZE // car is 2 unit sizes
                     || playerYLocation == copYLocation-UNIT_SIZE)) {
             generateNewCopLocation();
-            System.out.println("COP COLLISION");
         }
     }
 
     public static void checkWallCollision() {
         // check for the head colliding with one of the 4 borders
-        if(playerXLocation <= 0
-                || playerXLocation >= SCREEN_WIDTH
-                || playerYLocation <= 0
-                || playerYLocation >= SCREEN_HEIGHT) {
+        if(playerXLocation < PLAYER_UNIT_SIZE
+                || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE*2
+                || playerYLocation < PLAYER_UNIT_SIZE
+                || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE*2) {
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (Out of Bounds)");
         }
@@ -257,15 +309,15 @@ public class Panel extends JPanel implements ActionListener {
 
     public static void checkGameOver() {
         // When the game ends, log the final score if the game ends with a minimum score achieved
-        if(running == false && pause == false && initialPause == false && stopScoreLog == false) {
+        if(running == false && pause == false) {
 
             // Log final score in the CSV file if it's past a certain minimum
             if (money >= 20) {
                 logFinalScore(money);
             }
 
-            // TODO -- Potentially return a HashMap instead of void
-            getHighScores();
+            // Print Score results
+            System.out.println(getHighScoreMessage());
 
             // Create Game Over Menu
             gameOverMenu = new JPopupMenu();
@@ -301,7 +353,55 @@ public class Panel extends JPanel implements ActionListener {
         int elapsedTime = (int) (now - startTime); // Convert timestamp difference to seconds
         int elapsedMins = (int) Math.floor(elapsedTime / 1000 / 60);
         int elapsedSecondsRemainder = (int) Math.floor(elapsedTime / 1000 % 60);
-        return "Time Elapsed: " + elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
+        return elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
+    }
+
+    // Read high score file
+    public static String getHighScoreMessage() {
+        // Reset/create Array
+        // TODO -- Change to TreeMap for connecting unique scores to a timestamp or name.
+        long[][] highScoreArray = new long[5000][2];
+        try {
+            // Create file object to extract the high score CSV
+            File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
+            // Create scanner object to read the file
+            Scanner myScanner = new Scanner(fileObj);
+            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as dilimiters to read the csv
+            // Fill the score Array
+            for(int i = 0; myScanner.hasNext(); i++) {
+                for(int a = 0; a <= 1; a++) {
+                    highScoreArray[i][a] = ((long)Long.parseLong(myScanner.next().trim()));
+                }
+            }
+            myScanner.close();
+        } catch (FileNotFoundException e) {
+            System.out.println(e);
+        }
+        // Sort Array in ascending order (note: wont be needed with TreeMap)
+        Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0]));
+        // Get the top 3 scores
+        int score1 = (int) highScoreArray[highScoreArray.length - 1][0];
+        Timestamp ts1 = new Timestamp(highScoreArray[highScoreArray.length - 1][1]);
+        int score2 = (int) highScoreArray[highScoreArray.length - 2][0];
+        Timestamp ts2 = new Timestamp(highScoreArray[highScoreArray.length - 2][1]);
+        int score3 = (int) highScoreArray[highScoreArray.length - 3][0];
+        Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
+        // Special message if the player reached a top 3 high score
+        String message;
+        System.out.println("* Your final score is " + money);
+        if (money > score1) {
+            message = "* CONGRATS! You have the all time best score!\n";
+        }
+        else if (money > score3) {
+            message = "* CONGRATS! That's a new high score. You are top 3 all time\n";
+        } else{
+            message = "* Sorry, your score was not good enough for top 3 all time\n";
+        }
+        // Add the top 3 high scores
+        message += ("1st place: " + score1 + " on " + ts1 + "\n");
+        message += ("2nd place: " + score2 + " on " + ts2 + "\n");
+        message += ("3rd place: " + score3 + " on " + ts3 + "\n");
+        return message;
     }
 
     // Append final score to text file
@@ -317,57 +417,8 @@ public class Panel extends JPanel implements ActionListener {
             write.print(System.currentTimeMillis());
             // Close and finish the job
             write.close();
-        } catch(IOException e){
+        } catch(IOException e) {
             System.out.print(e);
-        }
-    }
-
-    // Read high score file
-    public static void getHighScores() {
-        // Reset/create Array
-        // TODO -- Change to HashMap for connecting unique scores to a timestamp or name.
-        long[][] highScoreArray = new long[5000][2];
-        try {
-            // Create file object
-            File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
-            // Create scanner object
-            Scanner myScanner = new Scanner(fileObj);
-            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as dilimiters to read the csv
-            // Fill Array by reading the file
-            for(int i = 0; myScanner.hasNext(); i++) {
-                for(int a = 0; a <= 1; a++) {
-                    highScoreArray[i][a] = ((long)Long.parseLong(myScanner.next().trim()));
-                }
-            }
-            // Sort Array in ascending order
-            Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0]));
-            myScanner.close();
-
-            // Get info on the top 3 scores
-            int score1 = (int) highScoreArray[highScoreArray.length - 1][0];
-            Timestamp ts1 = new Timestamp(highScoreArray[highScoreArray.length - 1][1]);
-            int score2 = (int) highScoreArray[highScoreArray.length - 2][0];
-            Timestamp ts2 = new Timestamp(highScoreArray[highScoreArray.length - 2][1]);
-            int score3 = (int) highScoreArray[highScoreArray.length - 3][0];
-            Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
-
-            // Special message if the player reached a top 3 high score
-            System.out.println("* Your final score is " + money);
-            if (money > score3 && money >= 20) {
-                System.out.println("* CONGRATS! That's a new high score. That puts you at top 3 all time.");
-            } else {
-                System.out.println("* Sorry, your score was not good enough for top 3 all time.");
-            }
-
-            // Show top 3 high scores and the times they were achieved
-            System.out.println("1st place: " + score1 + " on " + ts1);
-            System.out.println("2nd place: " + score2 + " on " + ts2);
-            System.out.println("3rd place: " + score3 + " on " + ts3);
-            // End this process
-            stopScoreLog = true;
-        } catch (FileNotFoundException e) {
-            System.out.println("An error occurred finding the file.");
-            e.printStackTrace();
         }
     }
 
@@ -418,7 +469,7 @@ public class Panel extends JPanel implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Delete key to quit game (if stopped)
-            if (running == false){
+            if (running == false) {
                 System.exit(0);
             }
         }
@@ -428,9 +479,9 @@ public class Panel extends JPanel implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             // Space bar to pause or resume game
-            if (pause == false && initialPause == false && running == true) {
+            if (pause == false && running == true) {
                 pauseGame();
-            } else if (pause == true && initialPause == false && running == false) {
+            } else if (pause == true && running == false) {
                 resumeGame();
             }
         }
@@ -442,35 +493,29 @@ public class Panel extends JPanel implements ActionListener {
             // The r key toggles nitro activation
             if(nitro == false) {
                 nitro = true;
-                myTimer.setDelay(GAME_SPEED_NITRO);
+                timer.setDelay(GAME_SPEED_NITRO);
             } else{
                 nitro = false;
-                myTimer.setDelay(GAME_SPEED);
+                timer.setDelay(GAME_SPEED);
             }
         }
     }
 }
 
 
-
-
 /*
 AIs
-3) grid - create road tiles
-4) grid - create building tiles
-5) grid - create road end tiles on the walls
-6) grid Physics - car crashes on building or road end
-7) grid Physics - car and cop do not respawn on building
-8) bullet that comes out of car based on dir
-9) bullet movement goes offscrean unless it hits NPC
-10) NPC "dies" by disappearing and turning into money (random amount)
-11) Player collects money by driving over it for high score
-12) player blows up when dying from bullet or collision
-13) readme documentation
-
-Ideas:
-cop shoots randomly?
-Data structure: Queue for movements?
-Data structure: HashMap to map NPC to alive status?
-Data structure: HashMap to map high score int to time or name?
+1) grid - create road tiles, lines inside?
+2) grid - create building tiles
+3) grid - create road end tiles on the walls
+4) grid Physics - car crashes on building or road, which ends the game
+5) grid Physics - car and cop do not respawn on building
+6) bullet that comes out of car based on dir
+7) bullet that comes from cop randomly
+8) bullet movement goes offscreen unless it hits NPC
+9) NPC "dies" by disappearing and turning into money (random amount)
+10) Player collects money by driving over it for high score
+11) player blows up when dying from contact with a bullet, building, or screen ending
+12) add environment icon like trees or citizens for a better UI
+13) update readme
  */
