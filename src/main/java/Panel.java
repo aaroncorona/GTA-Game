@@ -228,7 +228,14 @@ public class Panel extends JPanel implements ActionListener {
         ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
         b7.paintIcon(this, g,
                 SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE + 20);
+                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE + 15);
+
+        // Draw building 8
+        String filePathB8 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building8.png";
+        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
+        b8.paintIcon(this, g,
+                SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
+                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 + 30);
 
         // Initial Pause menu
         if(running == false && money == 0) {
