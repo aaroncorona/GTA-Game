@@ -6,13 +6,6 @@
 ## 🚔 Overview
 This is a 2D game written in Java. It is inspired by the original GTA game released in 1997.
 
-## 📖 Table of Contents
-* [Features](#%EF%B8%8F-game-features)
-* [File Descriptions](#%EF%B8%8F-file-descriptions)
-* [Installation](#-installation)
-* [Next Release](#-next-release---version-20-features)
-
-
 ## 🕹️ Game Features
 1. **City Driving**: Simulates driving on a road with surrounding buildings
 2. **Nitro**: Click R to get a nitro boost, which increases the car's speed by 300%
