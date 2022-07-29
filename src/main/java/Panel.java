@@ -218,10 +218,18 @@ public class Panel extends JPanel implements ActionListener {
 
         // Draw building 6
         String filePathB6 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building6.png";
-        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
         b6.paintIcon(this, g,
                         SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+
+        // Draw building 7
+        String filePathB7 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building7.png";
+        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        b7.paintIcon(this, g,
+                SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
+                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE + 20);
+
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
@@ -550,8 +558,6 @@ public class Panel extends JPanel implements ActionListener {
 /*
 AIs
 1) grid - create road tiles, lines inside?
-2) grid - create building tiles
-3) grid - create road end tiles on the walls
 4) grid Physics - car crashes on building or road, which ends the game
 5) grid Physics - car and cop do not respawn on building
 6) bullet that comes out of car based on dir
