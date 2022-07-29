@@ -9,8 +9,8 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 ## 🕹️ Game Features
 1. **City Driving**: Simulates driving on a road with surrounding buildings
 2. **Nitro**: Click R to get a nitro boost, which increases the car's speed by 300%
-3. **Battle**: Defeat cops to earn money. Crashing your car ends the game.
-4. **High Scores**: Save and display high scores for money collected to see where you rank all time
+3. **Wanted**: Defeat cops to earn money. Crashing your car ends the game.
+4. **High Scores**: Save and display high scores (money collected) to see where you rank all time
 
 
 ## 🗂️ File Descriptions
