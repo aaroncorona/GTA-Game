@@ -41,7 +41,7 @@ public class Panel extends JPanel implements ActionListener {
     static int playerYLocation;
     static int copXLocation;
     static int copYLocation;
-    static int[][] grid; // all non-player particles
+    static int[][] grid; // tracks all non-player particles
 
     // Menus
     public static JPopupMenu pauseMenu = new JPopupMenu();
@@ -138,29 +138,32 @@ public class Panel extends JPanel implements ActionListener {
         grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
         for(int i = 0; i < grid.length; i++) {
             for(int j = 0; j < grid[i].length; j++) {
-                // Water to fill edges
+                // Water on screen edges (for island effect)
                 if(i == 0
                         || i == SCREEN_WIDTH - WATER_SIZE
                         || j == 0
                         || j == SCREEN_HEIGHT - WATER_SIZE) {
                     grid[i][j] = 1;
                 }
-                // Sidewalk around edges
+                // Sidewalk around the water edges
                 else if(i < WATER_SIZE + SIDEWALK_SIZE
                         || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
                         || j < WATER_SIZE + SIDEWALK_SIZE
                         || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
                     grid[i][j] = 0;
                 }
-                // Road vertical 1
-                else if(i == WATER_SIZE + SIDEWALK_SIZE) {
+                // Roads (vertical)
+                else if(i == WATER_SIZE + SIDEWALK_SIZE // far left road
+                        || i == SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 2nd road
+                        || i == SCREEN_WIDTH/4 + SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 3rd road
+                        || i == SCREEN_WIDTH - WATER_SIZE*4 - SIDEWALK_SIZE) { // far right road
                     grid[i][j] = 2;
                 }
-                // Road horizontal 1
-                else if(j == WATER_SIZE + SIDEWALK_SIZE) {
+                // Roads (horizontal)
+                else if(j == WATER_SIZE + SIDEWALK_SIZE // top road
+                        || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
                     grid[i][j] = 2;
                 }
-
             }
         }
 
