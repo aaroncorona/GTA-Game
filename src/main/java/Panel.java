@@ -14,9 +14,10 @@ public class Panel extends JPanel implements ActionListener {
     // Constants for particle sizes
     static final int UNIT_SIZE = 25;
     static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
-    static final int ROAD_SIZE = UNIT_SIZE*6;
+    static final int ROAD_SIZE = UNIT_SIZE*5;
     static final int WATER_SIZE = UNIT_SIZE*2;
     static final int SIDEWALK_SIZE = UNIT_SIZE;
+    static final int BUILDING_SIZE = 160; // player takes up 2 by 2 units (4 total)
     static final int SCREEN_WIDTH = 1400;
     static final int SCREEN_HEIGHT = 900;
 
@@ -184,18 +185,43 @@ public class Panel extends JPanel implements ActionListener {
 
         // Draw building 1
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
-        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
         b1.paintIcon(this, g,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 10,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 20,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
 
         // Draw building 2
         String filePathB2 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building2.png";
-        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_SIZE-40, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
         b2.paintIcon(this, g,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 10,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 250);
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE);
 
+        // Draw building 3
+        String filePathB3 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building3.png";
+        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
+        b3.paintIcon(this, g,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 20,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 - 10);
+
+        // Draw building 4
+        String filePathB4 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building4.png";
+        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE+135, Image.SCALE_DEFAULT));
+        b4.paintIcon(this, g,
+                        SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+
+        // Draw building 5 (b1 again)
+        b1.paintIcon(this, g,
+                        SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 - 10);
+
+        // Draw building 6
+        String filePathB6 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building6.png";
+        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        b6.paintIcon(this, g,
+                        SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
@@ -225,12 +251,12 @@ public class Panel extends JPanel implements ActionListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
             g.drawString(getTimePassed(),105,150);
-            // TODO - Only display the control menu when the game is paused? or keep it as a building?
+            // TODO - Only display the control menu when the game is paused
             // Display control menu
-            int menuSize = 320;
-            String filePathControlMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/control_menu.png";
-            ImageIcon controlMenu = new ImageIcon(new ImageIcon(filePathControlMenu).getImage().getScaledInstance(menuSize, menuSize, Image.SCALE_DEFAULT));
-            controlMenu.paintIcon(this, g, SCREEN_WIDTH-menuSize-10, 10);
+//            int menuSize = 320;
+//            String filePathControlMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/control_menu.png";
+//            ImageIcon controlMenu = new ImageIcon(new ImageIcon(filePathControlMenu).getImage().getScaledInstance(menuSize, menuSize, Image.SCALE_DEFAULT));
+//            controlMenu.paintIcon(this, g, SCREEN_WIDTH-menuSize-10, 10);
             // To see all units for ad hoc checks
 //            for(int i = 0;i<SCREEN_HEIGHT/UNIT_SIZE;i++) {
 //                g.drawLine(i*UNIT_SIZE,0,i*UNIT_SIZE,SCREEN_HEIGHT);
