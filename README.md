@@ -36,5 +36,5 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 $ javac Main.java
 $ java Main
 ```
-4. *Optional* Erase the high scores to track your own personal best.
+4. *(Optional)* Erase the high scores to track your own personal best.
 
