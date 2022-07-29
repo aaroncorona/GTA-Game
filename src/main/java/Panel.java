@@ -133,7 +133,6 @@ public class Panel extends JPanel implements ActionListener {
            0 = sidewalk
            1 = water
            2 = road
-           3 = building
          */
         grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
         for(int i = 0; i < grid.length; i++) {
@@ -170,16 +169,32 @@ public class Panel extends JPanel implements ActionListener {
         // Paint panel based on the particle mapping from the grid
         for(int i = 0; i < grid.length; i++) {
             for(int j = 0; j < grid[i].length; j++) {
+                // Draw Water
                 if(grid[i][j] == 1) {
                     g.setColor(Color.BLUE.darker());
                     g.fillRect(i, j, WATER_SIZE, WATER_SIZE);
                 }
+                // Draw Roads
                 else if(grid[i][j] == 2) {
                     g.setColor(Color.GRAY.darker());
                     g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
                 }
             }
         }
+
+        // Draw building 1
+        String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
+        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        b1.paintIcon(this, g,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 10,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+
+        // Draw building 2
+        String filePathB2 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building2.png";
+        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(150, 150, Image.SCALE_DEFAULT));
+        b2.paintIcon(this, g,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 10,
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 250);
 
         // Initial Pause menu
         if(running == false && money == 0) {
