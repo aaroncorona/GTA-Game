@@ -1,7 +1,7 @@
 # GTA Game
-<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/Pooh-Bear-Game">
-<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/Pooh-Bear-Game">
-
+<img width="450" alt="intro" src="https://user-images.githubusercontent.com/31792170/181679196-c5b68d0f-0cf5-4039-873d-6f4d92e104ac.jpg">
+<img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
+<img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
 ## 🚔 Overview
 This is a 2D game written in Java. It is inspired by the original GTA game released in 1997.
