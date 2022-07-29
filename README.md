@@ -20,10 +20,6 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 3. **High Scores**: Save and display high scores for money collected to see where you rank all time
 
 
-## ⚙️ Tech Stack
-* Java Swing
-
-
 ## 🗂️ File Descriptions
 * **Panel.java** - Panel logic and the game logic live here
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
