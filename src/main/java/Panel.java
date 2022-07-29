@@ -183,6 +183,21 @@ public class Panel extends JPanel implements ActionListener {
             }
         }
 
+        // Draw street lines
+        Graphics2D g2d = (Graphics2D) g.create();
+        // Set the stroke of the copy, not the original
+        Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
+                0, new float[]{9}, 0);
+        g2d.setColor(Color.yellow);
+        g2d.setStroke(dashed);
+        // Horizontal lines
+        g2d.drawLine(150, 140, SCREEN_WIDTH - 160, 140);
+        g2d.drawLine(150, SCREEN_HEIGHT - 160, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 160);
+        // Vertical lines
+        g2d.drawLine(140, 140, 140, SCREEN_HEIGHT - 160);
+        g2d.drawLine(SCREEN_WIDTH - 160, 140, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 160);
+        g2d.dispose();
+
         // Draw building 1
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
         ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
@@ -261,11 +276,11 @@ public class Panel extends JPanel implements ActionListener {
             // Display current score (money)
             g.setColor(Color.GREEN.brighter());
             g.setFont(new Font("Serif", Font.PLAIN, 50));
-            g.drawString("Bank Account: $" + money,105,120); // coordinates start in the top left
+            g.drawString("Bank Account: $" + money,20,40); // coordinates start in the top left
             // Display stop watch
             g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
-            g.drawString(getTimePassed(),105,150);
+            g.drawString(getTimePassed(),20,70);
             // TODO - Only display the control menu when the game is paused
             // Display control menu
 //            int menuSize = 320;
