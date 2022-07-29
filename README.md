@@ -8,7 +8,6 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 
 ## 📖 Table of Contents
 * [Features](#%EF%B8%8F-game-features)
-* [Tech Stack](#%EF%B8%8F-tech-stack)
 * [File Descriptions](#%EF%B8%8F-file-descriptions)
 * [Installation](#-installation)
 * [Next Release](#-next-release---version-20-features)
