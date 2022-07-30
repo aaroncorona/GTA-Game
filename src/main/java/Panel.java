@@ -354,9 +354,8 @@ public class Panel extends JPanel implements ActionListener {
     public static void generateNewCopLocation() { // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
         copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
-        // Generate a new location if the cop spawns on the wall (for improved UX)
-        if(copXLocation == 0 || copYLocation == 0
-                || copXLocation == SCREEN_WIDTH || copYLocation == SCREEN_HEIGHT) {
+        // Only spawn on the road
+        if(grid[copXLocation][copYLocation] != 2) {
             generateNewCopLocation();
         }
     }
@@ -408,7 +407,7 @@ public class Panel extends JPanel implements ActionListener {
                 || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE*2) {
             direction = ' '; // car disappears
             running = false; // stop the game (which triggers end game message)
-            System.out.println("* GAME OVER (Out of Bounds)");
+            System.out.println("* GAME OVER (Drowned)");
         }
     }
 
@@ -445,7 +444,7 @@ public class Panel extends JPanel implements ActionListener {
 
             // Create High Score Menu
             highScoreMenu = new JPopupMenu();
-            highScoreMenu.setLocation(460, 450);
+            highScoreMenu.setLocation(550, 450);
             highScoreMenu.setBackground(new Color(255, 105, 97));
             highScoreMenu.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 97), 30));
             highScoreMenu.setFocusable(false);
@@ -472,13 +471,12 @@ public class Panel extends JPanel implements ActionListener {
         // Create Array to hold the scores
         // TODO -- Use TreeMap instead for connecting unique scores to a timestamp or name.
         long[][] highScoreArray = new long[5000][2];
+        // Read the local CSV file
         try {
-            // Create file object to extract the high score CSV
             File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
-            // Create scanner object to read the file
             Scanner myScanner = new Scanner(fileObj);
-            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as dilimiters to read the csv
-            // Fill the score Array
+            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
+            // Fill the score Array using the CSV
             for(int i = 0; myScanner.hasNext(); i++) {
                 for(int a = 0; a <= 1; a++) {
                     highScoreArray[i][a] = ((long)Long.parseLong(myScanner.next().trim()));
@@ -488,15 +486,19 @@ public class Panel extends JPanel implements ActionListener {
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
-        // Sort Array in ascending order (note: wont be needed with TreeMap)
+        // Sort Array in ascending order to easily get the highest scores
+        // Note: this shouldn't be needed with a TreeMap
         Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0]));
         // Get the top 3 scores
         int score1 = (int) highScoreArray[highScoreArray.length - 1][0];
-        Timestamp ts1 = new Timestamp(highScoreArray[highScoreArray.length - 1][1]);
+        Date date1 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 1][1]).getTime());
+        String date1Short = date1.toString().substring(4, 10);
         int score2 = (int) highScoreArray[highScoreArray.length - 2][0];
-        Timestamp ts2 = new Timestamp(highScoreArray[highScoreArray.length - 2][1]);
+        Date date2 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 2][1]).getTime());
+        String date2Short = date2.toString().substring(4, 10);
         int score3 = (int) highScoreArray[highScoreArray.length - 3][0];
-        Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
+        Date date3 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 3][1]).getTime());
+        String date3Short = date3.toString().substring(4, 10);
         // Special message if the player reached a top 3 high score
         String message;
         message = "<html> Final Score: <b>" + money + "</b><br>";
@@ -509,9 +511,9 @@ public class Panel extends JPanel implements ActionListener {
             message += "<i>Your score is not top 3 all time</i><br>";
         }
         // Add the top 3 high scores
-        message += ("<u>1st place</u>: <b>" + score1 + "</b> on " + ts1 + "<br>");
-        message += ("<u>2nd place</u>: <b>" + score2 + "</b> on " + ts2 + "<br>");
-        message += ("<u>3rd place</u>: <b>" + score3 + "</b> on " + ts3 + "</html>");
+        message += ("<u>1st place</u>: <b>" + score1 + "</b> on " + date1Short + "<br>");
+        message += ("<u>2nd place</u>: <b>" + score2 + "</b> on " + date2Short + "<br>");
+        message += ("<u>3rd place</u>: <b>" + score3 + "</b> on " + date3Short + "</html>");
         return message;
     }
 
@@ -615,18 +617,12 @@ public class Panel extends JPanel implements ActionListener {
 /*
 Aaron AIs
 1) grid Physics - car crashes on building or road, which ends the game
-2) grid Physics - car and cop do not respawn on building
-3) bullet that comes out of car based on dir
-4) bullet that comes from cop randomly
-5) bullet movement goes offscreen unless it hits NPC
-6) Cop "dies" by disappearing and turning into money (random amount)
-7) Player collects money by driving over it for high score
-8) player blows up when dying from contact with a bullet, building, or screen ending
-9) add environment icon like trees or citizens for a better UI
-10) update readme
+2) bullet that comes out of car based on dir
+3) bullet that comes from cop randomly
+4) bullet movement goes offscreen unless it hits NPC
+5) Cop "dies" by disappearing and turning into money (random amount)
+6) Player collects money by driving over it for high score
+7) player blows up when dying from contact with a bullet, building, or screen ending
+8) add environment icon like trees or citizens for a better UI
+9) update readme
  */
-
-// For Ad hoc checks
-//            g.setColor(Color.RED);
-//                    g.fillRect(copXLocation, copYLocation, 20, 20);
-//                    g.fillRect(playerXLocation, playerYLocation, 20, 20);
