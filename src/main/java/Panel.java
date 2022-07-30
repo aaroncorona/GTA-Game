@@ -195,7 +195,7 @@ public class Panel extends JPanel implements ActionListener {
                 }
                 // For ad hoc building checks
 //                else if(grid[i][j] == 3) {
-//                    g.setColor(Color.red.darker());
+//                    g.setColor(Color.RED.darker());
 //                    g.fillOval(i, j, 1, 1);
 //                }
             }
@@ -323,9 +323,9 @@ public class Panel extends JPanel implements ActionListener {
         running = false;
         pauseMenu = new JPopupMenu();
         pauseMenu.setLocation(600, 400);
-        pauseMenu.setPreferredSize(new Dimension(500, 40));
+        pauseMenu.setPreferredSize(new Dimension(500, 30));
         pauseMenu.setBackground(Color.WHITE);
-        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.white));
+        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
         pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
         // Create Pause Menu Label
         JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
@@ -429,9 +429,6 @@ public class Panel extends JPanel implements ActionListener {
                 logFinalScore(money);
             }
 
-            // Print Score results
-            System.out.println(getHighScoreMessage());
-
             // Create Game Over Menu
             gameOverMenu = new JPopupMenu();
             gameOverMenu.setLocation(600, 300);
@@ -447,13 +444,13 @@ public class Panel extends JPanel implements ActionListener {
 
             // Create High Score Menu
             highScoreMenu = new JPopupMenu();
-            highScoreMenu.setLocation(710, 450);
-            highScoreMenu.setBackground(Color.orange);
-            highScoreMenu.setBorder(BorderFactory.createLineBorder(Color.white));
+            highScoreMenu.setLocation(450, 450);
+            highScoreMenu.setBackground(new Color(255, 105, 97));
+            highScoreMenu.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 97), 30));
             highScoreMenu.setFocusable(false);
             JLabel highScoreMenuLabel = new JLabel(getHighScoreMessage());
             highScoreMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 30)); // Buffer
-            highScoreMenuLabel.setForeground(Color.WHITE);
+            highScoreMenuLabel.setForeground(Color.BLACK);
             highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
             highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
             highScoreMenu.add(highScoreMenuLabel);
@@ -471,8 +468,8 @@ public class Panel extends JPanel implements ActionListener {
 
     // Read high score file
     public static String getHighScoreMessage() {
-        // Reset/create Array
-        // TODO -- Change to TreeMap for connecting unique scores to a timestamp or name.
+        // Create Array to hold the scores
+        // TODO -- Use TreeMap instead for connecting unique scores to a timestamp or name.
         long[][] highScoreArray = new long[5000][2];
         try {
             // Create file object to extract the high score CSV
@@ -501,19 +498,19 @@ public class Panel extends JPanel implements ActionListener {
         Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
         // Special message if the player reached a top 3 high score
         String message;
-        message = "<html> Your final score is " + money + "<br>";
+        message = "<html> Final Score: <b>" + money + "</b><br>";
         if (money > score1) {
-            message += "* CONGRATS! You have the all time best score!\n";
+            message += "CONGRATS! You have the all time best score! <br>";
         }
         else if (money > score3) {
-            message += "* CONGRATS! That's a new high score. You are top 3 all time\n";
+            message += "CONGRATS! That's a new high score. You are top 3 all time <br>";
         } else{
-            message += "* Sorry, your score was not good enough for top 3 all time\n";
+            message += "<i>Your score is not top 3 all time</i><br>";
         }
         // Add the top 3 high scores
-        message += ("1st place: " + score1 + " on " + ts1 + "\n");
-        message += ("2nd place: " + score2 + " on " + ts2 + "\n");
-        message += ("3rd place: " + score3 + " on " + ts3 + "/<html>");
+        message += ("<u>1st place</u>: <b>" + score1 + "</b> on " + ts1 + "<br>");
+        message += ("<u>2nd place</u>: <b>" + score2 + "</b> on " + ts2 + "<br>");
+        message += ("<u>3rd place</u>: <b>" + score3 + "</b> on " + ts3 + "</html>");
         return message;
     }
 
