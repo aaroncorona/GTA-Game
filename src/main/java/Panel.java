@@ -185,17 +185,18 @@ public class Panel extends JPanel implements ActionListener {
 
         // Draw street lines
         Graphics2D g2d = (Graphics2D) g.create();
-        // Set the stroke of the copy, not the original
         Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
                 0, new float[]{9}, 0);
         g2d.setColor(Color.yellow);
         g2d.setStroke(dashed);
-        // Horizontal lines
+        // Horizontal
         g2d.drawLine(150, 140, SCREEN_WIDTH - 160, 140);
         g2d.drawLine(150, SCREEN_HEIGHT - 160, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 160);
-        // Vertical lines
-        g2d.drawLine(140, 140, 140, SCREEN_HEIGHT - 160);
-        g2d.drawLine(SCREEN_WIDTH - 160, 140, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 160);
+        // Vertical
+        g2d.drawLine(140, 220, 140, SCREEN_HEIGHT - 240);
+        g2d.drawLine(SCREEN_WIDTH - 160, 220, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 240);
+        g2d.drawLine(515, 220, 515, SCREEN_HEIGHT - 240);
+        g2d.drawLine(860, 220, 860, SCREEN_HEIGHT - 240);
         g2d.dispose();
 
         // Draw building 1
@@ -579,15 +580,14 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 AIs
-1) grid - create road tiles, lines inside?
-4) grid Physics - car crashes on building or road, which ends the game
-5) grid Physics - car and cop do not respawn on building
-6) bullet that comes out of car based on dir
-7) bullet that comes from cop randomly
-8) bullet movement goes offscreen unless it hits NPC
-9) NPC "dies" by disappearing and turning into money (random amount)
-10) Player collects money by driving over it for high score
-11) player blows up when dying from contact with a bullet, building, or screen ending
-12) add environment icon like trees or citizens for a better UI
-13) update readme
+1) grid Physics - car crashes on building or road, which ends the game
+2) grid Physics - car and cop do not respawn on building
+3) bullet that comes out of car based on dir
+4) bullet that comes from cop randomly
+5) bullet movement goes offscreen unless it hits NPC
+6) Cop "dies" by disappearing and turning into money (random amount)
+7) Player collects money by driving over it for high score
+8) player blows up when dying from contact with a bullet, building, or screen ending
+9) add environment icon like trees or citizens for a better UI
+10) update readme
  */
