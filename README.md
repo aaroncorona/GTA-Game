@@ -18,7 +18,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 ## 🗂️ File Descriptions
 * **Panel.java** - Panel logic and the game logic live here
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
-* **Main.java** - The JFrame is instantiated, therefore launchinig the game
+* **Main.java** - The JFrame is instantiated, therefore launching the game
 * **gta_high_scores.csv** - The CSV where high scores are stored
 
 
