@@ -21,9 +21,23 @@ public class Panel extends JPanel implements ActionListener {
     static final int SIDEWALK_SIZE = UNIT_SIZE;
 
     // Constants for building dimensions
-    static final int BUILDING_WIDTH = 160;
-    static final int b1XStart = WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE+20;
-    static final int b1YStart = WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE;
+    static final int BUILDING_SIZE = 160; // can vary by picture
+    static final int B1_X_START = 245;
+    static final int B1_Y_START = 230;
+    static final int B2_X_START = B1_X_START;
+    static final int B2_Y_START = B1_Y_START + BUILDING_SIZE+10;
+    static final int B3_X_START = B1_X_START;
+    static final int B3_Y_START = B2_Y_START + BUILDING_SIZE - 10;
+    static final int B4_X_START = 610;
+    static final int B4_Y_START = B1_Y_START;
+    static final int B5_X_START = B4_X_START;
+    static final int B5_Y_START = B4_Y_START + BUILDING_SIZE+150;
+    static final int B6_X_START = 965;
+    static final int B6_Y_START = B1_Y_START;
+    static final int B7_X_START = B6_X_START;
+    static final int B7_Y_START = B2_Y_START;
+    static final int B8_X_START = B6_X_START;
+    static final int B8_Y_START = B3_Y_START+20;;
 
     // Helper variables to trigger events
     static boolean running;
@@ -165,10 +179,59 @@ public class Panel extends JPanel implements ActionListener {
                     grid[i][j] = 2;
                 }
                 // Building #1 area
-                else if(i >= b1XStart
-                        && i <= b1XStart + BUILDING_WIDTH
-                        && j >= b1YStart
-                        && j <= b1YStart + BUILDING_WIDTH-20) {
+                else if(i >= B1_X_START
+                        && i <= B1_X_START + BUILDING_SIZE
+                        && j >= B1_Y_START
+                        && j <= B1_Y_START + BUILDING_SIZE-30) {
+                    grid[i][j] = 3;
+                }
+                // Building #2 area
+                else if(i >= B2_X_START
+                        && i <= B2_X_START + BUILDING_SIZE - 40
+                        && j >= B2_Y_START
+                        && j <= B2_Y_START + BUILDING_SIZE - 40) {
+                    grid[i][j] = 3;
+                }
+                // Building #3 area
+                else if(i >= B3_X_START
+                        && i <= B3_X_START + BUILDING_SIZE
+                        && j >= B3_Y_START
+                        && j <= B3_Y_START + BUILDING_SIZE - 40) {
+                    grid[i][j] = 3;
+                }
+                // Building #4 area
+                else if(i >= B4_X_START
+                        && i <= B4_X_START + BUILDING_SIZE
+                        && j >= B4_Y_START
+                        && j <= B4_Y_START + BUILDING_SIZE + 130) {
+                    grid[i][j] = 3;
+                }
+                // Building #5 area
+                else if(i >= B5_X_START
+                        && i <= B5_X_START + BUILDING_SIZE
+                        && j >= B5_Y_START
+                        && j <= B5_Y_START + BUILDING_SIZE-60) {
+                    grid[i][j] = 3;
+                }
+                // Building #6 area
+                else if(i >= B6_X_START
+                        && i <= B6_X_START + BUILDING_SIZE
+                        && j >= B6_Y_START
+                        && j <= B6_Y_START + BUILDING_SIZE) {
+                    grid[i][j] = 3;
+                }
+                // Building #7 area
+                else if(i >= B7_X_START
+                        && i <= B7_X_START + BUILDING_SIZE
+                        && j >= B7_Y_START
+                        && j <= B7_Y_START + BUILDING_SIZE) {
+                    grid[i][j] = 3;
+                }
+                // Building #8 area
+                else if(i >= B8_X_START
+                        && i <= B8_X_START + BUILDING_SIZE
+                        && j >= B8_Y_START
+                        && j <= B8_Y_START + BUILDING_SIZE-80) {
                     grid[i][j] = 3;
                 }
             }
@@ -193,11 +256,6 @@ public class Panel extends JPanel implements ActionListener {
                     g.setColor(Color.GRAY.darker());
                     g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
                 }
-                // For ad hoc building checks
-//                else if(grid[i][j] == 3) {
-//                    g.setColor(Color.RED.darker());
-//                    g.fillOval(i, j, 1, 1);
-//                }
             }
         }
 
@@ -217,58 +275,43 @@ public class Panel extends JPanel implements ActionListener {
         g2d.drawLine(860, 220, 860, SCREEN_HEIGHT - 240);
         g2d.dispose();
 
-        // Draw building 1
+        // Draw building #1
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
-        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage()
-                .getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH-30, Image.SCALE_DEFAULT));
-        b1.paintIcon(this, g, b1XStart, b1YStart);
+        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
+        b1.paintIcon(this, g, B1_X_START, B1_Y_START);
 
-        // Draw building 2
+        // Draw building #2
         String filePathB2 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building2.png";
-        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_WIDTH-40, BUILDING_WIDTH-40, Image.SCALE_DEFAULT));
-        b2.paintIcon(this, g,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH);
+        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_SIZE-40, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
+        b2.paintIcon(this, g, B2_X_START, B2_Y_START);
 
-        // Draw building 3
+        // Draw building #3
         String filePathB3 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building3.png";
-        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH-40, Image.SCALE_DEFAULT));
-        b3.paintIcon(this, g,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 20,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 - 10);
+        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
+        b3.paintIcon(this, g, B3_X_START, B3_Y_START);
 
-        // Draw building 4
+        // Draw building #4
         String filePathB4 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building4.png";
-        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH+135, Image.SCALE_DEFAULT));
-        b4.paintIcon(this, g,
-                        SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE+130, Image.SCALE_DEFAULT));
+        b4.paintIcon(this, g, B4_X_START, B4_Y_START);
 
-        // Draw building 5 (b1 again)
-        b1.paintIcon(this, g,
-                        SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 - 10);
+        // Draw building #5 (b1 copied to a different location)
+        b1.paintIcon(this, g, B5_X_START, B5_Y_START);
 
-        // Draw building 6
+        // Draw building #6
         String filePathB6 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building6.png";
-        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH, Image.SCALE_DEFAULT));
-        b6.paintIcon(this, g,
-                        SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        b6.paintIcon(this, g, B6_X_START, B6_Y_START);
 
-        // Draw building 7
+        // Draw building #7
         String filePathB7 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building7.png";
-        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH, Image.SCALE_DEFAULT));
-        b7.paintIcon(this, g,
-                SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH + 15);
+        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        b7.paintIcon(this, g, B7_X_START, B7_Y_START);
 
-        // Draw building 8
+        // Draw building #8
         String filePathB8 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building8.png";
-        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH - 70, Image.SCALE_DEFAULT));
-        b8.paintIcon(this, g,
-                SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 + 30);
+        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
+        b8.paintIcon(this, g, B8_X_START, B8_Y_START);
 
         // Initial Pause menu
         if(running == false && money == 0) {
@@ -392,9 +435,9 @@ public class Panel extends JPanel implements ActionListener {
     // Check if the units that comprise the image for the Car and Cop collide
     public static void checkCopCollision() {
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
-           && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
+                && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
             direction = 'e'; // triggers explosion
-            generateNewCopLocation();
+            copXLocation = -100; // hide cop
             running = false;
         }
     }
@@ -616,13 +659,12 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 Aaron AIs
-1) grid Physics - car crashes on building or road, which ends the game
 2) bullet that comes out of car based on dir
 3) bullet that comes from cop randomly
 4) bullet movement goes offscreen unless it hits NPC
 5) Cop "dies" by disappearing and turning into money (random amount)
 6) Player collects money by driving over it for high score
-7) player blows up when dying from contact with a bullet, building, or screen ending
+7) player blows up when dying from contact with a bullet
 8) add environment icon like trees or citizens for a better UI
 9) update readme
  */
