@@ -23,7 +23,7 @@ public class Panel extends JPanel implements ActionListener {
 
     // Constants for game speed
     static final int GAME_SPEED = UNIT_SIZE*10;
-    static final int GAME_SPEED_NITRO = GAME_SPEED / 3;
+    static final int GAME_SPEED_NITRO = GAME_SPEED / 4;
 
     // Helper variables to trigger events
     static boolean running;
@@ -268,8 +268,13 @@ public class Panel extends JPanel implements ActionListener {
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
             String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + ".png";
-            ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-            player.paintIcon(this, g, playerXLocation, playerYLocation);
+            if(direction == 'e') { // make explosions larger
+                ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE*2, PLAYER_UNIT_SIZE*2, Image.SCALE_DEFAULT));
+                player.paintIcon(this, g, playerXLocation - UNIT_SIZE, playerYLocation - UNIT_SIZE);
+            } else {
+                ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                player.paintIcon(this, g, playerXLocation, playerYLocation);
+            }
             // Draw the cop
             String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
             ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
@@ -367,7 +372,9 @@ public class Panel extends JPanel implements ActionListener {
                 && (playerYLocation == copYLocation
                     || playerYLocation == copYLocation+UNIT_SIZE // car is 2 unit sizes
                     || playerYLocation == copYLocation-UNIT_SIZE)) {
+            direction = 'e';
             generateNewCopLocation();
+            running = false;
         }
     }
 
