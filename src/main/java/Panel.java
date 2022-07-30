@@ -12,18 +12,18 @@ import java.util.*;
 public class Panel extends JPanel implements ActionListener {
 
     // Constants for particle sizes
+    static final int SCREEN_WIDTH = 1400;
+    static final int SCREEN_HEIGHT = 900;
     static final int UNIT_SIZE = 25;
     static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
     static final int ROAD_SIZE = UNIT_SIZE*5;
     static final int WATER_SIZE = UNIT_SIZE*2;
     static final int SIDEWALK_SIZE = UNIT_SIZE;
-    static final int BUILDING_SIZE = 160; // player takes up 2 by 2 units (4 total)
-    static final int SCREEN_WIDTH = 1400;
-    static final int SCREEN_HEIGHT = 900;
 
-    // Constants for game speed
-    static final int GAME_SPEED = UNIT_SIZE*10;
-    static final int GAME_SPEED_NITRO = GAME_SPEED / 4;
+    // Constants for building dimensions
+    static final int BUILDING_WIDTH = 160;
+    static final int b1XStart = WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE+20;
+    static final int b1YStart = WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE;
 
     // Helper variables to trigger events
     static boolean running;
@@ -42,7 +42,7 @@ public class Panel extends JPanel implements ActionListener {
     static int playerYLocation;
     static int copXLocation;
     static int copYLocation;
-    static int[][] grid; // tracks all non-player particles
+    static int[][] grid; // tracks all background particles (non-player)
 
     // Menus
     public static JPopupMenu pauseMenu = new JPopupMenu();
@@ -51,15 +51,18 @@ public class Panel extends JPanel implements ActionListener {
 
     // Create game panel (constructor)
     Panel() {
-        // Panel details
+        // Add Panel details
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
 
         // Add Game Timer
         // Note: timer creates a new panel object (this) after every delay time
-        timer = new Timer(GAME_SPEED, this);
+        timer = new Timer(100, this);
         timer.start();
+
+        // Add Particle details
+        fillGrid();
 
         // Map Key Events in the Panel to Action response classes
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -91,7 +94,7 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     public static void startGame() {
-        // Reset player and NPC
+        // Reset player and cop locations
         generateNewPlayerLocation();
         generateNewCopLocation();
 
@@ -99,7 +102,6 @@ public class Panel extends JPanel implements ActionListener {
         running = true;
         pause = false;
         nitro = false;
-        timer.setDelay(GAME_SPEED);
 
         // Hide menus that may be open upon restarting
         pauseMenu.setVisible(false);
@@ -120,20 +122,18 @@ public class Panel extends JPanel implements ActionListener {
             movePlayer();
             checkCopCollision();
             checkWallCollision();
+            checkBuildingCollision();
             checkGameOver();
             repaint();
         }
     }
 
-    @ Override
-    // Runs automatically on Frame rendering to execute drawEverything()
-    public void paint(Graphics g) {
-        super.paint(g);
-
+    public static void fillGrid() {
         /* Fill grid with this particle mapping
            0 = sidewalk
            1 = water
            2 = road
+           3 = building
          */
         grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
         for(int i = 0; i < grid.length; i++) {
@@ -164,8 +164,21 @@ public class Panel extends JPanel implements ActionListener {
                         || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
                     grid[i][j] = 2;
                 }
+                // Building #1 area
+                else if(i >= b1XStart
+                        && i <= b1XStart + BUILDING_WIDTH
+                        && j >= b1YStart
+                        && j <= b1YStart + BUILDING_WIDTH-20) {
+                    grid[i][j] = 3;
+                }
             }
         }
+    }
+
+    @ Override
+    // Runs automatically on Frame rendering to execute drawEverything()
+    public void paint(Graphics g) {
+        super.paint(g);
 
         // Paint panel based on the particle mapping from the grid
         for(int i = 0; i < grid.length; i++) {
@@ -180,6 +193,11 @@ public class Panel extends JPanel implements ActionListener {
                     g.setColor(Color.GRAY.darker());
                     g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
                 }
+                // For ad hoc building checks
+//                else if(grid[i][j] == 3) {
+//                    g.setColor(Color.red.darker());
+//                    g.fillOval(i, j, 1, 1);
+//                }
             }
         }
 
@@ -201,28 +219,27 @@ public class Panel extends JPanel implements ActionListener {
 
         // Draw building 1
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
-        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
-        b1.paintIcon(this, g,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 20,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
+        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage()
+                .getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH-30, Image.SCALE_DEFAULT));
+        b1.paintIcon(this, g, b1XStart, b1YStart);
 
         // Draw building 2
         String filePathB2 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building2.png";
-        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_SIZE-40, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
+        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_WIDTH-40, BUILDING_WIDTH-40, Image.SCALE_DEFAULT));
         b2.paintIcon(this, g,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE);
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH);
 
         // Draw building 3
         String filePathB3 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building3.png";
-        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
+        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH-40, Image.SCALE_DEFAULT));
         b3.paintIcon(this, g,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 20,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 - 10);
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 - 10);
 
         // Draw building 4
         String filePathB4 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building4.png";
-        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE+135, Image.SCALE_DEFAULT));
+        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH+135, Image.SCALE_DEFAULT));
         b4.paintIcon(this, g,
                         SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
@@ -230,28 +247,28 @@ public class Panel extends JPanel implements ActionListener {
         // Draw building 5 (b1 again)
         b1.paintIcon(this, g,
                         SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 35,
-                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 - 10);
+                        WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 - 10);
 
         // Draw building 6
         String filePathB6 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building6.png";
-        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH, Image.SCALE_DEFAULT));
         b6.paintIcon(this, g,
                         SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
                         WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE);
 
         // Draw building 7
         String filePathB7 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building7.png";
-        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
+        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH, Image.SCALE_DEFAULT));
         b7.paintIcon(this, g,
                 SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE + 15);
+                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH + 15);
 
         // Draw building 8
         String filePathB8 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building8.png";
-        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
+        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_WIDTH, BUILDING_WIDTH - 70, Image.SCALE_DEFAULT));
         b8.paintIcon(this, g,
                 SCREEN_WIDTH/2 + WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + 40,
-                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_SIZE*2 + 30);
+                WATER_SIZE + SIDEWALK_SIZE + ROAD_SIZE + UNIT_SIZE + BUILDING_WIDTH*2 + 30);
 
         // Initial Pause menu
         if(running == false && money == 0) {
@@ -273,12 +290,12 @@ public class Panel extends JPanel implements ActionListener {
                 player.paintIcon(this, g, playerXLocation - UNIT_SIZE, playerYLocation - UNIT_SIZE);
             } else {
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerXLocation, playerYLocation);
+                player.paintIcon(this, g, playerXLocation - UNIT_SIZE, playerYLocation - UNIT_SIZE);
             }
             // Draw the cop
             String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
             ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-            cop.paintIcon(this, g, copXLocation, copYLocation);
+            cop.paintIcon(this, g, copXLocation - 20, copYLocation - 20);
             // Display current score (money)
             g.setColor(Color.GREEN.brighter());
             g.setFont(new Font("Serif", Font.PLAIN, 50));
@@ -345,22 +362,28 @@ public class Panel extends JPanel implements ActionListener {
 
     // Method to update the player's coordinates
     public static void movePlayer() {
-        // Change position of the head using the direction variable (which is updated by the keyboard)
+        // Change position of the player using the direction variable
+        int spacesToMove;
+        if(nitro == true) {
+            spacesToMove = UNIT_SIZE*2; // 200% speed
+        } else {
+            spacesToMove = UNIT_SIZE;
+        }
         switch(direction) {
             case 'R':
-                playerXLocation = playerXLocation + UNIT_SIZE;
+                playerXLocation = playerXLocation + spacesToMove;
                 oldDirection = direction;
                 break;
             case 'L':
-                playerXLocation = playerXLocation - UNIT_SIZE;
+                playerXLocation = playerXLocation - spacesToMove;
                 oldDirection = direction;
                 break;
             case 'U':
-                playerYLocation = playerYLocation - UNIT_SIZE; //coordinates are backwards compared to a regular map
+                playerYLocation = playerYLocation - spacesToMove;
                 oldDirection = direction;
                 break;
             case 'D':
-                playerYLocation = playerYLocation + UNIT_SIZE;
+                playerYLocation = playerYLocation + spacesToMove;
                 oldDirection = direction;
                 break;
         }
@@ -368,24 +391,32 @@ public class Panel extends JPanel implements ActionListener {
 
     // Check if the units that comprise the image for the Car and Cop collide
     public static void checkCopCollision() {
-        if(playerXLocation == copXLocation
-                && (playerYLocation == copYLocation
-                    || playerYLocation == copYLocation+UNIT_SIZE // car is 2 unit sizes
-                    || playerYLocation == copYLocation-UNIT_SIZE)) {
-            direction = 'e';
+        if(Math.abs(playerXLocation - copXLocation) <= UNIT_SIZE
+           && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
+            direction = 'e'; // triggers explosion
             generateNewCopLocation();
             running = false;
         }
     }
 
     public static void checkWallCollision() {
-        // check for the head colliding with one of the 4 borders
+        // Check for the player colliding with one of the 4 borders
         if(playerXLocation < PLAYER_UNIT_SIZE
                 || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE*2
                 || playerYLocation < PLAYER_UNIT_SIZE
                 || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE*2) {
+            direction = ' '; // car disappears
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (Out of Bounds)");
+        }
+    }
+
+    public static void checkBuildingCollision() {
+        // Check for the player colliding with one of the buildings
+        if(grid[playerXLocation][playerYLocation] == 3) {
+            running = false;
+            direction = 'e';
+            System.out.println("* GAME OVER (Building Collision)");
         }
     }
 
@@ -420,7 +451,7 @@ public class Panel extends JPanel implements ActionListener {
             highScoreMenu.setBackground(Color.orange);
             highScoreMenu.setBorder(BorderFactory.createLineBorder(Color.white));
             highScoreMenu.setFocusable(false);
-            JLabel highScoreMenuLabel = new JLabel("High Scores:");
+            JLabel highScoreMenuLabel = new JLabel(getHighScoreMessage());
             highScoreMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 30)); // Buffer
             highScoreMenuLabel.setForeground(Color.WHITE);
             highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
@@ -470,19 +501,19 @@ public class Panel extends JPanel implements ActionListener {
         Timestamp ts3 = new Timestamp(highScoreArray[highScoreArray.length - 3][1]);
         // Special message if the player reached a top 3 high score
         String message;
-        System.out.println("* Your final score is " + money);
+        message = "<html> Your final score is " + money + "<br>";
         if (money > score1) {
-            message = "* CONGRATS! You have the all time best score!\n";
+            message += "* CONGRATS! You have the all time best score!\n";
         }
         else if (money > score3) {
-            message = "* CONGRATS! That's a new high score. You are top 3 all time\n";
+            message += "* CONGRATS! That's a new high score. You are top 3 all time\n";
         } else{
-            message = "* Sorry, your score was not good enough for top 3 all time\n";
+            message += "* Sorry, your score was not good enough for top 3 all time\n";
         }
         // Add the top 3 high scores
         message += ("1st place: " + score1 + " on " + ts1 + "\n");
         message += ("2nd place: " + score2 + " on " + ts2 + "\n");
-        message += ("3rd place: " + score3 + " on " + ts3 + "\n");
+        message += ("3rd place: " + score3 + " on " + ts3 + "/<html>");
         return message;
     }
 
@@ -575,10 +606,8 @@ public class Panel extends JPanel implements ActionListener {
             // The r key toggles nitro activation
             if(nitro == false) {
                 nitro = true;
-                timer.setDelay(GAME_SPEED_NITRO);
             } else{
                 nitro = false;
-                timer.setDelay(GAME_SPEED);
             }
         }
     }
@@ -586,7 +615,7 @@ public class Panel extends JPanel implements ActionListener {
 
 
 /*
-AIs
+Aaron AIs
 1) grid Physics - car crashes on building or road, which ends the game
 2) grid Physics - car and cop do not respawn on building
 3) bullet that comes out of car based on dir
@@ -598,3 +627,8 @@ AIs
 9) add environment icon like trees or citizens for a better UI
 10) update readme
  */
+
+// For Ad hoc checks
+//            g.setColor(Color.RED);
+//                    g.fillRect(copXLocation, copYLocation, 20, 20);
+//                    g.fillRect(playerXLocation, playerYLocation, 20, 20);
