@@ -284,18 +284,19 @@ public class Panel extends JPanel implements ActionListener {
         // Image Icons - draw this after the game starts
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
+            // Note: Must draw icon on slightly modified player location to align with the image expansion
             String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + ".png";
             if(direction == 'e') { // make explosions larger
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE*2, PLAYER_UNIT_SIZE*2, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerXLocation - UNIT_SIZE, playerYLocation - UNIT_SIZE);
+                player.paintIcon(this, g, playerXLocation - 20, playerYLocation - 20);
             } else {
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerXLocation - UNIT_SIZE, playerYLocation - UNIT_SIZE);
+                player.paintIcon(this, g, playerXLocation - 20, playerYLocation - 15);
             }
             // Draw the cop
             String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
             ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-            cop.paintIcon(this, g, copXLocation - 20, copYLocation - 20);
+            cop.paintIcon(this, g, copXLocation - 15, copYLocation - 20);
             // Display current score (money)
             g.setColor(Color.GREEN.brighter());
             g.setFont(new Font("Serif", Font.PLAIN, 50));
@@ -365,7 +366,7 @@ public class Panel extends JPanel implements ActionListener {
         // Change position of the player using the direction variable
         int spacesToMove;
         if(nitro == true) {
-            spacesToMove = UNIT_SIZE*2; // 200% speed
+            spacesToMove = UNIT_SIZE*2; // 200% speed while checking for collisions to avoid skips
         } else {
             spacesToMove = UNIT_SIZE;
         }
@@ -391,7 +392,7 @@ public class Panel extends JPanel implements ActionListener {
 
     // Check if the units that comprise the image for the Car and Cop collide
     public static void checkCopCollision() {
-        if(Math.abs(playerXLocation - copXLocation) <= UNIT_SIZE
+        if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
            && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
             direction = 'e'; // triggers explosion
             generateNewCopLocation();
@@ -444,7 +445,7 @@ public class Panel extends JPanel implements ActionListener {
 
             // Create High Score Menu
             highScoreMenu = new JPopupMenu();
-            highScoreMenu.setLocation(450, 450);
+            highScoreMenu.setLocation(460, 450);
             highScoreMenu.setBackground(new Color(255, 105, 97));
             highScoreMenu.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 97), 30));
             highScoreMenu.setFocusable(false);
