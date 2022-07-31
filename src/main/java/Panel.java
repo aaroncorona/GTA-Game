@@ -843,8 +843,7 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 Aaron AIs
-1) Player collects money by driving over it for an increased score
-2) Bullet comes from cop
-3) Player blows up when hit by a bullet
-4) Update readme with video demo
+1) Bullet comes from cop
+2) Player blows up when hit by a bullet
+3) Update readme with video demo
  */
