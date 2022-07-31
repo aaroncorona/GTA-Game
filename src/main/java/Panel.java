@@ -290,7 +290,7 @@ public class Panel extends JPanel implements ActionListener {
             for(int j = 0; j < bulletGrid[i].length; j++) {
                 // Draw bullet effects
                 if(bulletGrid[i][j] == 5) {
-                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S.png";
+                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
                     ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
                     splash.paintIcon(this, g, i, j);
                     bulletGrid[i][j] = 0; //reset
@@ -368,7 +368,11 @@ public class Panel extends JPanel implements ActionListener {
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
             // Note: Must draw icon on slightly modified player location to align with the image expansion
-            String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + ".png";
+            char regularOrNitroImage = 'R';
+            if(nitro == true) {
+                regularOrNitroImage = 'N';
+            }
+            String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + "_" + regularOrNitroImage + ".png";
             if(direction == 'e') { // make explosions larger
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE*2, PLAYER_UNIT_SIZE*2, Image.SCALE_DEFAULT));
                 player.paintIcon(this, g, playerXLocation - 20, playerYLocation - 20);
