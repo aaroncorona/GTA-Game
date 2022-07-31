@@ -20,7 +20,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
 * **Main.java** - The JFrame is instantiated, therefore launching the game
 * **gta_high_scores.csv** - The CSV where high scores are stored
-  * Note: The file naming pattern for player files is object + direction + regular vs nitro (e.g. "car_R_N"). This allows 8 different images depending on the state of the car.
+  * Note: The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
 
 
 ## 🚀 Installation
