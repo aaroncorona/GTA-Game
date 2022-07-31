@@ -140,7 +140,7 @@ public class Panel extends JPanel implements ActionListener {
         // Continually run these functions
         if(running) {
             movePlayer();
-            moveBullets();
+            moveBullet();
             checkPlayerCollision();
             checkGameOver();
             repaint();
@@ -189,7 +189,7 @@ public class Panel extends JPanel implements ActionListener {
                 else if(i >= B1_X_START
                         && i <= B1_X_START + BUILDING_SIZE
                         && j >= B1_Y_START
-                        && j <= B1_Y_START + BUILDING_SIZE-30) {
+                        && j <= B1_Y_START + BUILDING_SIZE-50) {
                     backgroundGrid[i][j] = 3;
                 }
                 // Building #2 area
@@ -285,20 +285,6 @@ public class Panel extends JPanel implements ActionListener {
             }
         }
 
-        // Draw bullet effects (splash or explosion)
-        for(int i = 0; i < bulletGrid.length; i++) {
-            for(int j = 0; j < bulletGrid[i].length; j++) {
-                // Draw bullet effects
-                if(bulletGrid[i][j] == 5) {
-                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
-                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                    splash.paintIcon(this, g, i, j);
-                    bulletGrid[i][j] = 0; //reset
-                }
-            }
-        }
-
-
         // Draw street lines
         Graphics2D g2d = (Graphics2D) g.create();
         Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
@@ -353,6 +339,24 @@ public class Panel extends JPanel implements ActionListener {
         ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
         b8.paintIcon(this, g, B8_X_START, B8_Y_START);
 
+        // Draw bullet effects (splash or explosion)
+        for(int i = 0; i < bulletGrid.length; i++) {
+            for(int j = 0; j < bulletGrid[i].length; j++) {
+                // Draw splash or explosions for bullet interactions
+                if(bulletGrid[i][j] == 5) {
+                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
+                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    splash.paintIcon(this, g, i, j);
+                    bulletGrid[i][j] = 0; // reset
+                } else if(bulletGrid[i][j] == 6){
+                    String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
+                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    explosion.paintIcon(this, g, i-25, j);
+                    bulletGrid[i][j] = 0; // reset
+                }
+            }
+        }
+
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
@@ -364,7 +368,7 @@ public class Panel extends JPanel implements ActionListener {
             g.setFont(new Font("Serif", Font.ITALIC, 50));
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
-        // Image Icons - draw this after the game starts
+        // Player Icons - draw this after the game starts
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
             // Note: Must draw icon on slightly modified player location to align with the image expansion
@@ -481,14 +485,19 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     // Method to move the bullets to the next position based on its direction
-    public static void moveBullets() {
+    public static void moveBullet() {
         // Move right and down (traverse grid ascending)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
-                // Bullet stops when hitting water and becomes a splash bullet particle
+                // Bullet stops when hitting water and becomes a splash
                 if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
+                }
+                // Bullet stops when hitting a building and becomes an explosion
+                else if(bulletGrid[i][j] >= 1
+                        && backgroundGrid[i][j] == 3) {
+                    bulletGrid[i][j] =65;
                 }
                 // Otherwise, move bullet right or down continually
                 else if(bulletGrid[i][j] == 1) {
@@ -504,11 +513,15 @@ public class Panel extends JPanel implements ActionListener {
         // Move left and up (traverse grid descending)
         for(int i = bulletGrid.length-1; i > 0; i--) {
             for(int j = bulletGrid[i].length-1; j > 0; j--) {
-                // Bullet stops when hitting water and becomes a splash bullet particle
-                // Bullet stops when hitting water and becomes a splash bullet particle
+                // Bullet stops when hitting water and becomes a splash
                 if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
+                }
+                // Bullet stops when hitting a building and becomes an explosion
+                else if(bulletGrid[i][j] >= 1
+                        && backgroundGrid[i][j] == 3) {
+                    bulletGrid[i][j] = 6;
                 }
                 // Otherwise, move bullet left or up continually
                 else if(bulletGrid[i][j] == 2) {
