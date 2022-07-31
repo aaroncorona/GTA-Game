@@ -778,12 +778,8 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 Aaron AIs
-2) bullet that comes out of car based on dir
-3) bullet that comes from cop randomly
-4) bullet movement goes offscreen unless it hits NPC
-5) Cop "dies" by disappearing and turning into money (random amount)
-6) Player collects money by driving over it for high score
-7) player blows up when dying from contact with a bullet
-8) add environment icon like trees or citizens for a better UI
-9) update readme
+1) bullet  comes from cop
+2) player blows up when hit by a bullet
+3) Cop "dies" from bullet by disappearing and turning into money (random amount)
+4) Player collects money by driving over it for high score
  */
