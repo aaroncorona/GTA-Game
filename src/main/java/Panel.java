@@ -75,8 +75,8 @@ public class Panel extends JPanel implements ActionListener {
         timer = new Timer(100, this);
         timer.start();
 
-        // Add Particle details
-        fillGrid();
+        // Initial background
+        fillStartingGrid();
 
         // Map Key Events in the Panel to Action response classes
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -100,14 +100,18 @@ public class Panel extends JPanel implements ActionListener {
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false),"spaceAction");
         this.getActionMap().put("spaceAction", new SpaceAction());
-//        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-//                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
-//        this.getActionMap().put("eAction", new eAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false),"rAction");
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
+        this.getActionMap().put("eAction", new eAction());
+        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false),"rAction");
         this.getActionMap().put("rAction", new rAction());
     }
 
     public static void startGame() {
+        // Reset to default particles
+        fillStartingGrid();
+
         // Reset player and cop locations
         generateNewPlayerLocation();
         generateNewCopLocation();
@@ -134,20 +138,22 @@ public class Panel extends JPanel implements ActionListener {
         // Continually run these functions
         if(running) {
             movePlayer();
+            moveBullets();
             checkCopCollision();
-            checkWallCollision();
+            checkWaterCollision();
             checkBuildingCollision();
             checkGameOver();
             repaint();
         }
     }
 
-    public static void fillGrid() {
+    public static void fillStartingGrid() {
         /* Fill grid with this particle mapping
-           0 = sidewalk
+           0 = sidewalk / empty
            1 = water
            2 = road
            3 = building
+           4 = bullet
          */
         grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
         for(int i = 0; i < grid.length; i++) {
@@ -234,6 +240,9 @@ public class Panel extends JPanel implements ActionListener {
                         && j <= B8_Y_START + BUILDING_SIZE-80) {
                     grid[i][j] = 3;
                 }
+                else{
+                    grid[i][j] = 0;
+                }
             }
         }
     }
@@ -243,7 +252,7 @@ public class Panel extends JPanel implements ActionListener {
     public void paint(Graphics g) {
         super.paint(g);
 
-        // Paint panel based on the particle mapping from the grid
+        // Paint grid
         for(int i = 0; i < grid.length; i++) {
             for(int j = 0; j < grid[i].length; j++) {
                 // Draw Water
@@ -255,6 +264,11 @@ public class Panel extends JPanel implements ActionListener {
                 else if(grid[i][j] == 2) {
                     g.setColor(Color.GRAY.darker());
                     g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
+                }
+                // Draw bullets
+                if(grid[i][j] == 4) {
+                    g.setColor(Color.BLACK);
+                    g.fillOval(i, j, 10, 10);
                 }
             }
         }
@@ -432,23 +446,27 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
+    public static void moveBullets() {
+
+    }
+
     // Check if the units that comprise the image for the Car and Cop collide
     public static void checkCopCollision() {
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
-            direction = 'e'; // triggers explosion
+            direction = 'e'; // triggers explosion image
             copXLocation = -100; // hide cop
             running = false;
         }
     }
 
-    public static void checkWallCollision() {
+    public static void checkWaterCollision() {
         // Check for the player colliding with one of the 4 borders
         if(playerXLocation < PLAYER_UNIT_SIZE
                 || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE*2
                 || playerYLocation < PLAYER_UNIT_SIZE
                 || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE*2) {
-            direction = ' '; // car disappears
+            direction = 'w'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (Drowned)");
         }
@@ -457,8 +475,8 @@ public class Panel extends JPanel implements ActionListener {
     public static void checkBuildingCollision() {
         // Check for the player colliding with one of the buildings
         if(grid[playerXLocation][playerYLocation] == 3) {
-            running = false;
             direction = 'e';
+            running = false;
             System.out.println("* GAME OVER (Building Collision)");
         }
     }
@@ -652,6 +670,14 @@ public class Panel extends JPanel implements ActionListener {
             } else{
                 nitro = false;
             }
+        }
+    }
+
+    public static class eAction extends AbstractAction {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            grid[playerXLocation][playerYLocation] = 4;
+            System.out.println("bullet added");
         }
     }
 }
