@@ -58,6 +58,7 @@ public class Panel extends JPanel implements ActionListener {
     static int copYLocation;
     static int[][] backgroundGrid;
     static int[][] bulletGrid;
+    static int[][] moneyGrid;
 
     // Menus
     public static JPopupMenu pauseMenu = new JPopupMenu();
@@ -263,6 +264,17 @@ public class Panel extends JPanel implements ActionListener {
                 bulletGrid[i][j] = 0;
             }
         }
+       /*
+        Money grid particle mapping:
+        0 = empty
+        1 = money exists
+        */
+        moneyGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < moneyGrid.length; i++) {
+            for(int j = 0; j < moneyGrid[i].length; j++) {
+                moneyGrid[i][j] = 0;
+            }
+        }
     }
 
     @ Override
@@ -356,7 +368,8 @@ public class Panel extends JPanel implements ActionListener {
                     explosion.paintIcon(this, g, i-25, j);
                     if(bulletGrid[i][j] == 7) {
                         generateNewCopLocation();
-                        bulletGrid[i][j] = 8; // 7 results in money, 6 does not
+                        moneyGrid[i][j] = 1; // 7 results in money, 6 does not
+                        bulletGrid[i][j] = 0;
                     } else {
                         bulletGrid[i][j] = 0;
                     }
@@ -365,10 +378,15 @@ public class Panel extends JPanel implements ActionListener {
         }
 
         // Draw Money
-//                } else if(bulletGrid[i][j] == 8){
-//                    String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
-//                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-//                    money.paintIcon(this, g, i-25, j);
+        for(int i = 0; i < moneyGrid.length; i++) {
+            for(int j = 0; j < moneyGrid[i].length; j++) {
+                if(moneyGrid[i][j] == 1) {
+                    String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
+                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    money.paintIcon(this, g, i, j);
+                }
+            }
+        }
 
         // Initial Pause menu
         if(running == false && money == 0) {
@@ -804,8 +822,8 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 Aaron AIs
-1) Cop "dies" from bullet by disappearing and turning into money (random amount)
-2) Player collects money by driving over it for high score
-3) bullet comes from cop
-4) player blows up when hit by a bullet
+1) Player collects money by driving over it for an increased score
+2) Bullet comes from cop
+3) Player blows up when hit by a bullet
+4) Create video demo
  */
