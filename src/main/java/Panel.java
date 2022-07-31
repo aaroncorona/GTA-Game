@@ -56,7 +56,8 @@ public class Panel extends JPanel implements ActionListener {
     static int playerYLocation;
     static int copXLocation;
     static int copYLocation;
-    static int[][] grid; // tracks all background particles (non-player)
+    static int[][] backgroundGrid;
+    static int[][] bulletGrid;
 
     // Menus
     public static JPopupMenu pauseMenu = new JPopupMenu();
@@ -75,8 +76,8 @@ public class Panel extends JPanel implements ActionListener {
         timer = new Timer(100, this);
         timer.start();
 
-        // Initial background
-        fillStartingGrid();
+        // Initialize background
+        fillStartingGrids();
 
         // Map Key Events in the Panel to Action response classes
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
@@ -108,9 +109,10 @@ public class Panel extends JPanel implements ActionListener {
         this.getActionMap().put("rAction", new rAction());
     }
 
+    // Method to reset all game settings and start the game loop
     public static void startGame() {
-        // Reset to default particles
-        fillStartingGrid();
+        // Reset to default background
+        fillStartingGrids();
 
         // Reset player and cop locations
         generateNewPlayerLocation();
@@ -139,139 +141,163 @@ public class Panel extends JPanel implements ActionListener {
         if(running) {
             movePlayer();
             moveBullets();
-            checkCopCollision();
-            checkWaterCollision();
-            checkBuildingCollision();
+            checkPlayerCollision();
             checkGameOver();
             repaint();
         }
     }
 
-    public static void fillStartingGrid() {
-        /* Fill grid with this particle mapping
-           0 = sidewalk / empty
+    // Method to establish all the default background particles (sidewalk, water, road, and building)
+    public static void fillStartingGrids() {
+        /*
+        Background Grid particle mapping:
+           0 = empty / sidewalk
            1 = water
            2 = road
            3 = building
-           4 = bullet
          */
-        grid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < grid.length; i++) {
-            for(int j = 0; j < grid[i].length; j++) {
+        backgroundGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < backgroundGrid.length; i++) {
+            for(int j = 0; j < backgroundGrid[i].length; j++) {
                 // Water on screen edges (for island effect)
                 if(i == 0
                         || i == SCREEN_WIDTH - WATER_SIZE
                         || j == 0
                         || j == SCREEN_HEIGHT - WATER_SIZE) {
-                    grid[i][j] = 1;
+                    backgroundGrid[i][j] = 1;
                 }
                 // Sidewalk around the water edges
                 else if(i < WATER_SIZE + SIDEWALK_SIZE
                         || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
                         || j < WATER_SIZE + SIDEWALK_SIZE
                         || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
-                    grid[i][j] = 0;
+                    backgroundGrid[i][j] = 0;
                 }
                 // Roads (vertical)
                 else if(i == WATER_SIZE + SIDEWALK_SIZE // far left road
                         || i == SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 2nd road
                         || i == SCREEN_WIDTH/4 + SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 3rd road
                         || i == SCREEN_WIDTH - WATER_SIZE*4 - SIDEWALK_SIZE) { // far right road
-                    grid[i][j] = 2;
+                    backgroundGrid[i][j] = 2;
                 }
                 // Roads (horizontal)
                 else if(j == WATER_SIZE + SIDEWALK_SIZE // top road
                         || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
-                    grid[i][j] = 2;
+                    backgroundGrid[i][j] = 2;
                 }
                 // Building #1 area
                 else if(i >= B1_X_START
                         && i <= B1_X_START + BUILDING_SIZE
                         && j >= B1_Y_START
                         && j <= B1_Y_START + BUILDING_SIZE-30) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #2 area
                 else if(i >= B2_X_START
                         && i <= B2_X_START + BUILDING_SIZE - 40
                         && j >= B2_Y_START
                         && j <= B2_Y_START + BUILDING_SIZE - 40) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #3 area
                 else if(i >= B3_X_START
                         && i <= B3_X_START + BUILDING_SIZE
                         && j >= B3_Y_START
                         && j <= B3_Y_START + BUILDING_SIZE - 40) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #4 area
                 else if(i >= B4_X_START
                         && i <= B4_X_START + BUILDING_SIZE
                         && j >= B4_Y_START
                         && j <= B4_Y_START + BUILDING_SIZE + 130) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #5 area
                 else if(i >= B5_X_START
                         && i <= B5_X_START + BUILDING_SIZE
                         && j >= B5_Y_START
                         && j <= B5_Y_START + BUILDING_SIZE-60) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #6 area
                 else if(i >= B6_X_START
                         && i <= B6_X_START + BUILDING_SIZE
                         && j >= B6_Y_START
                         && j <= B6_Y_START + BUILDING_SIZE) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #7 area
                 else if(i >= B7_X_START
                         && i <= B7_X_START + BUILDING_SIZE
                         && j >= B7_Y_START
                         && j <= B7_Y_START + BUILDING_SIZE) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 // Building #8 area
                 else if(i >= B8_X_START
                         && i <= B8_X_START + BUILDING_SIZE
                         && j >= B8_Y_START
                         && j <= B8_Y_START + BUILDING_SIZE-80) {
-                    grid[i][j] = 3;
+                    backgroundGrid[i][j] = 3;
                 }
                 else{
-                    grid[i][j] = 0;
+                    backgroundGrid[i][j] = 0;
                 }
+            }
+        }
+        /*
+        Bullet grid particle mapping:
+        0 = empty
+        1 = bullet right moving
+        2 = bullet left moving
+        3 = bullet up moving
+        4 = bullet down moving
+        5 = bullet splashed
+        6 = bullet exploded
+         */
+        bulletGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < bulletGrid.length; i++) {
+            for(int j = 0; j < bulletGrid[i].length; j++) {
+                bulletGrid[i][j] = 0;
             }
         }
     }
 
     @ Override
-    // Runs automatically on Frame rendering to execute drawEverything()
+    // Runs automatically on Frame to render all graphics
     public void paint(Graphics g) {
         super.paint(g);
 
-        // Paint grid
-        for(int i = 0; i < grid.length; i++) {
-            for(int j = 0; j < grid[i].length; j++) {
+        // Paint water and roads
+        for(int i = 0; i < backgroundGrid.length; i++) {
+            for(int j = 0; j < backgroundGrid[i].length; j++) {
                 // Draw Water
-                if(grid[i][j] == 1) {
+                if(backgroundGrid[i][j] == 1) {
                     g.setColor(Color.BLUE.darker());
                     g.fillRect(i, j, WATER_SIZE, WATER_SIZE);
                 }
                 // Draw Roads
-                else if(grid[i][j] == 2) {
+                else if(backgroundGrid[i][j] == 2) {
                     g.setColor(Color.GRAY.darker());
                     g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
                 }
-                // Draw bullets
-                if(grid[i][j] == 4) {
-                    g.setColor(Color.BLACK);
-                    g.fillOval(i, j, 10, 10);
+            }
+        }
+
+        // Draw bullet effects (splash or explosion)
+        for(int i = 0; i < bulletGrid.length; i++) {
+            for(int j = 0; j < bulletGrid[i].length; j++) {
+                // Draw bullet effects
+                if(bulletGrid[i][j] == 5) {
+                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S.png";
+                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    splash.paintIcon(this, g, i, j);
+                    bulletGrid[i][j] = 0; //reset
                 }
             }
         }
+
 
         // Draw street lines
         Graphics2D g2d = (Graphics2D) g.create();
@@ -376,6 +402,7 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
+    // Method to stop the game loop and bring up the pause menu
     public static void pauseGame() {
         pause = true;
         running = false;
@@ -395,12 +422,14 @@ public class Panel extends JPanel implements ActionListener {
         pauseMenu.setVisible(true);
     }
 
+    // Method to run the game again and hide the pause menu
     public static void resumeGame() {
         pause = false;
         running = true;
         pauseMenu.setVisible(false);
     }
 
+    // Method to respawn the player at its default location
     public static void generateNewPlayerLocation() {
         playerXLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE; // spawn on the first road
         playerYLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE;
@@ -408,11 +437,12 @@ public class Panel extends JPanel implements ActionListener {
         oldDirection = 'R';
     }
 
+    // Method to respawn the cop player on a road tile
     public static void generateNewCopLocation() { // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
         copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
         // Only spawn on the road
-        if(grid[copXLocation][copYLocation] != 2) {
+        if(backgroundGrid[copXLocation][copYLocation] != 2) {
             generateNewCopLocation();
         }
     }
@@ -446,48 +476,96 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
+    // Method to move the bullets to the next position based on its direction
     public static void moveBullets() {
-
+        // Move right and down (traverse grid ascending)
+        for(int i = 0; i < bulletGrid.length; i++) {
+            for(int j = 0; j < bulletGrid[i].length; j++) {
+                // Bullet stops when hitting water and becomes a splash bullet particle
+                if(bulletGrid[i][j] >= 1
+                        && backgroundGrid[i][j] == 1) {
+                    bulletGrid[i][j] = 5;
+                }
+                // Otherwise, move bullet right or down continually
+                else if(bulletGrid[i][j] == 1) {
+                    bulletGrid[i][j] = 0;
+                    bulletGrid[i+1][j] = 1;
+                }
+                else if(bulletGrid[i][j] == 4) {
+                    bulletGrid[i][j] = 0;
+                    bulletGrid[i][j+1] = 4;
+                }
+            }
+        }
+        // Move left and up (traverse grid descending)
+        for(int i = bulletGrid.length-1; i > 0; i--) {
+            for(int j = bulletGrid[i].length-1; j > 0; j--) {
+                // Bullet stops when hitting water and becomes a splash bullet particle
+                // Bullet stops when hitting water and becomes a splash bullet particle
+                if(bulletGrid[i][j] >= 1
+                        && backgroundGrid[i][j] == 1) {
+                    bulletGrid[i][j] = 5;
+                }
+                // Otherwise, move bullet left or up continually
+                else if(bulletGrid[i][j] == 2) {
+                    bulletGrid[i][j] = 0;
+                    bulletGrid[i-1][j] = 2;
+                }
+                else if(bulletGrid[i][j] == 3) {
+                    bulletGrid[i][j] = 0;
+                    bulletGrid[i][j-1] = 3;
+                }
+            }
+        }
     }
 
-    // Check if the units that comprise the image for the Car and Cop collide
-    public static void checkCopCollision() {
+    // Check if the player hits a cop, building, or water
+    public static void checkPlayerCollision() {
+        // Check for player to cop collision
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
-            direction = 'e'; // triggers explosion image
+            direction = 'E'; // triggers explosion image
             copXLocation = -100; // hide cop
             running = false;
         }
-    }
-
-    public static void checkWaterCollision() {
-        // Check for the player colliding with one of the 4 borders
+        // Check for player to water collision
         if(playerXLocation < PLAYER_UNIT_SIZE
-                || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE*2
+                || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE
                 || playerYLocation < PLAYER_UNIT_SIZE
-                || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE*2) {
-            direction = 'w'; // triggers splash image
+                || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
+            direction = 'S'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (Drowned)");
         }
-    }
-
-    public static void checkBuildingCollision() {
-        // Check for the player colliding with one of the buildings
-        if(grid[playerXLocation][playerYLocation] == 3) {
-            direction = 'e';
+        // Check for player to building collision
+        if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
+            direction = 'E';
             running = false;
             System.out.println("* GAME OVER (Building Collision)");
         }
     }
 
+    // Method to check if the game stopped running and therefore log the score and display the game over menus
     public static void checkGameOver() {
         // When the game ends, log the final score if the game ends with a minimum score achieved
         if(running == false && pause == false) {
 
             // Log final score in the CSV file if it's past a certain minimum
             if (money >= 20) {
-                logFinalScore(money);
+                try {
+                    // Create or append file
+                    FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
+                    PrintWriter write = new PrintWriter(fw);
+                    // Print the score to the csv file and the time on the column next to it
+                    write.println(); // Skip to new row
+                    write.print(money);
+                    write.print(","); // comma separate to print to the next column
+                    write.print(System.currentTimeMillis());
+                    // Close and finish the job
+                    write.close();
+                } catch(IOException e) {
+                    System.out.print(e);
+                }
             }
 
             // Create Game Over Menu
@@ -519,6 +597,7 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
+    // Method to extract the min & seconds passed for the current game
     public static String getTimePassed() {
         long now = System.currentTimeMillis();
         int elapsedTime = (int) (now - startTime); // Convert timestamp difference to seconds
@@ -527,7 +606,7 @@ public class Panel extends JPanel implements ActionListener {
         return elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
     }
 
-    // Read high score file
+    // Method to read the high score file and return the high score results
     public static String getHighScoreMessage() {
         // Create Array to hold the scores
         // TODO -- Use TreeMap instead for connecting unique scores to a timestamp or name.
@@ -576,24 +655,6 @@ public class Panel extends JPanel implements ActionListener {
         message += ("<u>2nd place</u>: <b>" + score2 + "</b> on " + date2Short + "<br>");
         message += ("<u>3rd place</u>: <b>" + score3 + "</b> on " + date3Short + "</html>");
         return message;
-    }
-
-    // Append final score to text file
-    public static void logFinalScore(int finalScore) {
-        try {
-            // Create or append file
-            FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
-            PrintWriter write = new PrintWriter(fw);
-            // Print the score to the csv file and the time on the column next to it
-            write.println(); // Skip to new row
-            write.print(finalScore);
-            write.print(","); // comma separate to print to the next column
-            write.print(System.currentTimeMillis());
-            // Close and finish the job
-            write.close();
-        } catch(IOException e) {
-            System.out.print(e);
-        }
     }
 
     // Define actions to be performed (these map to key strokes)
@@ -676,8 +737,23 @@ public class Panel extends JPanel implements ActionListener {
     public static class eAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            grid[playerXLocation][playerYLocation] = 4;
-            System.out.println("bullet added");
+            // Set bullet direction based on car direction
+            int bulletType = 0;
+            switch(direction) {
+                case 'R':
+                    bulletType = 1;
+                    break;
+                case 'L':
+                    bulletType = 2;
+                    break;
+                case 'U':
+                    bulletType = 3;
+                    break;
+                case 'D':
+                    bulletType = 4;
+                    break;
+            }
+            bulletGrid[playerXLocation][playerYLocation] = bulletType;
         }
     }
 }
