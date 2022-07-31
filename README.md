@@ -19,7 +19,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 * **Panel.java** - Panel logic and the game logic live here
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
 * **Main.java** - The JFrame is instantiated, therefore launching the game
-* Assets/Images - Folder for PNG files used by Java ImageIcons that produce the graphics.
+* Assets/Images - Folder for PNG files used by the Java ImageIcon class to produce graphics.
   * Note: The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
 * **gta_high_scores.csv** - The CSV where high scores are stored 
 
