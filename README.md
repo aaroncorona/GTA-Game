@@ -9,17 +9,20 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 
 
 ## 🕹️ Game Features
-1. **City Driving**: Simulates driving on a road with surrounding buildings
-2. **Nitro**: Click R to get a nitro boost, which increases the car's speed by 300%
-3. **Wanted**: Defeat cops to earn money. Crashing your car ends the game.
+1. **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
+2. **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
+3. **Gun Fight**: Win a shootout with a cop to earn money and increase your score. Crashing your car ends the game.
 4. **High Scores**: Save and display high scores to see where you rank all time
 
 
-## 🗂️ File Descriptions
+## 🗂️ Source File Descriptions
 * **Panel.java** - Panel logic and the game logic live here
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
 * **Main.java** - The JFrame is instantiated, therefore launching the game
-* **gta_high_scores.csv** - The CSV where high scores are stored
+* **Assets/Images** - Folder for PNG files used by the Java ImageIcon class to produce graphics.
+  * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
+  * The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
+* **Assets/gta_high_scores.csv** - A local CSV where high scores are stored and read by the program
 
 
 ## 🚀 Installation
@@ -31,4 +34,3 @@ $ javac Main.java
 $ java Main
 ```
 4. *(Optional)* Erase the high scores to track your own personal best.
-
