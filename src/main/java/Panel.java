@@ -532,8 +532,8 @@ public class Panel extends JPanel implements ActionListener {
                 }
                 // Cop check: Bullet becomes an explosion and then money
                 else if(bulletGrid[i][j] >= 1
-                        && i == copXLocation
-                        && j == copYLocation) {
+                        && Math.abs(i - copXLocation) <= UNIT_SIZE
+                        && Math.abs(j - copYLocation) <= UNIT_SIZE) {
                     bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet right or down continually
@@ -579,17 +579,17 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 
-    // Check if the player hits a cop, building, or water
+    // Check if the player hits any particle that causes a reaction (not road or sidewalk)
     public static void checkPlayerCollision() {
-        // Check for player to cop collision
+        // Cop: Check for player to cop collision, which ends the game
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
             direction = 'E'; // triggers explosion image
             copXLocation = -100; // hide cop
             running = false;
         }
-        // Check for player to water collision
-        if(playerXLocation < PLAYER_UNIT_SIZE
+        // Water: Check for player to water collision, which ends the game
+        else if(playerXLocation < PLAYER_UNIT_SIZE
                 || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE
                 || playerYLocation < PLAYER_UNIT_SIZE
                 || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
@@ -597,12 +597,33 @@ public class Panel extends JPanel implements ActionListener {
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (Drowned)");
         }
-        // Check for player to building collision
-        if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
+        // Building: Check for player to building collision, which ends the game
+        else if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
             direction = 'E';
             running = false;
             System.out.println("* GAME OVER (Crashed into Building)");
         }
+        // Money: Check for player driving over money, which increases the score between 10-20
+        else if(moneyGrid[playerXLocation][playerYLocation] == 1) {
+            Random rand = new Random();
+            int low = 10;
+            int high = 20;
+            int result = rand.nextInt(high-low) + low;
+            money = money + result;
+            moneyGrid[playerXLocation][playerYLocation] = 0;
+        }
+        // Money: Check again on a nearby tile
+        else if(moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] == 1) {
+            Random rand = new Random();
+            int low = 10;
+            int high = 20;
+            int result = rand.nextInt(high-low) + low;
+            money = money + result;
+            moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] = 0;
+        }
+//        System.out.println("Player: " + playerXLocation + " " + playerYLocation);
+//        System.out.println("test input: " + (playerXLocation-UNIT_SIZE) + " " + playerYLocation);
+//        System.out.println(moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation]);
     }
 
     // Method to check if the game stopped running and therefore log the score and display the game over menus
@@ -825,5 +846,5 @@ Aaron AIs
 1) Player collects money by driving over it for an increased score
 2) Bullet comes from cop
 3) Player blows up when hit by a bullet
-4) Create video demo
+4) Update readme with video demo
  */
