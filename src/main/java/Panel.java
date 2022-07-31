@@ -253,8 +253,9 @@ public class Panel extends JPanel implements ActionListener {
         2 = bullet left moving
         3 = bullet up moving
         4 = bullet down moving
-        5 = bullet splashed
-        6 = bullet exploded
+        5 = bullet splash
+        6 = bullet explosion
+        7 = bullet explosion that produces money
          */
         bulletGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
         for(int i = 0; i < bulletGrid.length; i++) {
@@ -342,20 +343,32 @@ public class Panel extends JPanel implements ActionListener {
         // Draw bullet effects (splash or explosion)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
-                // Draw splash or explosions for bullet interactions
+                // Draw splash
                 if(bulletGrid[i][j] == 5) {
                     String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
                     ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
                     splash.paintIcon(this, g, i, j);
                     bulletGrid[i][j] = 0; // reset
-                } else if(bulletGrid[i][j] == 6){
+                // Draw Explosion
+                } else if(bulletGrid[i][j] == 6 || bulletGrid[i][j] == 7){
                     String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
                     ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
                     explosion.paintIcon(this, g, i-25, j);
-                    bulletGrid[i][j] = 0; // reset
+                    if(bulletGrid[i][j] == 7) {
+                        generateNewCopLocation();
+                        bulletGrid[i][j] = 8; // 7 results in money, 6 does not
+                    } else {
+                        bulletGrid[i][j] = 0;
+                    }
                 }
             }
         }
+
+        // Draw Money
+//                } else if(bulletGrid[i][j] == 8){
+//                    String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
+//                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+//                    money.paintIcon(this, g, i-25, j);
 
         // Initial Pause menu
         if(running == false && money == 0) {
@@ -486,18 +499,24 @@ public class Panel extends JPanel implements ActionListener {
 
     // Method to move the bullets to the next position based on its direction
     public static void moveBullet() {
-        // Move right and down (traverse grid ascending)
+        // Move bullet right and down (traverse grid ascending)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
-                // Bullet stops when hitting water and becomes a splash
+                // Water check: Bullet becomes a splash
                 if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
                 }
-                // Bullet stops when hitting a building and becomes an explosion
+                // Building check: Bullet becomes an explosion
                 else if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 3) {
-                    bulletGrid[i][j] =65;
+                    bulletGrid[i][j] = 6;
+                }
+                // Cop check: Bullet becomes an explosion and then money
+                else if(bulletGrid[i][j] >= 1
+                        && i == copXLocation
+                        && j == copYLocation) {
+                    bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet right or down continually
                 else if(bulletGrid[i][j] == 1) {
@@ -510,18 +529,24 @@ public class Panel extends JPanel implements ActionListener {
                 }
             }
         }
-        // Move left and up (traverse grid descending)
+        // Move bullet left and up (traverse grid descending)
         for(int i = bulletGrid.length-1; i > 0; i--) {
             for(int j = bulletGrid[i].length-1; j > 0; j--) {
-                // Bullet stops when hitting water and becomes a splash
+                // Water check: Bullet becomes a splash
                 if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
                 }
-                // Bullet stops when hitting a building and becomes an explosion
+                // Building check: Bullet becomes an explosion
                 else if(bulletGrid[i][j] >= 1
                         && backgroundGrid[i][j] == 3) {
                     bulletGrid[i][j] = 6;
+                }
+                // Cop check: Bullet becomes an explosion and then money
+                else if(bulletGrid[i][j] >= 1
+                        && i == copXLocation
+                        && j == copYLocation) {
+                    bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet left or up continually
                 else if(bulletGrid[i][j] == 2) {
@@ -558,7 +583,7 @@ public class Panel extends JPanel implements ActionListener {
         if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
             direction = 'E';
             running = false;
-            System.out.println("* GAME OVER (Building Collision)");
+            System.out.println("* GAME OVER (Crashed into Building)");
         }
     }
 
@@ -770,6 +795,7 @@ public class Panel extends JPanel implements ActionListener {
                     bulletType = 4;
                     break;
             }
+            // Shoot bullet
             bulletGrid[playerXLocation][playerYLocation] = bulletType;
         }
     }
@@ -778,8 +804,8 @@ public class Panel extends JPanel implements ActionListener {
 
 /*
 Aaron AIs
-1) bullet  comes from cop
-2) player blows up when hit by a bullet
-3) Cop "dies" from bullet by disappearing and turning into money (random amount)
-4) Player collects money by driving over it for high score
+1) Cop "dies" from bullet by disappearing and turning into money (random amount)
+2) Player collects money by driving over it for high score
+3) bullet comes from cop
+4) player blows up when hit by a bullet
  */
