@@ -79,10 +79,11 @@ public class Panel extends JPanel implements ActionListener {
 
         // Initialize background
         fillStartingGrids();
+        generateNewCopLocation();
 
         // Map Key Events in the Panel to Action response classes
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction"); // KeyEvent responds to a right key, lower case, and false for it being pressed rather than released
+                .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction");
         this.getActionMap().put("rightAction", new RightAction());
         this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false),"leftAction");
@@ -361,18 +362,20 @@ public class Panel extends JPanel implements ActionListener {
                     ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
                     splash.paintIcon(this, g, i, j);
                     bulletGrid[i][j] = 0; // reset
-                // Draw Explosion
+                    generateNewCopBullet(); // cop waits to shoot again until impact
+                    // Draw Explosion
                 } else if(bulletGrid[i][j] == 6 || bulletGrid[i][j] == 7){
                     String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
                     ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
                     explosion.paintIcon(this, g, i-25, j);
                     if(bulletGrid[i][j] == 7) {
-                        generateNewCopLocation();
                         moneyGrid[i][j] = 1; // 7 results in money, 6 does not
                         bulletGrid[i][j] = 0;
+                        generateNewCopLocation();
                     } else {
                         bulletGrid[i][j] = 0;
                     }
+                    generateNewCopBullet(); // cop waits to shoot again until impact
                 }
             }
         }
@@ -477,12 +480,28 @@ public class Panel extends JPanel implements ActionListener {
     }
 
     // Method to respawn the cop player on a road tile
-    public static void generateNewCopLocation() { // populates new coordinates (int variable values) for a cop, which is then created with draw (graphics object)
-        copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
-        copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE; //get random coordinate within the boundary of the unit fully fitting (use division), while also being an exact coordinate (i.e. divisable by the unit size, so use multiplication)
+    public static void generateNewCopLocation() {
+        copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
+        copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE;
         // Only spawn on the road
         if(backgroundGrid[copXLocation][copYLocation] != 2) {
             generateNewCopLocation();
+        }
+        // Generate next cop bullet to restart cycle of shots
+        generateNewCopBullet();
+    }
+
+    // Method to create another bullet traveling west or north from the cop
+    public static void generateNewCopBullet() {
+        Random rand = new Random();
+        int bulletType = rand.nextInt(2) + 2;
+        switch (bulletType) {
+            case 2:
+                bulletGrid[copXLocation - UNIT_SIZE*2][copYLocation] = 2; // avoid shooting oneself
+                break;
+            case 3:
+                bulletGrid[copXLocation][copYLocation - UNIT_SIZE*2] = 3;
+                break;
         }
     }
 
@@ -585,7 +604,7 @@ public class Panel extends JPanel implements ActionListener {
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
             direction = 'E'; // triggers explosion image
-            copXLocation = -100; // hide cop
+            generateNewCopLocation();
             running = false;
         }
         // Water: Check for player to water collision, which ends the game
@@ -606,24 +625,17 @@ public class Panel extends JPanel implements ActionListener {
         // Money: Check for player driving over money, which increases the score between 10-20
         else if(moneyGrid[playerXLocation][playerYLocation] == 1) {
             Random rand = new Random();
-            int low = 10;
-            int high = 20;
-            int result = rand.nextInt(high-low) + low;
+            int result = rand.nextInt(20-10) + 10;
             money = money + result;
             moneyGrid[playerXLocation][playerYLocation] = 0;
         }
         // Money: Check again on a nearby tile
         else if(moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] == 1) {
             Random rand = new Random();
-            int low = 10;
-            int high = 20;
-            int result = rand.nextInt(high-low) + low;
+            int result = rand.nextInt(20-10) + 10;
             money = money + result;
             moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] = 0;
         }
-//        System.out.println("Player: " + playerXLocation + " " + playerYLocation);
-//        System.out.println("test input: " + (playerXLocation-UNIT_SIZE) + " " + playerYLocation);
-//        System.out.println(moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation]);
     }
 
     // Method to check if the game stopped running and therefore log the score and display the game over menus
