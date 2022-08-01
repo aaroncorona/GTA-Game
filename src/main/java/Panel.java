@@ -141,9 +141,8 @@ public class Panel extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         // Continually run these functions
         if(running) {
-            movePlayer();
             moveBullet();
-            checkPlayerCollision();
+            movePlayer();
             checkGameOver();
             repaint();
         }
@@ -532,6 +531,7 @@ public class Panel extends JPanel implements ActionListener {
                 oldDirection = direction;
                 break;
         }
+        checkPlayerContact();
     }
 
     // Method to move the bullets to the next position based on its direction
@@ -539,67 +539,77 @@ public class Panel extends JPanel implements ActionListener {
         // Move bullet right and down (traverse grid ascending)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
+                // No bullet present
+                if(bulletGrid[i][j] == 0) {
+                    // do nothing
+                }
                 // Water check: Bullet becomes a splash
-                if(bulletGrid[i][j] >= 1
-                        && backgroundGrid[i][j] == 1) {
+                else if(backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
                 }
                 // Building check: Bullet becomes an explosion
-                else if(bulletGrid[i][j] >= 1
-                        && backgroundGrid[i][j] == 3) {
+                else if(backgroundGrid[i][j] == 3) {
                     bulletGrid[i][j] = 6;
                 }
                 // Cop check: Bullet becomes an explosion and then money
-                else if(bulletGrid[i][j] >= 1
-                        && Math.abs(i - copXLocation) <= UNIT_SIZE
-                        && Math.abs(j - copYLocation) <= UNIT_SIZE) {
+                else if((Math.abs(i - copXLocation) <= UNIT_SIZE
+                          && Math.abs(j - copYLocation) <= UNIT_SIZE)
+                        || (i == copXLocation
+                             && j == copYLocation-UNIT_SIZE)) {
                     bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet right or down continually
                 else if(bulletGrid[i][j] == 1) {
                     bulletGrid[i][j] = 0;
-                    bulletGrid[i+1][j] = 1;
+                    bulletGrid[i+UNIT_SIZE][j] = 1;
+                    checkPlayerContact();
                 }
                 else if(bulletGrid[i][j] == 4) {
                     bulletGrid[i][j] = 0;
-                    bulletGrid[i][j+1] = 4;
+                    bulletGrid[i][j+UNIT_SIZE] = 4;
+                    checkPlayerContact();
                 }
             }
         }
         // Move bullet left and up (traverse grid descending)
         for(int i = bulletGrid.length-1; i > 0; i--) {
             for(int j = bulletGrid[i].length-1; j > 0; j--) {
+                // No bullet present
+                if(bulletGrid[i][j] == 0) {
+                    // do nothing
+                }
                 // Water check: Bullet becomes a splash
-                if(bulletGrid[i][j] >= 1
-                        && backgroundGrid[i][j] == 1) {
+                else if(backgroundGrid[i][j] == 1) {
                     bulletGrid[i][j] = 5;
                 }
                 // Building check: Bullet becomes an explosion
-                else if(bulletGrid[i][j] >= 1
-                        && backgroundGrid[i][j] == 3) {
+                else if(backgroundGrid[i][j] == 3) {
                     bulletGrid[i][j] = 6;
                 }
                 // Cop check: Bullet becomes an explosion and then money
-                else if(bulletGrid[i][j] >= 1
-                        && i == copXLocation
-                        && j == copYLocation) {
+                else if((Math.abs(i - copXLocation) <= UNIT_SIZE
+                        && Math.abs(j - copYLocation) <= UNIT_SIZE)
+                        || (i == copXLocation
+                        && j == copYLocation-UNIT_SIZE)) {
                     bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet left or up continually
                 else if(bulletGrid[i][j] == 2) {
                     bulletGrid[i][j] = 0;
-                    bulletGrid[i-1][j] = 2;
+                    bulletGrid[i-UNIT_SIZE][j] = 2;
+                    checkPlayerContact();
                 }
                 else if(bulletGrid[i][j] == 3) {
                     bulletGrid[i][j] = 0;
-                    bulletGrid[i][j-1] = 3;
+                    bulletGrid[i][j-UNIT_SIZE] = 3;
+                    checkPlayerContact();
                 }
             }
         }
     }
 
     // Check if the player hits any particle that causes a reaction (not road or sidewalk)
-    public static void checkPlayerCollision() {
+    public static void checkPlayerContact() {
         // Cop: Check for player to cop collision, which ends the game
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
@@ -614,13 +624,13 @@ public class Panel extends JPanel implements ActionListener {
                 || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
             direction = 'S'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
-            System.out.println("* GAME OVER (Drowned)");
+            System.out.println("* GAME OVER (You Drowned)");
         }
         // Building: Check for player to building collision, which ends the game
         else if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
             direction = 'E';
             running = false;
-            System.out.println("* GAME OVER (Crashed into Building)");
+            System.out.println("* GAME OVER (You crashed into a Building)");
         }
         // Money: Check for player driving over money, which increases the score between 10-20
         else if(moneyGrid[playerXLocation][playerYLocation] == 1) {
@@ -635,6 +645,12 @@ public class Panel extends JPanel implements ActionListener {
             int result = rand.nextInt(20-10) + 10;
             money = money + result;
             moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] = 0;
+        }
+        // Bullet: Check for player getting shot, which ends the game
+        else if(bulletGrid[playerXLocation][playerYLocation] >= 1) {
+            direction = 'E';
+            running = false;
+            System.out.println("* GAME OVER (You were shot)");
         }
     }
 
@@ -853,9 +869,3 @@ public class Panel extends JPanel implements ActionListener {
 }
 
 
-/*
-Aaron AIs
-1) Bullet comes from cop
-2) Player blows up when hit by a bullet
-3) Update readme with video demo
- */
