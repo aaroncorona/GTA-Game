@@ -15,6 +15,8 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 4. **Earn Money** 💰 Collect money and increase your score by winnnig gun fights
 5. **High Scores** 🥇 Save and display high scores to see where you rank all time
 
+<img width="321" alt="control_menu" src="https://user-images.githubusercontent.com/31792170/182476438-fea6f71e-3cf6-4b5f-b7de-15803d6fc10c.png">
+
 
 ## 🗂️ Source File Descriptions
 * **Panel.java** - Panel logic and the game logic live here
