@@ -20,11 +20,11 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 <img width="321" alt="control_menu" src="https://user-images.githubusercontent.com/31792170/182476438-fea6f71e-3cf6-4b5f-b7de-15803d6fc10c.png">
 <br>
 <br>
-*Example Gameplay*
+*Gameplay Clips*
 <br>
-https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
+* https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
 <br>
-https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
+* https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
 <br>
 <br>
 
