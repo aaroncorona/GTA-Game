@@ -22,6 +22,10 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 <br>
 *Example Gameplay*
 <br>
+https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
+<br>
+https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
+<br>
 <br>
 
 
