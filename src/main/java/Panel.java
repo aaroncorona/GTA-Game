@@ -429,17 +429,6 @@ public class Panel extends JPanel implements ActionListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
             g.drawString(getTimePassed(),20,70);
-            // TODO - Only display the control menu when the game is paused
-            // Display control menu
-//            int menuSize = 320;
-//            String filePathControlMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/control_menu.png";
-//            ImageIcon controlMenu = new ImageIcon(new ImageIcon(filePathControlMenu).getImage().getScaledInstance(menuSize, menuSize, Image.SCALE_DEFAULT));
-//            controlMenu.paintIcon(this, g, SCREEN_WIDTH-menuSize-10, 10);
-            // To see all units for ad hoc checks
-//            for(int i = 0;i<SCREEN_HEIGHT/UNIT_SIZE;i++) {
-//                g.drawLine(i*UNIT_SIZE,0,i*UNIT_SIZE,SCREEN_HEIGHT);
-//                g.drawLine(0,i*UNIT_SIZE,SCREEN_WIDTH,i*UNIT_SIZE);
-//            }
         }
     }
 
