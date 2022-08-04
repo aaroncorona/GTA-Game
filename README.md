@@ -9,10 +9,23 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 
 
 ## 🕹️ Game Features
-1. **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
-2. **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
-3. **Gun Fight**: Win a shootout with a cop to earn money and increase your score
-4. **High Scores**: Save and display high scores to see where you rank all time
+1. 🏎️ **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
+2. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
+3. 🚨 **Gun Fight**: You will be in a constant "wanted" state where you have a shootout with a cop
+4. 💰 **Earn Money**: Collect money and increase your score by winnnig gun fights
+5. 🥇 **High Scores**: Save and display high scores to see where you rank all time
+
+*Controls*:
+<br>
+<br>
+<img width="300" alt="control_menu" src="https://user-images.githubusercontent.com/31792170/182476438-fea6f71e-3cf6-4b5f-b7de-15803d6fc10c.png">
+<br>
+<br>
+*Gameplay Clips*
+<br>
+* https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
+* https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
+<br>
 
 
 ## 🗂️ Source File Descriptions
@@ -20,8 +33,8 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 * **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
 * **Main.java** - The JFrame is instantiated, therefore launching the game
 * **Assets/Images** - Folder for PNG files used by the Java ImageIcon class to produce graphics.
-  * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
   * The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
+  * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
 * **Assets/gta_high_scores.csv** - A local CSV where high scores are stored and read by the program
 
 
