@@ -692,7 +692,7 @@ public class Panel extends JPanel implements ActionListener {
 
             // Create High Score Menu
             highScoreMenu = new JPopupMenu();
-            highScoreMenu.setLocation(550, 450);
+            highScoreMenu.setLocation(530, 440);
             highScoreMenu.setBackground(new Color(255, 105, 97));
             highScoreMenu.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 97), 30));
             highScoreMenu.setFocusable(false);
@@ -717,52 +717,43 @@ public class Panel extends JPanel implements ActionListener {
 
     // Method to read the high score file and return the high score results
     public static String getHighScoreMessage() {
-        // Create Array to hold the scores
-        // TODO -- Use TreeMap instead for connecting unique scores to a timestamp or name.
-        long[][] highScoreArray = new long[5000][2];
+        // Create TreeMap to hold the scores for deduping and ordering
+        TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
+        File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
         // Read the local CSV file
         try {
-            File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
             Scanner myScanner = new Scanner(fileObj);
             myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
-            // Fill the score Array using the CSV
+            // Fill the tree map using the CSV
             for(int i = 0; myScanner.hasNext(); i++) {
-                for(int a = 0; a <= 1; a++) {
-                    highScoreArray[i][a] = ((long)Long.parseLong(myScanner.next().trim()));
+                for(int j = 0; j < 1; j++) {
+                    int score = (int) Integer.parseInt(myScanner.next().trim());
+                    String date = new Date(new Timestamp((long) Long.parseLong(myScanner.next().trim())).getTime())
+                                            .toString().substring(4, 10);
+                    scoreMap.put(score, date);
                 }
             }
             myScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }
-        // Sort Array in ascending order to easily get the highest scores
-        // Note: this shouldn't be needed with a TreeMap
-        Arrays.sort(highScoreArray, Comparator.comparingDouble(a -> a[0]));
-        // Get the top 3 scores
-        int score1 = (int) highScoreArray[highScoreArray.length - 1][0];
-        Date date1 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 1][1]).getTime());
-        String date1Short = date1.toString().substring(4, 10);
-        int score2 = (int) highScoreArray[highScoreArray.length - 2][0];
-        Date date2 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 2][1]).getTime());
-        String date2Short = date2.toString().substring(4, 10);
-        int score3 = (int) highScoreArray[highScoreArray.length - 3][0];
-        Date date3 = new Date(new Timestamp(highScoreArray[highScoreArray.length - 3][1]).getTime());
-        String date3Short = date3.toString().substring(4, 10);
-        // Special message if the player reached a top 3 high score
+
+        // Return a message with the user's score and the top three scores of all time
         String message;
-        message = "<html> Final Score: <b>" + money + "</b><br>";
-        if (money > score1) {
+        message = "<html> Your Final Score is <b>" + money + "</b><br>";
+        if (money > scoreMap.lastKey()) {
             message += "CONGRATS! You have the all time best score! <br>";
-        }
-        else if (money > score3) {
-            message += "CONGRATS! That's a new high score. You are top 3 all time <br>";
         } else{
-            message += "<i>Your score is not top 3 all time</i><br>";
+            message += "<i>You did not beat the highest score</i><br>";
         }
-        // Add the top 3 high scores
-        message += ("<u>1st place</u>: <b>" + score1 + "</b> on " + date1Short + "<br>");
-        message += ("<u>2nd place</u>: <b>" + score2 + "</b> on " + date2Short + "<br>");
-        message += ("<u>3rd place</u>: <b>" + score3 + "</b> on " + date3Short + "</html>");
+        int i = 0;
+        for (Map.Entry entry : scoreMap.descendingMap().entrySet()) {
+            if (i++ < 3) {
+                int currentScore = (int) entry.getKey();
+                message += ("<u> Score #" + i + "</u>: <b>" + currentScore + "</b> on " +
+                        entry.getValue() + "<br>");
+            }
+        }
         return message;
     }
 
