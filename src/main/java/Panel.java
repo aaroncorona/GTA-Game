@@ -1,24 +1,22 @@
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.sql.Timestamp;
 import java.util.*;
 
-public class Panel extends JPanel implements ActionListener {
+public class Panel extends JPanel implements Runnable {
 
-    // Constants for particle sizes
-    static final int SCREEN_WIDTH = 1400;
-    static final int SCREEN_HEIGHT = 900;
+    // Constants for pixel sizes
     static final int UNIT_SIZE = 25;
     static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
     static final int ROAD_SIZE = UNIT_SIZE*5;
     static final int WATER_SIZE = UNIT_SIZE*2;
     static final int SIDEWALK_SIZE = UNIT_SIZE;
+    static final int SCREEN_WIDTH = UNIT_SIZE*56;
+    static final int SCREEN_HEIGHT = UNIT_SIZE*36;
 
     // Constants for building dimensions
     static final int BUILDING_SIZE = 160; // can vary by picture
@@ -39,8 +37,8 @@ public class Panel extends JPanel implements ActionListener {
     static final int B8_X_START = B6_X_START;
     static final int B8_Y_START = B3_Y_START+20;;
 
-    // Helper variables to trigger events
-    static boolean running;
+    // Helper variables to manipulate the game mechanics
+    static boolean running = false;
     static boolean pause;
     static boolean nitro = false;
 
@@ -49,7 +47,6 @@ public class Panel extends JPanel implements ActionListener {
     static char direction;
     static char oldDirection;
     static long startTime;
-    static Timer timer;
 
     // Variables to track graphics
     static int playerXLocation;
@@ -71,11 +68,6 @@ public class Panel extends JPanel implements ActionListener {
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
-
-        // Add Game Timer
-        // Note: timer creates a new panel object (this) after every delay time
-        timer = new Timer(100, this);
-        timer.start();
 
         // Initialize background
         fillStartingGrids();
@@ -111,169 +103,45 @@ public class Panel extends JPanel implements ActionListener {
         this.getActionMap().put("rAction", new rAction());
     }
 
-    // Method to reset all game settings and start the game loop
-    public static void startGame() {
-        // Reset to default background
-        fillStartingGrids();
-
-        // Reset player and cop locations
-        generateNewPlayerLocation();
-        generateNewCopLocation();
-
-        // Reset trigger variables
-        running = true;
-        pause = false;
-        nitro = false;
-
-        // Hide menus that may be open upon restarting
-        pauseMenu.setVisible(false);
-        gameOverMenu.setVisible(false);
-        highScoreMenu.setVisible(false);
-
-        // Restart money at 1
-        money = 1;
-
-        // Start stopwatch
-        startTime = System.currentTimeMillis();
+    // Method to launch the game thread
+    public void startGameThread() {
+        // Start thread
+        Thread gameThread = new Thread(this);
+        gameThread.start();
     }
 
+    // Game loop logic that the Thread runs
     @Override
-    public void actionPerformed(ActionEvent e) {
-        // Continually run these functions
+    public void run() {
+        // Set rendering frequency
+        final double FPS = 7.0;
+        double timeToNextUpdate = 1000000000.0 / FPS;
+        long startTime = System.nanoTime();
+        double timePassedSinceUpdate = 0;
+
+        while(true) {
+            // Track FPS timing
+            long currentTime = System.nanoTime();
+            timePassedSinceUpdate += (currentTime - startTime) / timeToNextUpdate;
+            startTime = currentTime;
+
+            // Update the screen and data once the FPS time has passed
+            if(timePassedSinceUpdate >= 1) {
+                // Update screen
+                updateData();
+                repaint();
+                // Update timing tracker
+                timePassedSinceUpdate = 0;
+            }
+        }
+    }
+
+    // Method to update positions and check for collisions
+    public static void updateData() {
         if(running) {
             moveBullet();
             movePlayer();
             checkGameOver();
-            repaint();
-        }
-    }
-
-    // Method to establish all the default background particles (sidewalk, water, road, and building)
-    public static void fillStartingGrids() {
-        /*
-        Background Grid particle mapping:
-           0 = empty / sidewalk
-           1 = water
-           2 = road
-           3 = building
-         */
-        backgroundGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < backgroundGrid.length; i++) {
-            for(int j = 0; j < backgroundGrid[i].length; j++) {
-                // Water on screen edges (for island effect)
-                if(i == 0
-                        || i == SCREEN_WIDTH - WATER_SIZE
-                        || j == 0
-                        || j == SCREEN_HEIGHT - WATER_SIZE) {
-                    backgroundGrid[i][j] = 1;
-                }
-                // Sidewalk around the water edges
-                else if(i < WATER_SIZE + SIDEWALK_SIZE
-                        || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
-                        || j < WATER_SIZE + SIDEWALK_SIZE
-                        || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
-                    backgroundGrid[i][j] = 0;
-                }
-                // Roads (vertical)
-                else if(i == WATER_SIZE + SIDEWALK_SIZE // far left road
-                        || i == SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 2nd road
-                        || i == SCREEN_WIDTH/4 + SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 3rd road
-                        || i == SCREEN_WIDTH - WATER_SIZE*4 - SIDEWALK_SIZE) { // far right road
-                    backgroundGrid[i][j] = 2;
-                }
-                // Roads (horizontal)
-                else if(j == WATER_SIZE + SIDEWALK_SIZE // top road
-                        || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
-                    backgroundGrid[i][j] = 2;
-                }
-                // Building #1 area
-                else if(i >= B1_X_START
-                        && i <= B1_X_START + BUILDING_SIZE
-                        && j >= B1_Y_START
-                        && j <= B1_Y_START + BUILDING_SIZE-50) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #2 area
-                else if(i >= B2_X_START
-                        && i <= B2_X_START + BUILDING_SIZE - 40
-                        && j >= B2_Y_START
-                        && j <= B2_Y_START + BUILDING_SIZE - 40) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #3 area
-                else if(i >= B3_X_START
-                        && i <= B3_X_START + BUILDING_SIZE
-                        && j >= B3_Y_START
-                        && j <= B3_Y_START + BUILDING_SIZE - 40) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #4 area
-                else if(i >= B4_X_START
-                        && i <= B4_X_START + BUILDING_SIZE
-                        && j >= B4_Y_START
-                        && j <= B4_Y_START + BUILDING_SIZE + 130) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #5 area
-                else if(i >= B5_X_START
-                        && i <= B5_X_START + BUILDING_SIZE
-                        && j >= B5_Y_START
-                        && j <= B5_Y_START + BUILDING_SIZE-60) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #6 area
-                else if(i >= B6_X_START
-                        && i <= B6_X_START + BUILDING_SIZE
-                        && j >= B6_Y_START
-                        && j <= B6_Y_START + BUILDING_SIZE) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #7 area
-                else if(i >= B7_X_START
-                        && i <= B7_X_START + BUILDING_SIZE
-                        && j >= B7_Y_START
-                        && j <= B7_Y_START + BUILDING_SIZE) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #8 area
-                else if(i >= B8_X_START
-                        && i <= B8_X_START + BUILDING_SIZE
-                        && j >= B8_Y_START
-                        && j <= B8_Y_START + BUILDING_SIZE-80) {
-                    backgroundGrid[i][j] = 3;
-                }
-                else{
-                    backgroundGrid[i][j] = 0;
-                }
-            }
-        }
-        /*
-        Bullet grid particle mapping:
-        0 = empty
-        1 = bullet right moving
-        2 = bullet left moving
-        3 = bullet up moving
-        4 = bullet down moving
-        5 = bullet splash
-        6 = bullet explosion
-        7 = bullet explosion that produces money
-         */
-        bulletGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < bulletGrid.length; i++) {
-            for(int j = 0; j < bulletGrid[i].length; j++) {
-                bulletGrid[i][j] = 0;
-            }
-        }
-       /*
-        Money grid particle mapping:
-        0 = empty
-        1 = money exists
-        */
-        moneyGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < moneyGrid.length; i++) {
-            for(int j = 0; j < moneyGrid[i].length; j++) {
-                moneyGrid[i][j] = 0;
-            }
         }
     }
 
@@ -429,6 +297,162 @@ public class Panel extends JPanel implements ActionListener {
             g.setColor(Color.WHITE);
             g.setFont(new Font("Serif", Font.PLAIN, 25));
             g.drawString(getTimePassed(),20,70);
+        }
+    }
+
+    // Method to reset all game settings and start the game loop
+    public static void resetGame() {
+
+        // Reset to default background
+        fillStartingGrids();
+
+        // Reset player and cop locations
+        generateNewPlayerLocation();
+        generateNewCopLocation();
+
+        // Reset trigger variables
+        running = true;
+        pause = false;
+        nitro = false;
+
+        // Hide menus that may be open upon restarting
+        pauseMenu.setVisible(false);
+        gameOverMenu.setVisible(false);
+        highScoreMenu.setVisible(false);
+
+        // Restart money at 1
+        money = 1;
+
+        // Start stopwatch
+        startTime = System.currentTimeMillis();
+    }
+
+    // Method to establish all the default background particles (sidewalk, water, road, and building)
+    public static void fillStartingGrids() {
+        /*
+        Background Grid particle mapping:
+           0 = empty / sidewalk
+           1 = water
+           2 = road
+           3 = building
+         */
+        backgroundGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < backgroundGrid.length; i++) {
+            for(int j = 0; j < backgroundGrid[i].length; j++) {
+                // Water on screen edges (for island effect)
+                if(i == 0
+                        || i == SCREEN_WIDTH - WATER_SIZE
+                        || j == 0
+                        || j == SCREEN_HEIGHT - WATER_SIZE) {
+                    backgroundGrid[i][j] = 1;
+                }
+                // Sidewalk around the water edges
+                else if(i < WATER_SIZE + SIDEWALK_SIZE
+                        || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
+                        || j < WATER_SIZE + SIDEWALK_SIZE
+                        || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
+                    backgroundGrid[i][j] = 0;
+                }
+                // Roads (vertical)
+                else if(i == WATER_SIZE + SIDEWALK_SIZE // far left road
+                        || i == SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 2nd road
+                        || i == SCREEN_WIDTH/4 + SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 3rd road
+                        || i == SCREEN_WIDTH - WATER_SIZE*4 - SIDEWALK_SIZE) { // far right road
+                    backgroundGrid[i][j] = 2;
+                }
+                // Roads (horizontal)
+                else if(j == WATER_SIZE + SIDEWALK_SIZE // top road
+                        || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
+                    backgroundGrid[i][j] = 2;
+                }
+                // Building #1 area
+                else if(i >= B1_X_START
+                        && i <= B1_X_START + BUILDING_SIZE
+                        && j >= B1_Y_START
+                        && j <= B1_Y_START + BUILDING_SIZE-50) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #2 area
+                else if(i >= B2_X_START
+                        && i <= B2_X_START + BUILDING_SIZE - 40
+                        && j >= B2_Y_START
+                        && j <= B2_Y_START + BUILDING_SIZE - 40) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #3 area
+                else if(i >= B3_X_START
+                        && i <= B3_X_START + BUILDING_SIZE
+                        && j >= B3_Y_START
+                        && j <= B3_Y_START + BUILDING_SIZE - 40) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #4 area
+                else if(i >= B4_X_START
+                        && i <= B4_X_START + BUILDING_SIZE
+                        && j >= B4_Y_START
+                        && j <= B4_Y_START + BUILDING_SIZE + 130) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #5 area
+                else if(i >= B5_X_START
+                        && i <= B5_X_START + BUILDING_SIZE
+                        && j >= B5_Y_START
+                        && j <= B5_Y_START + BUILDING_SIZE-60) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #6 area
+                else if(i >= B6_X_START
+                        && i <= B6_X_START + BUILDING_SIZE
+                        && j >= B6_Y_START
+                        && j <= B6_Y_START + BUILDING_SIZE) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #7 area
+                else if(i >= B7_X_START
+                        && i <= B7_X_START + BUILDING_SIZE
+                        && j >= B7_Y_START
+                        && j <= B7_Y_START + BUILDING_SIZE) {
+                    backgroundGrid[i][j] = 3;
+                }
+                // Building #8 area
+                else if(i >= B8_X_START
+                        && i <= B8_X_START + BUILDING_SIZE
+                        && j >= B8_Y_START
+                        && j <= B8_Y_START + BUILDING_SIZE-80) {
+                    backgroundGrid[i][j] = 3;
+                }
+                else{
+                    backgroundGrid[i][j] = 0;
+                }
+            }
+        }
+        /*
+        Bullet grid particle mapping:
+        0 = empty
+        1 = bullet right moving
+        2 = bullet left moving
+        3 = bullet up moving
+        4 = bullet down moving
+        5 = bullet splash
+        6 = bullet explosion
+        7 = bullet explosion that produces money
+         */
+        bulletGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < bulletGrid.length; i++) {
+            for(int j = 0; j < bulletGrid[i].length; j++) {
+                bulletGrid[i][j] = 0;
+            }
+        }
+       /*
+        Money grid particle mapping:
+        0 = empty
+        1 = money exists
+        */
+        moneyGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        for(int i = 0; i < moneyGrid.length; i++) {
+            for(int j = 0; j < moneyGrid[i].length; j++) {
+                moneyGrid[i][j] = 0;
+            }
         }
     }
 
@@ -733,7 +757,7 @@ public class Panel extends JPanel implements ActionListener {
         if (money > scoreMap.lastKey()) {
             message += "CONGRATS! You have the all time best score! <br>";
         } else{
-            message += "<i>You did not beat the highest score</i><br>";
+            message += "<i>You did not beat the high score</i><br>";
         }
         int i = 0;
         for (Map.Entry entry : scoreMap.descendingMap().entrySet()) {
@@ -782,9 +806,9 @@ public class Panel extends JPanel implements ActionListener {
     public static class EnterAction extends AbstractAction {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // Enter key to restart game (if stopped)
+            // Enter key to restart game (if stopped) or start the game from the initial pause menu
             if (running == false) {
-                startGame(); // Restart
+                resetGame();
             }
         }
     }
@@ -847,5 +871,4 @@ public class Panel extends JPanel implements ActionListener {
         }
     }
 }
-
 

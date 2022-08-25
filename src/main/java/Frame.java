@@ -2,11 +2,11 @@ import javax.swing.JFrame;
 
 public class Frame extends JFrame {
 
-    // Create a Panel within the Frame
-    Panel panel = new Panel();
-
     // Constructor
     Frame() {
+
+        // Create panel
+        Panel panel = new Panel();
 
         // Set frame details
         this.setTitle("GTA");
@@ -17,6 +17,8 @@ public class Frame extends JFrame {
         this.setLayout(null);
         this.setLocationRelativeTo(null);
 
+        // Start game loop
+        panel.startGameThread();
     }
 }
 
