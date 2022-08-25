@@ -1,8 +1,6 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.*;
 import java.sql.Timestamp;
 import java.util.*;
@@ -19,6 +17,8 @@ public class Panel extends JPanel implements Runnable {
     static final int SCREEN_HEIGHT = UNIT_SIZE*36;
 
     // Constants for building dimensions
+    // @TODO move to tile class
+    // @TODO create mapping text file
     static final int BUILDING_SIZE = 160; // can vary by picture
     static final int B1_X_START = 245;
     static final int B1_Y_START = 230;
@@ -41,19 +41,27 @@ public class Panel extends JPanel implements Runnable {
     static boolean running = false;
     static boolean pause;
     static boolean nitro = false;
+    public static KeyHandler keyH = new KeyHandler();
 
     // Helper variables to track dynamic data that needs a global scope
+    // @TODO move to object class?
     static int money;
+    // @TODO move to player class
     static char direction;
     static char oldDirection;
+    // @TODO move to timer class?
     static long startTime;
 
     // Variables to track graphics
+    // @TODO move to player class
     static int playerXLocation;
     static int playerYLocation;
+    // @TODO move to npc class?
     static int copXLocation;
     static int copYLocation;
+    // @TODO move to tile class
     static int[][] backgroundGrid;
+    // @TODO move to object class?
     static int[][] bulletGrid;
     static int[][] moneyGrid;
 
@@ -73,34 +81,8 @@ public class Panel extends JPanel implements Runnable {
         fillStartingGrids();
         generateNewCopLocation();
 
-        // Map Key Events in the Panel to Action response classes
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0, false),"rightAction");
-        this.getActionMap().put("rightAction", new RightAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0, false),"leftAction");
-        this.getActionMap().put("leftAction", new LeftAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0, false),"upAction");
-        this.getActionMap().put("upAction", new UpAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0, false),"downAction");
-        this.getActionMap().put("downAction", new DownAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0, false),"enterAction");
-        this.getActionMap().put("enterAction", new EnterAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_BACK_SPACE, 0, false),"deleteAction");
-        this.getActionMap().put("deleteAction", new DeleteAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0, false),"spaceAction");
-        this.getActionMap().put("spaceAction", new SpaceAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_E, 0, false),"eAction");
-        this.getActionMap().put("eAction", new eAction());
-        this.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
-                .put(KeyStroke.getKeyStroke(KeyEvent.VK_R, 0, false),"rAction");
-        this.getActionMap().put("rAction", new rAction());
+        // Key listener for the panel
+        this.addKeyListener(keyH);
     }
 
     // Method to launch the game thread
@@ -114,7 +96,7 @@ public class Panel extends JPanel implements Runnable {
     @Override
     public void run() {
         // Set rendering frequency
-        final double FPS = 7.0;
+        final double FPS = 4.0;
         double timeToNextUpdate = 1000000000.0 / FPS;
         long startTime = System.nanoTime();
         double timePassedSinceUpdate = 0;
@@ -138,6 +120,82 @@ public class Panel extends JPanel implements Runnable {
 
     // Method to update positions and check for collisions
     public static void updateData() {
+
+        // @TODO move to player class
+        // Map key presses to determine the player's direction
+        if(keyH.upPress == true) {
+            direction = 'U';
+            keyH.upPress = false; // movement processed
+        }
+        if(keyH.downPress == true) {
+            direction = 'D';
+            keyH.downPress = false;
+        }
+        if(keyH.rightPress == true) {
+            direction = 'R';
+            keyH.rightPress = false;
+        }
+        if(keyH.leftPress == true) {
+            direction = 'L';
+            keyH.leftPress = false;
+        }
+
+        // Enter key to restart game (if stopped) or start the game from the initial pause menu
+        if (keyH.enterPress == true && running == false) {
+            resetGame();
+            keyH.enterPress = false;
+        }
+
+        // Delete key to exit game (if stopped)
+        if (keyH.backSpacePress == true && running == false) {
+            System.exit(0);
+            keyH.backSpacePress = false;
+        }
+
+        // Space bar to pause or resume game
+        if (keyH.spacePress == true && pause == false && running == true) {
+            pauseGame();
+            keyH.spacePress = false;
+        }
+        if (keyH.spacePress == true && pause == true && running == false) {
+            resumeGame();
+            keyH.spacePress = false;
+        }
+
+        // R key for nitro
+        if(keyH.rPress == true && nitro == false) {
+            nitro = true;
+            keyH.rPress = false;
+        }
+        if(keyH.rPress == true && nitro == true) {
+            nitro = false;
+            keyH.rPress = false;
+        }
+
+        // @TODO move to bullet class? within object package like money?
+        // @TODO bullet should have its own direction variable?
+        // E key for bullet, which is set based on the car direction
+        if(keyH.ePress == true) {
+            int bulletType = 0;
+            switch(direction) {
+                case 'R':
+                    bulletType = 1;
+                    break;
+                case 'L':
+                    bulletType = 2;
+                    break;
+                case 'U':
+                    bulletType = 3;
+                    break;
+                case 'D':
+                    bulletType = 4;
+                    break;
+            }
+            // Shoot bullet
+            bulletGrid[playerXLocation][playerYLocation] = bulletType;
+            keyH.ePress = false;
+        }
+
         if(running) {
             moveBullet();
             movePlayer();
@@ -182,7 +240,8 @@ public class Panel extends JPanel implements Runnable {
         g2d.drawLine(860, 220, 860, SCREEN_HEIGHT - 240);
         g2d.dispose();
 
-        // Draw building #1
+        // @TODO replace with sprites
+        // Draw building #1=
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
         ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
         b1.paintIcon(this, g, B1_X_START, B1_Y_START);
@@ -269,6 +328,7 @@ public class Panel extends JPanel implements Runnable {
             g.setFont(new Font("Serif", Font.ITALIC, 50));
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
+        // @TODO replace with sprites
         // Player Icons - draw this after the game starts
         else {
             // Draw the car icon based on the movement direction so it faces the correct way
@@ -526,6 +586,26 @@ public class Panel extends JPanel implements Runnable {
         } else {
             spacesToMove = UNIT_SIZE;
         }
+
+        switch(direction) {
+            case 'R':
+                playerXLocation = playerXLocation + spacesToMove;
+                oldDirection = direction;
+                break;
+            case 'L':
+                playerXLocation = playerXLocation - spacesToMove;
+                oldDirection = direction;
+                break;
+            case 'U':
+                playerYLocation = playerYLocation - spacesToMove;
+                oldDirection = direction;
+                break;
+            case 'D':
+                playerYLocation = playerYLocation + spacesToMove;
+                oldDirection = direction;
+                break;
+        }
+
         switch(direction) {
             case 'R':
                 playerXLocation = playerXLocation + spacesToMove;
@@ -768,107 +848,6 @@ public class Panel extends JPanel implements Runnable {
             }
         }
         return message;
-    }
-
-    // Define actions to be performed (these map to key strokes)
-    public static class RightAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Set Direction based on key input
-            direction = 'R';
-        }
-    }
-
-    public static class LeftAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Set Direction based on key input
-            direction = 'L';
-        }
-    }
-
-    public static class UpAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Set Direction based on key input
-            direction = 'U';
-        }
-    }
-
-    public static class DownAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Set Direction based on key input
-            direction = 'D';
-        }
-    }
-
-    public static class EnterAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Enter key to restart game (if stopped) or start the game from the initial pause menu
-            if (running == false) {
-                resetGame();
-            }
-        }
-    }
-
-    public static class DeleteAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Delete key to quit game (if stopped)
-            if (running == false) {
-                System.exit(0);
-            }
-        }
-    }
-
-    public static class SpaceAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Space bar to pause or resume game
-            if (pause == false && running == true) {
-                pauseGame();
-            } else if (pause == true && running == false) {
-                resumeGame();
-            }
-        }
-    }
-
-    public static class rAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // The r key toggles nitro activation
-            if(nitro == false) {
-                nitro = true;
-            } else{
-                nitro = false;
-            }
-        }
-    }
-
-    public static class eAction extends AbstractAction {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            // Set bullet direction based on car direction
-            int bulletType = 0;
-            switch(direction) {
-                case 'R':
-                    bulletType = 1;
-                    break;
-                case 'L':
-                    bulletType = 2;
-                    break;
-                case 'U':
-                    bulletType = 3;
-                    break;
-                case 'D':
-                    bulletType = 4;
-                    break;
-            }
-            // Shoot bullet
-            bulletGrid[playerXLocation][playerYLocation] = bulletType;
-        }
     }
 }
 
