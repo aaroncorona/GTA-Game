@@ -3,7 +3,6 @@
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
-
 ## 🚔 Overview
 This is a 2D game written in Java. It is inspired by the original GTA game released in 1997.
 
