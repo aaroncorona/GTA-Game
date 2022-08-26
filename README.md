@@ -37,7 +37,6 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
   * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
 * **Assets/gta_high_scores.csv** - A local CSV where high scores are stored and read by the program
 
-
 ## 🚀 Installation
 1. Clone this repo locally 
 2. Navigate to the directory where the source Java files are stored
