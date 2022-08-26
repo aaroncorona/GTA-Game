@@ -1,3 +1,4 @@
+package main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -72,7 +73,7 @@ public class Panel extends JPanel implements Runnable {
 
     // Create game panel (constructor)
     Panel() {
-        // Add Panel details
+        // Add main.Panel details
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
@@ -96,7 +97,7 @@ public class Panel extends JPanel implements Runnable {
     @Override
     public void run() {
         // Set rendering frequency
-        final double FPS = 4.0;
+        final double FPS = 3.0;
         double timeToNextUpdate = 1000000000.0 / FPS;
         long startTime = System.nanoTime();
         double timePassedSinceUpdate = 0;
@@ -204,7 +205,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     @ Override
-    // Runs automatically on Frame to render all graphics
+    // Runs automatically on main.Frame to render all graphics
     public void paint(Graphics g) {
         super.paint(g);
 

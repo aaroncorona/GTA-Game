@@ -1,8 +1,9 @@
+package main;
 
 public class Main {
 
     public static void main(String[] args) {
-        // Run the Frame
+        // Run the main.Frame
         new Frame();
     }
 }

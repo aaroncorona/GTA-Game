@@ -31,9 +31,9 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 
 
 ## 🗂️ Source File Descriptions
-* **Panel.java** - Panel logic and the game logic live here
-* **Frame.java** - The Panel is instantiated within the contstructor for a JFrame
-* **Main.java** - The JFrame is instantiated, therefore launching the game
+* **main.Panel.java** - main.Panel logic and the game logic live here
+* **main.Frame.java** - The main.Panel is instantiated within the contstructor for a JFrame
+* **main.Main.java** - The JFrame is instantiated, therefore launching the game
 * **Assets/Images** - Folder for PNG files used by the Java ImageIcon class to produce graphics.
   * The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
   * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
@@ -43,9 +43,9 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 ## 🚀 Installation
 1. Clone this repo locally 
 2. Navigate to the directory where the source Java files are stored
-3. Run the Main file:
+3. Run the main.Main file:
 ```
-$ javac Main.java
-$ java Main
+$ javac main.Main.java
+$ java main.Main
 ```
 4. *(Optional)* Erase the high scores to track your own personal high scores.
