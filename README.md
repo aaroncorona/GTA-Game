@@ -31,6 +31,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 * https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
 <br>
 
+
 ## 🗂️ Source File Descriptions
 * **main.Panel.java** - main.Panel logic and the game logic live here
 * **main.Frame.java** - The main.Panel is instantiated within the contstructor for a JFrame
@@ -39,6 +40,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
   * The file naming pattern for player files is car + direction + regular vs nitro (e.g. "car_R_N"). This allows for 8 different images that correspond to the state of the car.
   * I used remove.bg to remove the PNG backgrounds for the files to give an icon effect on the panel
 * **Assets/gta_high_scores.csv** - A local CSV where high scores are stored and read by the program
+
 
 ## 🚀 Installation
 1. Clone this repo locally 
