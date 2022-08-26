@@ -7,6 +7,7 @@
 ## 🚔 Overview
 This is a 2D game written in Java. It is inspired by the original GTA game released in 1997.
 
+
 ## 🕹️ Game Features
 1. 🏎️ **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
 2. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
@@ -20,10 +21,13 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 <img width="300" alt="control_menu" src="https://user-images.githubusercontent.com/31792170/182476438-fea6f71e-3cf6-4b5f-b7de-15803d6fc10c.png">
 <br>
 <br>
-*Gameplay Clips*
+*Gameplay Screenshot:*
 <br>
 <br>
 <img width="600" alt="SS" src="https://user-images.githubusercontent.com/31792170/182765478-c408127a-c761-4ef2-b13b-91fae0cbf2f1.png">
+<br>
+<br>
+*Gameplay Videos:*
 <br>
 * https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
 * https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
@@ -49,3 +53,4 @@ $ javac main.Main.java
 $ java main.Main
 ```
 4. *(Optional)* Erase the high scores to track your own personal high scores.
+
