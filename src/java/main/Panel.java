@@ -1,5 +1,7 @@
 package main;
 
+import entity.PlayerCar;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -42,7 +44,7 @@ public class Panel extends JPanel implements Runnable {
     static boolean running = false;
     static boolean pause;
     static boolean nitro = false;
-    public static KeyHandler keyH = new KeyHandler();
+    public static KeyHandler key = new KeyHandler();
 
     // Helper variables to track dynamic data that needs a global scope
     // @TODO move to object class?
@@ -71,6 +73,9 @@ public class Panel extends JPanel implements Runnable {
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
 
+    // Create Entity objects
+    PlayerCar playerCar = new PlayerCar(this, key);
+
     // Create game panel (constructor)
     Panel() {
         // Add main.Panel details
@@ -83,7 +88,7 @@ public class Panel extends JPanel implements Runnable {
         generateNewCopLocation();
 
         // Key listener for the panel
-        this.addKeyListener(keyH);
+        this.addKeyListener(key);
     }
 
     // Method to launch the game thread
@@ -120,63 +125,65 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to update positions and check for collisions
-    public static void updateData() {
+    public void updateData() {
+
+        playerCar.updateData();
 
         // @TODO move to player class
         // Map key presses to determine the player's direction
-        if(keyH.upPress == true) {
+        if(key.upPress == true) {
             direction = 'U';
-            keyH.upPress = false; // movement processed
+            key.upPress = false; // movement processed
         }
-        if(keyH.downPress == true) {
+        if(key.downPress == true) {
             direction = 'D';
-            keyH.downPress = false;
+            key.downPress = false;
         }
-        if(keyH.rightPress == true) {
+        if(key.rightPress == true) {
             direction = 'R';
-            keyH.rightPress = false;
+            key.rightPress = false;
         }
-        if(keyH.leftPress == true) {
+        if(key.leftPress == true) {
             direction = 'L';
-            keyH.leftPress = false;
+            key.leftPress = false;
         }
 
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
-        if (keyH.enterPress == true && running == false) {
+        if (key.enterPress == true && running == false) {
             resetGame();
-            keyH.enterPress = false;
+            key.enterPress = false;
         }
 
         // Delete key to exit game (if stopped)
-        if (keyH.backSpacePress == true && running == false) {
+        if (key.backSpacePress == true && running == false) {
             System.exit(0);
-            keyH.backSpacePress = false;
+            key.backSpacePress = false;
         }
 
         // Space bar to pause or resume game
-        if (keyH.spacePress == true && pause == false && running == true) {
+        if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
-            keyH.spacePress = false;
+            key.spacePress = false;
         }
-        if (keyH.spacePress == true && pause == true && running == false) {
+        if (key.spacePress == true && pause == true && running == false) {
             resumeGame();
-            keyH.spacePress = false;
+            key.spacePress = false;
         }
 
         // R key for nitro
-        if(keyH.rPress == true && nitro == false) {
+        if(key.rPress == true && nitro == false) {
             nitro = true;
-            keyH.rPress = false;
+            key.rPress = false;
         }
-        if(keyH.rPress == true && nitro == true) {
+        if(key.rPress == true && nitro == true) {
             nitro = false;
-            keyH.rPress = false;
+            key.rPress = false;
         }
 
         // @TODO move to bullet class? within object package like money?
         // @TODO bullet should have its own direction variable?
         // E key for bullet, which is set based on the car direction
-        if(keyH.ePress == true) {
+        if(key.ePress == true) {
             int bulletType = 0;
             switch(direction) {
                 case 'R':
@@ -194,7 +201,7 @@ public class Panel extends JPanel implements Runnable {
             }
             // Shoot bullet
             bulletGrid[playerXLocation][playerYLocation] = bulletType;
-            keyH.ePress = false;
+            key.ePress = false;
         }
 
         if(running) {
@@ -205,9 +212,10 @@ public class Panel extends JPanel implements Runnable {
     }
 
     @ Override
-    // Runs automatically on main.Frame to render all graphics
     public void paint(Graphics g) {
         super.paint(g);
+
+        playerCar.draw(g);
 
         // Paint water and roads
         for(int i = 0; i < backgroundGrid.length; i++) {
@@ -362,7 +370,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to reset all game settings and start the game loop
-    public static void resetGame() {
+    public void resetGame() {
 
         // Reset to default background
         fillStartingGrids();
@@ -389,7 +397,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to establish all the default background particles (sidewalk, water, road, and building)
-    public static void fillStartingGrids() {
+    public void fillStartingGrids() {
         /*
         Background Grid particle mapping:
            0 = empty / sidewalk
@@ -518,7 +526,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to stop the game loop and bring up the pause menu
-    public static void pauseGame() {
+    public void pauseGame() {
         pause = true;
         running = false;
         pauseMenu = new JPopupMenu();
@@ -538,14 +546,14 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to run the game again and hide the pause menu
-    public static void resumeGame() {
+    public void resumeGame() {
         pause = false;
         running = true;
         pauseMenu.setVisible(false);
     }
 
     // Method to respawn the player at its default location
-    public static void generateNewPlayerLocation() {
+    public void generateNewPlayerLocation() {
         playerXLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE; // spawn on the first road
         playerYLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE;
         direction = 'R';
@@ -553,7 +561,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to respawn the cop player on a road tile
-    public static void generateNewCopLocation() {
+    public void generateNewCopLocation() {
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
         copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE;
         // Only spawn on the road
@@ -565,7 +573,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to create another bullet traveling west or north from the cop
-    public static void generateNewCopBullet() {
+    public void generateNewCopBullet() {
         Random rand = new Random();
         int bulletType = rand.nextInt(2) + 2;
         switch (bulletType) {
@@ -579,7 +587,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to update the player's coordinates
-    public static void movePlayer() {
+    public void movePlayer() {
         // Change position of the player using the direction variable
         int spacesToMove;
         if(nitro == true) {
@@ -629,7 +637,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to move the bullets to the next position based on its direction
-    public static void moveBullet() {
+    public void moveBullet() {
         // Move bullet right and down (traverse grid ascending)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
@@ -703,7 +711,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Check if the player hits any particle that causes a reaction (not road or sidewalk)
-    public static void checkPlayerContact() {
+    public void checkPlayerContact() {
         // Cop: Check for player to cop collision, which ends the game
         if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
                 && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
@@ -749,7 +757,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to check if the game stopped running and therefore log the score and display the game over menus
-    public static void checkGameOver() {
+    public void checkGameOver() {
         // When the game ends, log the final score if the game ends with a minimum score achieved
         if(running == false && pause == false) {
 
@@ -801,7 +809,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to extract the min & seconds passed for the current game
-    public static String getTimePassed() {
+    public String getTimePassed() {
         long now = System.currentTimeMillis();
         int elapsedTime = (int) (now - startTime); // Convert timestamp difference to seconds
         int elapsedMins = (int) Math.floor(elapsedTime / 1000 / 60);
@@ -810,7 +818,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to read the high score file and return the high score results
-    public static String getHighScoreMessage() {
+    public String getHighScoreMessage() {
         // Create TreeMap to hold the scores for deduping and ordering
         TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
         File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
