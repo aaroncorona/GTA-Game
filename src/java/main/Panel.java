@@ -11,13 +11,13 @@ import java.util.*;
 public class Panel extends JPanel implements Runnable {
 
     // Constants for pixel sizes
-    static final int UNIT_SIZE = 25;
-    static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
-    static final int ROAD_SIZE = UNIT_SIZE*5;
-    static final int WATER_SIZE = UNIT_SIZE*2;
-    static final int SIDEWALK_SIZE = UNIT_SIZE;
-    static final int SCREEN_WIDTH = UNIT_SIZE*56;
-    static final int SCREEN_HEIGHT = UNIT_SIZE*36;
+    public static final int UNIT_SIZE = 25;
+    public static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
+    public static final int ROAD_SIZE = UNIT_SIZE*5;
+    public static final int WATER_SIZE = UNIT_SIZE*2;
+    public static final int SIDEWALK_SIZE = UNIT_SIZE;
+    public static final int SCREEN_WIDTH = UNIT_SIZE*56;
+    public static final int SCREEN_HEIGHT = UNIT_SIZE*36;
 
     // Constants for building dimensions
     // @TODO move to tile class
@@ -41,25 +41,18 @@ public class Panel extends JPanel implements Runnable {
     static final int B8_Y_START = B3_Y_START+20;;
 
     // Helper variables to manipulate the game mechanics
-    static boolean running = false;
-    static boolean pause;
-    static boolean nitro = false;
+    public static boolean running = false;
+    public static boolean pause;
     public static KeyHandler key = new KeyHandler();
 
     // Helper variables to track dynamic data that needs a global scope
     // @TODO move to object class?
     static int money;
-    // @TODO move to player class
-    static char direction;
-    static char oldDirection;
     // @TODO move to timer class?
     static long startTime;
 
     // Variables to track graphics
-    // @TODO move to player class
-    static int playerXLocation;
-    static int playerYLocation;
-    // @TODO move to npc class?
+    // @TODO move to Cop Car class
     static int copXLocation;
     static int copYLocation;
     // @TODO move to tile class
@@ -127,39 +120,17 @@ public class Panel extends JPanel implements Runnable {
     // Method to update positions and check for collisions
     public void updateData() {
 
-        playerCar.updateData();
-
-        // @TODO move to player class
-        // Map key presses to determine the player's direction
-        if(key.upPress == true) {
-            direction = 'U';
-            key.upPress = false; // movement processed
-        }
-        if(key.downPress == true) {
-            direction = 'D';
-            key.downPress = false;
-        }
-        if(key.rightPress == true) {
-            direction = 'R';
-            key.rightPress = false;
-        }
-        if(key.leftPress == true) {
-            direction = 'L';
-            key.leftPress = false;
-        }
-
+        // Basic game functionalities
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
         if (key.enterPress == true && running == false) {
             resetGame();
             key.enterPress = false;
         }
-
         // Delete key to exit game (if stopped)
         if (key.backSpacePress == true && running == false) {
             System.exit(0);
             key.backSpacePress = false;
         }
-
         // Space bar to pause or resume game
         if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
@@ -170,22 +141,14 @@ public class Panel extends JPanel implements Runnable {
             key.spacePress = false;
         }
 
-        // R key for nitro
-        if(key.rPress == true && nitro == false) {
-            nitro = true;
-            key.rPress = false;
-        }
-        if(key.rPress == true && nitro == true) {
-            nitro = false;
-            key.rPress = false;
-        }
+        playerCar.update();
 
         // @TODO move to bullet class? within object package like money?
         // @TODO bullet should have its own direction variable?
         // E key for bullet, which is set based on the car direction
         if(key.ePress == true) {
             int bulletType = 0;
-            switch(direction) {
+            switch(playerCar.direction) {
                 case 'R':
                     bulletType = 1;
                     break;
@@ -200,13 +163,12 @@ public class Panel extends JPanel implements Runnable {
                     break;
             }
             // Shoot bullet
-            bulletGrid[playerXLocation][playerYLocation] = bulletType;
+            bulletGrid[playerCar.xPos][playerCar.yPos] = bulletType;
             key.ePress = false;
         }
 
         if(running) {
             moveBullet();
-            movePlayer();
             checkGameOver();
         }
     }
@@ -343,16 +305,16 @@ public class Panel extends JPanel implements Runnable {
             // Draw the car icon based on the movement direction so it faces the correct way
             // Note: Must draw icon on slightly modified player location to align with the image expansion
             char regularOrNitroImage = 'R';
-            if(nitro == true) {
+            if(playerCar.nitro == true) {
                 regularOrNitroImage = 'N';
             }
-            String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + direction + "_" + regularOrNitroImage + ".png";
-            if(direction == 'e') { // make explosions larger
+            String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + playerCar.direction + "_" + regularOrNitroImage + ".png";
+            if(playerCar.direction == 'e') { // make explosions larger
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE*2, PLAYER_UNIT_SIZE*2, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerXLocation - 20, playerYLocation - 20);
+                player.paintIcon(this, g, playerCar.xPos - 20, playerCar.yPos - 20);
             } else {
                 ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerXLocation - 20, playerYLocation - 15);
+                player.paintIcon(this, g, playerCar.xPos - 20, playerCar.yPos - 15);
             }
             // Draw the cop
             String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
@@ -376,13 +338,12 @@ public class Panel extends JPanel implements Runnable {
         fillStartingGrids();
 
         // Reset player and cop locations
-        generateNewPlayerLocation();
+        playerCar.setDefaultValues();
         generateNewCopLocation();
 
         // Reset trigger variables
         running = true;
         pause = false;
-        nitro = false;
 
         // Hide menus that may be open upon restarting
         pauseMenu.setVisible(false);
@@ -552,14 +513,6 @@ public class Panel extends JPanel implements Runnable {
         pauseMenu.setVisible(false);
     }
 
-    // Method to respawn the player at its default location
-    public void generateNewPlayerLocation() {
-        playerXLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE; // spawn on the first road
-        playerYLocation = WATER_SIZE + ROAD_SIZE - UNIT_SIZE;
-        direction = 'R';
-        oldDirection = 'R';
-    }
-
     // Method to respawn the cop player on a road tile
     public void generateNewCopLocation() {
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
@@ -584,56 +537,6 @@ public class Panel extends JPanel implements Runnable {
                 bulletGrid[copXLocation][copYLocation - UNIT_SIZE*2] = 3;
                 break;
         }
-    }
-
-    // Method to update the player's coordinates
-    public void movePlayer() {
-        // Change position of the player using the direction variable
-        int spacesToMove;
-        if(nitro == true) {
-            spacesToMove = UNIT_SIZE*2; // 200% speed while checking for collisions to avoid skips
-        } else {
-            spacesToMove = UNIT_SIZE;
-        }
-
-        switch(direction) {
-            case 'R':
-                playerXLocation = playerXLocation + spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'L':
-                playerXLocation = playerXLocation - spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'U':
-                playerYLocation = playerYLocation - spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'D':
-                playerYLocation = playerYLocation + spacesToMove;
-                oldDirection = direction;
-                break;
-        }
-
-        switch(direction) {
-            case 'R':
-                playerXLocation = playerXLocation + spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'L':
-                playerXLocation = playerXLocation - spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'U':
-                playerYLocation = playerYLocation - spacesToMove;
-                oldDirection = direction;
-                break;
-            case 'D':
-                playerYLocation = playerYLocation + spacesToMove;
-                oldDirection = direction;
-                break;
-        }
-        checkPlayerContact();
     }
 
     // Method to move the bullets to the next position based on its direction
@@ -711,46 +614,47 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Check if the player hits any particle that causes a reaction (not road or sidewalk)
+    // @TODO add to Collision class
     public void checkPlayerContact() {
         // Cop: Check for player to cop collision, which ends the game
-        if(Math.abs(playerXLocation - copXLocation) < UNIT_SIZE
-                && Math.abs(playerYLocation - copYLocation) <= UNIT_SIZE) {
-            direction = 'E'; // triggers explosion image
+        if(Math.abs(playerCar.xPos - copXLocation) < UNIT_SIZE
+                && Math.abs(playerCar.yPos - copYLocation) <= UNIT_SIZE) {
+            playerCar.direction = 'E'; // triggers explosion image
             generateNewCopLocation();
             running = false;
         }
         // Water: Check for player to water collision, which ends the game
-        else if(playerXLocation < PLAYER_UNIT_SIZE
-                || playerXLocation > SCREEN_WIDTH - PLAYER_UNIT_SIZE
-                || playerYLocation < PLAYER_UNIT_SIZE
-                || playerYLocation > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
-            direction = 'S'; // triggers splash image
+        else if(playerCar.xPos < PLAYER_UNIT_SIZE
+                || playerCar.xPos > SCREEN_WIDTH - PLAYER_UNIT_SIZE
+                || playerCar.yPos < PLAYER_UNIT_SIZE
+                || playerCar.yPos > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
+            playerCar.direction = 'S'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (You Drowned)");
         }
         // Building: Check for player to building collision, which ends the game
-        else if(backgroundGrid[playerXLocation][playerYLocation] == 3) {
-            direction = 'E';
+        else if(backgroundGrid[playerCar.xPos][playerCar.yPos] == 3) {
+            playerCar.direction = 'E';
             running = false;
             System.out.println("* GAME OVER (You crashed into a Building)");
         }
         // Money: Check for player driving over money, which increases the score between 10-20
-        else if(moneyGrid[playerXLocation][playerYLocation] == 1) {
+        else if(moneyGrid[playerCar.xPos][playerCar.yPos] == 1) {
             Random rand = new Random();
             int result = rand.nextInt(20-10) + 10;
             money = money + result;
-            moneyGrid[playerXLocation][playerYLocation] = 0;
+            moneyGrid[playerCar.xPos][playerCar.yPos] = 0;
         }
         // Money: Check again on a nearby tile
-        else if(moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] == 1) {
+        else if(moneyGrid[playerCar.xPos-UNIT_SIZE][playerCar.yPos] == 1) {
             Random rand = new Random();
             int result = rand.nextInt(20-10) + 10;
             money = money + result;
-            moneyGrid[playerXLocation-UNIT_SIZE][playerYLocation] = 0;
+            moneyGrid[playerCar.xPos-UNIT_SIZE][playerCar.yPos] = 0;
         }
         // Bullet: Check for player getting shot, which ends the game
-        else if(bulletGrid[playerXLocation][playerYLocation] >= 1) {
-            direction = 'E';
+        else if(bulletGrid[playerCar.xPos][playerCar.yPos] >= 1) {
+            playerCar.direction = 'E';
             running = false;
             System.out.println("* GAME OVER (You were shot)");
         }
