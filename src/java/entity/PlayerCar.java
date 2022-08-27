@@ -7,6 +7,7 @@ import java.io.IOException;
 
 public class PlayerCar extends Car {
 
+    // Constructor to create Player Car
     public PlayerCar(main.Panel panel, main.KeyHandler key) {
         this.panel = panel;
         this.key = key;

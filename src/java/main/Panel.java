@@ -1,6 +1,7 @@
 package main;
 
 import entity.Car;
+import entity.CopCar;
 import entity.PlayerCar;
 
 import javax.swing.*;
@@ -52,9 +53,6 @@ public class Panel extends JPanel implements Runnable {
     static long startTime;
 
     // Variables to track graphics
-    // @TODO move to Cop Car class
-    static int copXLocation;
-    static int copYLocation;
     // @TODO move to tile class
     static int[][] backgroundGrid;
     // @TODO move to item class
@@ -72,6 +70,7 @@ public class Panel extends JPanel implements Runnable {
 
     // Entity objects
     PlayerCar playerCar = new PlayerCar(this, key);
+    CopCar copCar = new CopCar(this);
 
     // Create game panel (constructor)
     Panel() {
@@ -82,7 +81,6 @@ public class Panel extends JPanel implements Runnable {
 
         // Initialize background
         fillStartingGrids();
-        generateNewCopLocation();
 
         // Key listener for the panel
         this.addKeyListener(key);
@@ -147,6 +145,7 @@ public class Panel extends JPanel implements Runnable {
         }
 
         playerCar.update();
+        copCar.update();
 
         // @TODO move to bullet class
         // E key for bullet, which is set based on the car direction
@@ -276,7 +275,7 @@ public class Panel extends JPanel implements Runnable {
                     if(bulletGrid[i][j] == 7) {
                         moneyGrid[i][j] = 1; // 7 results in money, 6 does not
                         bulletGrid[i][j] = 0;
-                        generateNewCopLocation();
+                        copCar.setDefaultValues(); // reset cop to spawn in a new location
                     } else {
                         bulletGrid[i][j] = 0;
                     }
@@ -296,12 +295,6 @@ public class Panel extends JPanel implements Runnable {
                 }
             }
         }
-
-        // @TODO add to Cop Car class
-        // Draw the cop
-        String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop/cop_car.png";
-        ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
-        cop.paintIcon(this, g, copXLocation, copYLocation);
 
         // @TODO add to menu class
         // Display current score (money)
@@ -329,6 +322,7 @@ public class Panel extends JPanel implements Runnable {
         }
 
         playerCar.draw(g);
+        copCar.draw(g);
     }
 
     // Method to reset all game settings and start the game loop
@@ -339,7 +333,7 @@ public class Panel extends JPanel implements Runnable {
 
         // Reset player and cop locations
         playerCar.setDefaultValues();
-        generateNewCopLocation();
+        copCar.setDefaultValues();
 
         // Reset trigger variables
         running = true;
@@ -517,18 +511,6 @@ public class Panel extends JPanel implements Runnable {
         pauseMenu.setVisible(false);
     }
 
-    // @TODO add to cop car class
-    // Method to respawn the cop player on a road tile
-    public void generateNewCopLocation() {
-        copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
-        copYLocation = new Random().nextInt((int) (SCREEN_HEIGHT/UNIT_SIZE)) * UNIT_SIZE;
-        // Only spawn on the road
-        if(backgroundGrid[copXLocation][copYLocation] != 2) {
-            generateNewCopLocation();
-        }
-        // Generate next cop bullet to restart cycle of shots
-        generateNewCopBullet();
-    }
 
     // @TODO add to item class
     // Method to create another bullet traveling west or north from the cop
@@ -537,10 +519,10 @@ public class Panel extends JPanel implements Runnable {
         int bulletType = rand.nextInt(2) + 2;
         switch (bulletType) {
             case 2:
-                bulletGrid[copXLocation - UNIT_SIZE*2][copYLocation] = 2; // avoid shooting oneself
+                bulletGrid[copCar.xPos - UNIT_SIZE*2][copCar.yPos] = 2; // avoid shooting oneself
                 break;
             case 3:
-                bulletGrid[copXLocation][copYLocation - UNIT_SIZE*2] = 3;
+                bulletGrid[copCar.xPos][copCar.yPos - UNIT_SIZE*2] = 3;
                 break;
         }
     }
@@ -564,10 +546,10 @@ public class Panel extends JPanel implements Runnable {
                     bulletGrid[i][j] = 6;
                 }
                 // Cop check: Bullet becomes an explosion and then money
-                else if((Math.abs(i - copXLocation) <= UNIT_SIZE
-                          && Math.abs(j - copYLocation) <= UNIT_SIZE)
-                        || (i == copXLocation
-                             && j == copYLocation-UNIT_SIZE)) {
+                else if((Math.abs(i - copCar.xPos) <= UNIT_SIZE
+                          && Math.abs(j - copCar.yPos) <= UNIT_SIZE)
+                        || (i == copCar.xPos
+                             && j == copCar.yPos-UNIT_SIZE)) {
                     bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet right or down continually
@@ -599,10 +581,10 @@ public class Panel extends JPanel implements Runnable {
                     bulletGrid[i][j] = 6;
                 }
                 // Cop check: Bullet becomes an explosion and then money
-                else if((Math.abs(i - copXLocation) <= UNIT_SIZE
-                        && Math.abs(j - copYLocation) <= UNIT_SIZE)
-                        || (i == copXLocation
-                        && j == copYLocation-UNIT_SIZE)) {
+                else if((Math.abs(i - copCar.xPos) <= UNIT_SIZE
+                        && Math.abs(j - copCar.yPos) <= UNIT_SIZE)
+                        || (i == copCar.xPos
+                        && j == copCar.yPos-UNIT_SIZE)) {
                     bulletGrid[i][j] = 7;
                 }
                 // Otherwise, move bullet left or up continually
@@ -624,10 +606,10 @@ public class Panel extends JPanel implements Runnable {
     // Check if the player hits any particle that causes a reaction (not road or sidewalk)
     public void checkPlayerContact() {
         // Cop: Check for player to cop collision, which ends the game
-        if(Math.abs(playerCar.xPos - copXLocation) < UNIT_SIZE
-                && Math.abs(playerCar.yPos - copYLocation) <= UNIT_SIZE) {
+        if(Math.abs(playerCar.xPos - copCar.xPos) < UNIT_SIZE
+                && Math.abs(playerCar.yPos - copCar.yPos) <= UNIT_SIZE) {
 //            playerCar.direction = 'E'; // triggers explosion image
-            generateNewCopLocation();
+            copCar.setDefaultValues();
             running = false;
         }
         // Water: Check for player to water collision, which ends the game

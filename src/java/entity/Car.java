@@ -14,7 +14,7 @@ public abstract class Car implements Entity {
 
     // Default method implementation for setting default position to the center of the screen
     @Override
-    public final void setDefaultValues() {
+    public void setDefaultValues() {
         xPos = 150;
         yPos = 150;
         direction = 'R';

@@ -2,7 +2,7 @@ package entity;
 
 import java.awt.*;
 
-// Interface to create beings in the game, which currently only includes Cars (player and cop)
+// Interface to create the players and NPCs in the game
 public interface Entity {
     // Method to reset the entity settings (e.g. location, direction)
     public void setDefaultValues();
