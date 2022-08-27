@@ -20,5 +20,3 @@ public abstract class Car implements Entity {
         nitro = false;
     }
 }
-
-// @TODO find other commonalities for the abstract class?
