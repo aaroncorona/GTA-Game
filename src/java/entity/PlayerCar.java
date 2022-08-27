@@ -2,6 +2,7 @@ package entity;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -81,7 +82,7 @@ public class PlayerCar extends Car {
     }
 
     @Override
-    public void getImage() {
+    public BufferedImage getImage() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/player/player_car_";
         // Determine the image direction and nitro status
         filePath += direction;
@@ -95,11 +96,12 @@ public class PlayerCar extends Car {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return image;
     }
 
     @Override
     public void draw(Graphics g) {
-        getImage();
+        image = getImage();
         g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 //        g.drawOval(xPos, yPos, 1, 1);
     }

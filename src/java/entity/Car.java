@@ -9,7 +9,7 @@ public abstract class Car implements Entity {
     public int xPos, yPos;
     public char direction;
     public boolean nitro = false;
-    BufferedImage image;
+    public BufferedImage image;
 
     // Default method implementation for setting default position to the center of the screen
     @Override

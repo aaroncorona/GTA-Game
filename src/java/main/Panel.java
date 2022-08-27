@@ -3,6 +3,7 @@ package main;
 import entity.Car;
 import entity.CopCar;
 import entity.PlayerCar;
+import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,33 +17,8 @@ public class Panel extends JPanel implements Runnable {
     public static final int UNIT_SIZE = 50;
     public static final int SCREEN_WIDTH = UNIT_SIZE*28;
     public static final int SCREEN_HEIGHT = UNIT_SIZE*18;
-    // @TODO migrate to tile class
-    public static final int ROAD_SIZE = UNIT_SIZE+3;
-    public static final int WATER_SIZE = UNIT_SIZE;
-    public static final int SIDEWALK_SIZE = UNIT_SIZE;
 
-    // Constants for building dimensions
-    // @TODO migrate to tile class
-    // @TODO create mapping text file
-    static final int BUILDING_SIZE = 160; // can vary by picture
-    static final int B1_X_START = 245;
-    static final int B1_Y_START = 230;
-    static final int B2_X_START = B1_X_START;
-    static final int B2_Y_START = B1_Y_START + BUILDING_SIZE+10;
-    static final int B3_X_START = B1_X_START;
-    static final int B3_Y_START = B2_Y_START + BUILDING_SIZE - 10;
-    static final int B4_X_START = 610;
-    static final int B4_Y_START = B1_Y_START;
-    static final int B5_X_START = B4_X_START;
-    static final int B5_Y_START = B4_Y_START + BUILDING_SIZE+150;
-    static final int B6_X_START = 965;
-    static final int B6_Y_START = B1_Y_START;
-    static final int B7_X_START = B6_X_START;
-    static final int B7_Y_START = B2_Y_START;
-    static final int B8_X_START = B6_X_START;
-    static final int B8_Y_START = B3_Y_START+20;;
-
-    // Helper variables to manipulate the game state
+    // Helper variables for the game state
     public static boolean running = false;
     // @TODO migrate to menu class
     public static boolean pause;
@@ -50,12 +26,10 @@ public class Panel extends JPanel implements Runnable {
     // Helper variables to track dynamic data that needs a global scope
     // @TODO migrate to item class
     static int money;
-    // @TODO migrate to timer class?
+    // @TODO migrate to timer class
     static long startTime;
 
     // Variables to track graphics
-    // @TODO migrate to tile class
-    public static int[][] backgroundGrid;
     // @TODO migrate to item class
     public static int[][] bulletGrid;
     public static int[][] moneyGrid;
@@ -73,28 +47,28 @@ public class Panel extends JPanel implements Runnable {
     PlayerCar playerCar = new PlayerCar(this, key);
     CopCar copCar = new CopCar(this);
 
+    // Background tile manager
+    TileManager tileManager = TileManager.getInstance(this);
+
     // Create game panel (constructor)
     Panel() {
-        // Add main.Panel details
+        // Add Panel details
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
 
-        // Initialize background
-        fillStartingGrids();
-
-        // Key listener for the panel
+        // Add the Key listener to the panel
         this.addKeyListener(key);
     }
 
-    // Method to launch the game thread
+    // Method to launch the game loop
     public void startGameThread() {
         // Start thread
         Thread gameThread = new Thread(this);
         gameThread.start();
     }
 
-    // Game loop logic that the Thread runs
+    // Game thread logic that the Thread will run
     @Override
     public void run() {
         // Set rendering frequency
@@ -120,7 +94,7 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
-    // Method to update positions and check for collisions
+    // Method to update positions of all entities and objects as well as and checking for collisions
     public void updateData() {
 
         // Basic game mechanics
@@ -175,6 +149,7 @@ public class Panel extends JPanel implements Runnable {
             // @TODO move to bullet class
             moveBullet();
             // @TODO move to collison class
+            checkPlayerContact();
             checkGameOver();
         }
     }
@@ -183,133 +158,25 @@ public class Panel extends JPanel implements Runnable {
     public void paint(Graphics g) {
         super.paint(g);
 
-        // @TODO add to tile manager
-        // Paint water and roads
-        for(int i = 0; i < backgroundGrid.length; i++) {
-            for(int j = 0; j < backgroundGrid[i].length; j++) {
-                // Draw Water
-                if(backgroundGrid[i][j] == 1) {
-                    g.setColor(Color.BLUE.darker());
-                    g.fillRect(i, j, WATER_SIZE, WATER_SIZE);
-                }
-                // Draw Roads
-                else if(backgroundGrid[i][j] == 2) {
-                    g.setColor(Color.GRAY.darker());
-                    g.fillOval(i, j, ROAD_SIZE, ROAD_SIZE);
-                }
-            }
-        }
-
-        // @TODO add to tile manager
-        // Draw street lines
-        Graphics2D g2d = (Graphics2D) g.create();
-        Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
-                0, new float[]{9}, 0);
-        g2d.setColor(Color.yellow);
-        g2d.setStroke(dashed);
-        // Horizontal
-        g2d.drawLine(150, 140, SCREEN_WIDTH - 160, 140);
-        g2d.drawLine(150, SCREEN_HEIGHT - 160, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 160);
-        // Vertical
-        g2d.drawLine(140, 220, 140, SCREEN_HEIGHT - 240);
-        g2d.drawLine(SCREEN_WIDTH - 160, 220, SCREEN_WIDTH - 160, SCREEN_HEIGHT - 240);
-        g2d.drawLine(515, 220, 515, SCREEN_HEIGHT - 240);
-        g2d.drawLine(860, 220, 860, SCREEN_HEIGHT - 240);
-        g2d.dispose();
-
-        // @TODO add to tile manager
-        // @TODO replace with tree sprites?
-        // Draw building #1
-        String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
-        ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
-        b1.paintIcon(this, g, B1_X_START, B1_Y_START);
-
-        // Draw building #2
-        String filePathB2 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building2.png";
-        ImageIcon b2 = new ImageIcon(new ImageIcon(filePathB2).getImage().getScaledInstance(BUILDING_SIZE-40, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
-        b2.paintIcon(this, g, B2_X_START, B2_Y_START);
-
-        // Draw building #3
-        String filePathB3 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building3.png";
-        ImageIcon b3 = new ImageIcon(new ImageIcon(filePathB3).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-40, Image.SCALE_DEFAULT));
-        b3.paintIcon(this, g, B3_X_START, B3_Y_START);
-
-        // Draw building #4
-        String filePathB4 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building4.png";
-        ImageIcon b4 = new ImageIcon(new ImageIcon(filePathB4).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE+130, Image.SCALE_DEFAULT));
-        b4.paintIcon(this, g, B4_X_START, B4_Y_START);
-
-        // Draw building #5 (b1 copied to a different location)
-        b1.paintIcon(this, g, B5_X_START, B5_Y_START);
-
-        // Draw building #6
-        String filePathB6 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building6.png";
-        ImageIcon b6 = new ImageIcon(new ImageIcon(filePathB6).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
-        b6.paintIcon(this, g, B6_X_START, B6_Y_START);
-
-        // Draw building #7
-        String filePathB7 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building7.png";
-        ImageIcon b7 = new ImageIcon(new ImageIcon(filePathB7).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE, Image.SCALE_DEFAULT));
-        b7.paintIcon(this, g, B7_X_START, B7_Y_START);
-
-        // Draw building #8
-        String filePathB8 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building8.png";
-        ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
-        b8.paintIcon(this, g, B8_X_START, B8_Y_START);
-
-        // @TODO add to item class
-        // Draw bullet effects (splash or explosion)
-        for(int i = 0; i < bulletGrid.length; i++) {
-            for(int j = 0; j < bulletGrid[i].length; j++) {
-                // Draw splash
-                if(bulletGrid[i][j] == 5) {
-                    String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
-                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
-                    splash.paintIcon(this, g, i, j);
-                    bulletGrid[i][j] = 0; // reset
-                    generateNewCopBullet(); // cop waits to shoot again until impact
-                 // Draw Explosion
-                } else if(bulletGrid[i][j] == 6 || bulletGrid[i][j] == 7){
-                    String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
-                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
-                    explosion.paintIcon(this, g, i, j);
-                    if(bulletGrid[i][j] == 7) {
-                        moneyGrid[i][j] = 1; // 7 results in money, 6 does not
-                        bulletGrid[i][j] = 0;
-                        copCar.setDefaultValues(); // reset cop to spawn in a new location
-                    } else {
-                        bulletGrid[i][j] = 0;
-                    }
-                    generateNewCopBullet(); // cop waits to shoot again until impact
-                }
-            }
-        }
+        // @TODO add to collision class
+        // Draw bullet (splash or explosion effect)
 
         // @TODO add to item class
         // Draw Money
-        for(int i = 0; i < moneyGrid.length; i++) {
-            for(int j = 0; j < moneyGrid[i].length; j++) {
-                if(moneyGrid[i][j] == 1) {
-                    String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
-                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
-                    money.paintIcon(this, g, i, j);
-                }
-            }
-        }
 
-        // @TODO add to menu class
+        // @TODO migrate to menu class
         // Display current score (money)
         g.setColor(Color.GREEN.brighter());
         g.setFont(new Font("Serif", Font.PLAIN, 50));
         g.drawString("Bank Account: $" + money,20,40); // coordinates start in the top left
 
-        // @TODO add to menu class
+        // @TODO migrate to menu class
         // Display stop watch
         g.setColor(Color.WHITE);
         g.setFont(new Font("Serif", Font.PLAIN, 25));
         g.drawString(getTimePassed(),20,70);
 
-        // @TODO replace with menu class
+        // @TODO migrate to menu class
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
@@ -322,6 +189,7 @@ public class Panel extends JPanel implements Runnable {
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
 
+        tileManager.draw(g);
         playerCar.draw(g);
         copCar.draw(g);
     }
@@ -329,12 +197,13 @@ public class Panel extends JPanel implements Runnable {
     // Method to reset all game settings and start the game loop
     public void resetGame() {
 
-        // Reset to default background
-        fillStartingGrids();
-
         // Reset player and cop locations
         playerCar.setDefaultValues();
         copCar.setDefaultValues();
+
+        // @TODO use item class to reset
+        // Restart money at 1
+        money = 1;
 
         // Reset trigger variables
         running = true;
@@ -345,142 +214,8 @@ public class Panel extends JPanel implements Runnable {
         gameOverMenu.setVisible(false);
         highScoreMenu.setVisible(false);
 
-        // Restart money at 1
-        money = 1;
-
         // Start stopwatch
         startTime = System.currentTimeMillis();
-    }
-
-    // @ TODO move to tile manager class
-    // @ TODO replace with text file mapping
-    // Method to establish all the default background particles (sidewalk, water, road, and building)
-    public void fillStartingGrids() {
-        /*
-        Background Grid particle mapping:
-           0 = empty / sidewalk
-           1 = water
-           2 = road
-           3 = building
-         */
-        backgroundGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < backgroundGrid.length; i++) {
-            for(int j = 0; j < backgroundGrid[i].length; j++) {
-                // Water on screen edges (for island effect)
-                if(i == 0
-                        || i == SCREEN_WIDTH - WATER_SIZE
-                        || j == 0
-                        || j == SCREEN_HEIGHT - WATER_SIZE) {
-                    backgroundGrid[i][j] = 1;
-                }
-                // Sidewalk around the water edges
-                else if(i < WATER_SIZE + SIDEWALK_SIZE
-                        || i >  SCREEN_WIDTH - (WATER_SIZE*4) - SIDEWALK_SIZE
-                        || j < WATER_SIZE + SIDEWALK_SIZE
-                        || j >  SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) {
-                    backgroundGrid[i][j] = 0;
-                }
-                // Roads (vertical)
-                else if(i == WATER_SIZE + SIDEWALK_SIZE // far left road
-                        || i == SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 2nd road
-                        || i == SCREEN_WIDTH/4 + SCREEN_WIDTH/4 + WATER_SIZE + SIDEWALK_SIZE*2 // 3rd road
-                        || i == SCREEN_WIDTH - WATER_SIZE*4 - SIDEWALK_SIZE) { // far right road
-                    backgroundGrid[i][j] = 2;
-                }
-                // Roads (horizontal)
-                else if(j == WATER_SIZE + SIDEWALK_SIZE // top road
-                        || j == SCREEN_HEIGHT - (WATER_SIZE*4) - SIDEWALK_SIZE) { // bottom road
-                    backgroundGrid[i][j] = 2;
-                }
-                // Building #1 area
-                else if(i >= B1_X_START
-                        && i <= B1_X_START + BUILDING_SIZE
-                        && j >= B1_Y_START
-                        && j <= B1_Y_START + BUILDING_SIZE-50) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #2 area
-                else if(i >= B2_X_START
-                        && i <= B2_X_START + BUILDING_SIZE - 40
-                        && j >= B2_Y_START
-                        && j <= B2_Y_START + BUILDING_SIZE - 40) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #3 area
-                else if(i >= B3_X_START
-                        && i <= B3_X_START + BUILDING_SIZE
-                        && j >= B3_Y_START
-                        && j <= B3_Y_START + BUILDING_SIZE - 40) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #4 area
-                else if(i >= B4_X_START
-                        && i <= B4_X_START + BUILDING_SIZE
-                        && j >= B4_Y_START
-                        && j <= B4_Y_START + BUILDING_SIZE + 130) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #5 area
-                else if(i >= B5_X_START
-                        && i <= B5_X_START + BUILDING_SIZE
-                        && j >= B5_Y_START
-                        && j <= B5_Y_START + BUILDING_SIZE-60) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #6 area
-                else if(i >= B6_X_START
-                        && i <= B6_X_START + BUILDING_SIZE
-                        && j >= B6_Y_START
-                        && j <= B6_Y_START + BUILDING_SIZE) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #7 area
-                else if(i >= B7_X_START
-                        && i <= B7_X_START + BUILDING_SIZE
-                        && j >= B7_Y_START
-                        && j <= B7_Y_START + BUILDING_SIZE) {
-                    backgroundGrid[i][j] = 3;
-                }
-                // Building #8 area
-                else if(i >= B8_X_START
-                        && i <= B8_X_START + BUILDING_SIZE
-                        && j >= B8_Y_START
-                        && j <= B8_Y_START + BUILDING_SIZE-80) {
-                    backgroundGrid[i][j] = 3;
-                }
-                else{
-                    backgroundGrid[i][j] = 0;
-                }
-            }
-        }
-        /*
-        Bullet grid particle mapping:
-        0 = empty
-        1 = bullet right moving
-        2 = bullet left moving
-        3 = bullet up moving
-        4 = bullet down moving
-        5 = bullet splash
-        6 = bullet explosion
-        7 = bullet explosion that produces money
-         */
-        bulletGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < bulletGrid.length; i++) {
-            for(int j = 0; j < bulletGrid[i].length; j++) {
-                bulletGrid[i][j] = 0;
-            }
-        }
-       /*
-        Money grid particle mapping:
-        0 = empty
-        1 = money exists
-        */
-        moneyGrid = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
-        for(int i = 0; i < moneyGrid.length; i++) {
-            for(int j = 0; j < moneyGrid[i].length; j++) {
-                moneyGrid[i][j] = 0;
-            }
-        }
     }
 
     // @TODO add to menu class
@@ -531,123 +266,11 @@ public class Panel extends JPanel implements Runnable {
     // @TODO add to item class
     // Method to move the bullets to the next position based on its direction
     public void moveBullet() {
-        // Move bullet right and down (traverse grid ascending)
-        for(int i = 0; i < bulletGrid.length; i++) {
-            for(int j = 0; j < bulletGrid[i].length; j++) {
-                // No bullet present
-                if(bulletGrid[i][j] == 0) {
-                    // do nothing
-                }
-                // Water check: Bullet becomes a splash
-                else if(backgroundGrid[i][j] == 1) {
-                    bulletGrid[i][j] = 5;
-                }
-                // Building check: Bullet becomes an explosion
-                else if(backgroundGrid[i][j] == 3) {
-                    bulletGrid[i][j] = 6;
-                }
-                // Cop check: Bullet becomes an explosion and then money
-                else if((Math.abs(i - copCar.xPos) <= UNIT_SIZE
-                          && Math.abs(j - copCar.yPos) <= UNIT_SIZE)
-                        || (i == copCar.xPos
-                             && j == copCar.yPos-UNIT_SIZE)) {
-                    bulletGrid[i][j] = 7;
-                }
-                // Otherwise, move bullet right or down continually
-                else if(bulletGrid[i][j] == 1) {
-                    bulletGrid[i][j] = 0;
-                    bulletGrid[i+UNIT_SIZE][j] = 1;
-                    checkPlayerContact();
-                }
-                else if(bulletGrid[i][j] == 4) {
-                    bulletGrid[i][j] = 0;
-                    bulletGrid[i][j+UNIT_SIZE] = 4;
-                    checkPlayerContact();
-                }
-            }
-        }
-        // Move bullet left and up (traverse grid descending)
-        for(int i = bulletGrid.length-1; i > 0; i--) {
-            for(int j = bulletGrid[i].length-1; j > 0; j--) {
-                // No bullet present
-                if(bulletGrid[i][j] == 0) {
-                    // do nothing
-                }
-                // Water check: Bullet becomes a splash
-                else if(backgroundGrid[i][j] == 1) {
-                    bulletGrid[i][j] = 5;
-                }
-                // Building check: Bullet becomes an explosion
-                else if(backgroundGrid[i][j] == 3) {
-                    bulletGrid[i][j] = 6;
-                }
-                // Cop check: Bullet becomes an explosion and then money
-                else if((Math.abs(i - copCar.xPos) <= UNIT_SIZE
-                        && Math.abs(j - copCar.yPos) <= UNIT_SIZE)
-                        || (i == copCar.xPos
-                        && j == copCar.yPos-UNIT_SIZE)) {
-                    bulletGrid[i][j] = 7;
-                }
-                // Otherwise, move bullet left or up continually
-                else if(bulletGrid[i][j] == 2) {
-                    bulletGrid[i][j] = 0;
-                    bulletGrid[i-UNIT_SIZE][j] = 2;
-                    checkPlayerContact();
-                }
-                else if(bulletGrid[i][j] == 3) {
-                    bulletGrid[i][j] = 0;
-                    bulletGrid[i][j-UNIT_SIZE] = 3;
-                    checkPlayerContact();
-                }
-            }
-        }
     }
 
     // @TODO add to Collision class
     // Check if the player hits any particle that causes a reaction (not road or sidewalk)
     public void checkPlayerContact() {
-        // Cop: Check for player to cop collision, which ends the game
-        if(Math.abs(playerCar.xPos - copCar.xPos) < UNIT_SIZE
-                && Math.abs(playerCar.yPos - copCar.yPos) <= UNIT_SIZE) {
-//            playerCar.direction = 'E'; // triggers explosion image
-            copCar.setDefaultValues();
-            running = false;
-        }
-        // Water: Check for player to water collision, which ends the game
-        else if(playerCar.xPos < UNIT_SIZE
-                || playerCar.xPos > SCREEN_WIDTH - UNIT_SIZE
-                || playerCar.yPos < UNIT_SIZE
-                || playerCar.yPos > SCREEN_HEIGHT - UNIT_SIZE) {
-//            playerCar.direction = 'S'; // triggers splash image
-            running = false; // stop the game (which triggers end game message)
-            System.out.println("* GAME OVER (You Drowned)");
-        }
-        // Building: Check for player to building collision, which ends the game
-        else if(backgroundGrid[playerCar.xPos][playerCar.yPos] == 3) {
-//            playerCar.direction = 'E'; // triggers explosion image
-            running = false;
-            System.out.println("* GAME OVER (You crashed into a Building)");
-        }
-        // Money: Check for player driving over money, which increases the score between 10-20
-        else if(moneyGrid[playerCar.xPos][playerCar.yPos] == 1) {
-            Random rand = new Random();
-            int result = rand.nextInt(20-10) + 10;
-            money = money + result;
-            moneyGrid[playerCar.xPos][playerCar.yPos] = 0;
-        }
-        // Money: Check again on a nearby tile
-        else if(moneyGrid[playerCar.xPos-UNIT_SIZE][playerCar.yPos] == 1) {
-            Random rand = new Random();
-            int result = rand.nextInt(20-10) + 10;
-            money = money + result;
-            moneyGrid[playerCar.xPos-UNIT_SIZE][playerCar.yPos] = 0;
-        }
-        // Bullet: Check for player getting shot, which ends the game
-        else if(bulletGrid[playerCar.xPos][playerCar.yPos] >= 1) {
-//            playerCar.direction = 'E';
-            running = false;
-            System.out.println("* GAME OVER (You were shot)");
-        }
     }
 
     // @TODO add to Menu class
