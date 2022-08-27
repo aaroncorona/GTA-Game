@@ -70,7 +70,7 @@ public class TileManager {
         g.drawImage(tiles[1].image, 200, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
         g.drawImage(tiles[2].image, 250, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
         g.drawImage(tiles[3].image, 300, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
-        g.drawImage(tiles[5].image, 350, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        g.drawImage(tiles[4].image, 350, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 
     }
 }

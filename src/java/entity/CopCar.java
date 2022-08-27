@@ -38,7 +38,7 @@ public class CopCar extends Car {
 
     @Override
     public BufferedImage getImage() {
-        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop/cop_car.png";
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop_car/cop_car.png";
         try {
             image = ImageIO.read(new File(filePath));
         } catch (IOException e) {

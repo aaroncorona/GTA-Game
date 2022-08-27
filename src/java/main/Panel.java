@@ -179,7 +179,7 @@ public class Panel extends JPanel implements Runnable {
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
-            String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/start_menu.png";
+            String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/start_menu.png";
             ImageIcon startMenu = new ImageIcon(new ImageIcon(filePathStartMenu).getImage().getScaledInstance((SCREEN_WIDTH/2)+50, SCREEN_HEIGHT-50, Image.SCALE_DEFAULT));
             startMenu.paintIcon(this, g, SCREEN_WIDTH/4, 10);
             // Draw text
