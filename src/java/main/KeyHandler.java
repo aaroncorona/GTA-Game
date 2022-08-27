@@ -1,14 +1,32 @@
 package main;
 
+import tile.Tile;
+import tile.TileManager;
+
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 // Class to map key inputs to public variables to inform other classes
 public class KeyHandler implements KeyListener {
 
+    private static KeyHandler instance = null;
+
     // Variables to track when a key is pressed
-    public boolean upPress, downPress, rightPress, leftPress,
-                   spacePress, backSpacePress, enterPress, ePress, rPress;
+    public static boolean upPress, downPress, rightPress, leftPress,
+                          spacePress, backSpacePress, enterPress, ePress, rPress;
+
+    // Private Constructor - Singleton class
+    private KeyHandler() {}
+
+    // Singleton constructor method to ensure there is only 1 Tile manager obj per game
+    public static KeyHandler getInstance() {
+        if(instance == null) {
+            instance = new KeyHandler();
+            return instance;
+        } else {
+            return instance;
+        }
+    }
 
     @Override
     public void keyPressed(KeyEvent e) {

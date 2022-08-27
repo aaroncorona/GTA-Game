@@ -15,21 +15,13 @@ public class TileManager {
     public static Tile[] tiles;
     public static int[][] tileMap;
 
-    // Private Constructor
+    // Private Constructor - Singleton class
     private TileManager() {
         tiles = new Tile[10];
 
         // Establish tile data
         createTiles();
         createTileMap();
-
-//        // Print to confirm
-//        for (int i = 0; i < tileMap.length; i++) {
-//            for (int j = 0; j < tileMap[i].length; j++) {
-//                System.out.print(tileMap[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
     }
 
     // Singleton constructor method to ensure there is only 1 Tile manager obj per game

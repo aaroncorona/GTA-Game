@@ -42,14 +42,14 @@ public class Panel extends JPanel implements Runnable {
     public static JPopupMenu highScoreMenu = new JPopupMenu();
 
     // Key handler
-    public static KeyHandler key = new KeyHandler();
+    public static KeyHandler key = KeyHandler.getInstance();
+
+    // Background tile manager
+    private TileManager tileManager = TileManager.getInstance(this);
 
     // Entity objects
     private PlayerCar playerCar = new PlayerCar(this, key);
     private CopCar copCar = new CopCar(this);
-
-    // Background tile manager
-    private TileManager tileManager = TileManager.getInstance(this);
 
     // Create game panel (constructor)
     Panel() {
