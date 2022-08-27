@@ -13,12 +13,13 @@ import java.util.*;
 public class Panel extends JPanel implements Runnable {
 
     // Constants for pixel sizes
-    public static final int UNIT_SIZE = 25;
-    public static final int ROAD_SIZE = UNIT_SIZE*5;
-    public static final int WATER_SIZE = UNIT_SIZE*2;
+    public static final int UNIT_SIZE = 50;
+    public static final int SCREEN_WIDTH = UNIT_SIZE*28;
+    public static final int SCREEN_HEIGHT = UNIT_SIZE*18;
+    // @TODO migrate to tile class
+    public static final int ROAD_SIZE = UNIT_SIZE+3;
+    public static final int WATER_SIZE = UNIT_SIZE;
     public static final int SIDEWALK_SIZE = UNIT_SIZE;
-    public static final int SCREEN_WIDTH = UNIT_SIZE*56;
-    public static final int SCREEN_HEIGHT = UNIT_SIZE*36;
 
     // Constants for building dimensions
     // @TODO migrate to tile class
@@ -133,7 +134,7 @@ public class Panel extends JPanel implements Runnable {
             System.exit(0);
             key.backSpacePress = false;
         }
-        // @TODO move to menu class
+        // @TODO migrate to menu class
         // Space bar to pause or resume game
         if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
@@ -147,7 +148,7 @@ public class Panel extends JPanel implements Runnable {
         playerCar.update();
         copCar.update();
 
-        // @TODO move to bullet class
+        // @TODO migrate to bullet class
         // E key for bullet, which is set based on the car direction
         if(key.ePress == true) {
             int bulletType = 0;
@@ -263,14 +264,14 @@ public class Panel extends JPanel implements Runnable {
                 // Draw splash
                 if(bulletGrid[i][j] == 5) {
                     String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
-                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
+                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
                     splash.paintIcon(this, g, i, j);
                     bulletGrid[i][j] = 0; // reset
                     generateNewCopBullet(); // cop waits to shoot again until impact
                  // Draw Explosion
                 } else if(bulletGrid[i][j] == 6 || bulletGrid[i][j] == 7){
                     String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
-                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
+                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
                     explosion.paintIcon(this, g, i, j);
                     if(bulletGrid[i][j] == 7) {
                         moneyGrid[i][j] = 1; // 7 results in money, 6 does not
@@ -290,7 +291,7 @@ public class Panel extends JPanel implements Runnable {
             for(int j = 0; j < moneyGrid[i].length; j++) {
                 if(moneyGrid[i][j] == 1) {
                     String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
-                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
+                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(UNIT_SIZE, UNIT_SIZE, Image.SCALE_DEFAULT));
                     money.paintIcon(this, g, i, j);
                 }
             }
@@ -613,10 +614,10 @@ public class Panel extends JPanel implements Runnable {
             running = false;
         }
         // Water: Check for player to water collision, which ends the game
-        else if(playerCar.xPos < Car.CAR_SIZE
-                || playerCar.xPos > SCREEN_WIDTH - Car.CAR_SIZE
-                || playerCar.yPos < Car.CAR_SIZE
-                || playerCar.yPos > SCREEN_HEIGHT - Car.CAR_SIZE) {
+        else if(playerCar.xPos < UNIT_SIZE
+                || playerCar.xPos > SCREEN_WIDTH - UNIT_SIZE
+                || playerCar.yPos < UNIT_SIZE
+                || playerCar.yPos > SCREEN_HEIGHT - UNIT_SIZE) {
 //            playerCar.direction = 'S'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (You Drowned)");

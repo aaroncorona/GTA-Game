@@ -18,19 +18,19 @@ public class CopCar extends Car {
     // Cop should spawn in a random location
     @Override
     public void setDefaultValues() {
-        xPos = new Random().nextInt((int) (panel.SCREEN_WIDTH/panel.UNIT_SIZE)) * CAR_SIZE;
-        yPos = new Random().nextInt((int) (panel.SCREEN_HEIGHT/panel.UNIT_SIZE)) * CAR_SIZE;
-        // Only spawn on the road
-        if(panel.backgroundGrid[xPos][yPos] != 2) {
-            setDefaultValues();
-        }
+        xPos = new Random().nextInt((int) (panel.SCREEN_WIDTH/panel.UNIT_SIZE)) * panel.UNIT_SIZE;
+        yPos = new Random().nextInt((int) (panel.SCREEN_HEIGHT/panel.UNIT_SIZE)) * panel.UNIT_SIZE;
         direction = 'R';
         nitro = false;
+
+//        // Reset if the Cop spawns off the road
+//        if(panel.backgroundGrid[xPos][yPos] != 2) {
+//            setDefaultValues();
+//        }
     }
 
     @Override
     public void update() {
-        // Not currently used: Cop does not move or take key inputs
     }
 
     @Override
@@ -46,7 +46,7 @@ public class CopCar extends Car {
     @Override
     public void draw(Graphics g) {
         getImage();
-        g.drawImage(image, xPos, yPos, CAR_SIZE, CAR_SIZE, null);
+        g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 //        g.drawOval(xPos, yPos, 10, 10);
     }
 }

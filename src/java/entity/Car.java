@@ -5,7 +5,6 @@ import java.awt.image.BufferedImage;
 public abstract class Car implements Entity {
     public static main.Panel panel;
     public static main.KeyHandler key;
-    public static final int CAR_SIZE = panel.UNIT_SIZE*2;
 
     public int xPos, yPos;
     public char direction;

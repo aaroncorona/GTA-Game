@@ -100,7 +100,7 @@ public class PlayerCar extends Car {
     @Override
     public void draw(Graphics g) {
         getImage();
-        g.drawImage(image, xPos, yPos, CAR_SIZE, CAR_SIZE, null);
+        g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 //        g.drawOval(xPos, yPos, 1, 1);
     }
 }
