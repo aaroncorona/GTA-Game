@@ -301,7 +301,7 @@ public class Panel extends JPanel implements Runnable {
         // Draw the cop
         String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop/cop_car.png";
         ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
-        cop.paintIcon(this, g, copXLocation - 15, copYLocation - 20);
+        cop.paintIcon(this, g, copXLocation, copYLocation);
 
         // @TODO add to menu class
         // Display current score (money)
