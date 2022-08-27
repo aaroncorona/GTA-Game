@@ -43,8 +43,15 @@ public class CopCar extends Car {
 
     @Override
     public BufferedImage getImage() {
-        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop_car/cop_car.png";
         BufferedImage image = null;
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/cop_car/cop_car_";
+        // Determine the image direction and nitro status
+        filePath += direction;
+        // Determine if it should be a nitro image
+        if(nitro == true) {
+            filePath += "_nitro";
+        }
+        filePath += ".png";
         try {
             image = ImageIO.read(new File(filePath));
         } catch (IOException e) {

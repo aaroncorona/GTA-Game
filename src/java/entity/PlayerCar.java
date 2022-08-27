@@ -85,8 +85,8 @@ public class PlayerCar extends Car {
 
     @Override
     public BufferedImage getImage() {
-        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/player_car/player_car_";
         BufferedImage image = null;
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
         // Determine the image direction and nitro status
         filePath += direction;
         // Determine if it should be a nitro image
