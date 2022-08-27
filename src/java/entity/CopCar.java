@@ -39,6 +39,7 @@ public class CopCar extends Car {
     @Override
     public BufferedImage getImage() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop_car/cop_car.png";
+        BufferedImage image = null;
         try {
             image = ImageIO.read(new File(filePath));
         } catch (IOException e) {
@@ -49,7 +50,6 @@ public class CopCar extends Car {
 
     @Override
     public void draw(Graphics g) {
-        image = getImage();
-        g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
     }
 }

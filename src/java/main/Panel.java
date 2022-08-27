@@ -12,10 +12,12 @@ import java.util.*;
 
 public class Panel extends JPanel implements Runnable {
 
-    // Constants for pixel sizes
-    public static final int UNIT_SIZE = 50;
-    public static final int SCREEN_WIDTH = UNIT_SIZE*28;
-    public static final int SCREEN_HEIGHT = UNIT_SIZE*18;
+    // Constants for screen size
+    public static final int UNIT_SIZE = 50; // most granular measurement
+    public static final int SCREEN_COLS = 21;
+    public static final int SCREEN_ROWS = 15;
+    public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
+    public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
 
     // Helper variables for the game state
     public static boolean running = false;
@@ -282,7 +284,7 @@ public class Panel extends JPanel implements Runnable {
             if (money >= 20) {
                 try {
                     // Create or append file
-                    FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
+                    FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
                     PrintWriter write = new PrintWriter(fw);
                     // Print the score to the csv file and the time on the column next to it
                     write.println(); // Skip to new row
