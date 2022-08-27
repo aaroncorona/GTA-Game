@@ -1,6 +1,5 @@
 package main;
 
-import entity.Car;
 import entity.CopCar;
 import entity.PlayerCar;
 import tile.TileManager;
@@ -25,9 +24,9 @@ public class Panel extends JPanel implements Runnable {
 
     // Helper variables to track dynamic data that needs a global scope
     // @TODO migrate to item class
-    static int money;
+    public static int money;
     // @TODO migrate to timer class
-    static long startTime;
+    public static long startTime;
 
     // Variables to track graphics
     // @TODO migrate to item class
@@ -44,11 +43,11 @@ public class Panel extends JPanel implements Runnable {
     public static KeyHandler key = new KeyHandler();
 
     // Entity objects
-    PlayerCar playerCar = new PlayerCar(this, key);
-    CopCar copCar = new CopCar(this);
+    private PlayerCar playerCar = new PlayerCar(this, key);
+    private CopCar copCar = new CopCar(this);
 
     // Background tile manager
-    TileManager tileManager = TileManager.getInstance(this);
+    private TileManager tileManager = TileManager.getInstance(this);
 
     // Create game panel (constructor)
     Panel() {
