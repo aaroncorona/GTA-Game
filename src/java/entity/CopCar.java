@@ -20,6 +20,10 @@ public class CopCar extends Car {
     public void setDefaultValues() {
         xPos = new Random().nextInt((int) (panel.SCREEN_WIDTH/panel.UNIT_SIZE)) * CAR_SIZE;
         yPos = new Random().nextInt((int) (panel.SCREEN_HEIGHT/panel.UNIT_SIZE)) * CAR_SIZE;
+        // Only spawn on the road
+        if(panel.backgroundGrid[xPos][yPos] != 2) {
+            setDefaultValues();
+        }
         direction = 'R';
         nitro = false;
     }
@@ -43,6 +47,6 @@ public class CopCar extends Car {
     public void draw(Graphics g) {
         getImage();
         g.drawImage(image, xPos, yPos, CAR_SIZE, CAR_SIZE, null);
-//        g.drawOval(xPos, yPos, 1, 1);
+//        g.drawOval(xPos, yPos, 10, 10);
     }
 }

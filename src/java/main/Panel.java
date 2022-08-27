@@ -21,7 +21,7 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = UNIT_SIZE*36;
 
     // Constants for building dimensions
-    // @TODO move to tile class
+    // @TODO migrate to tile class
     // @TODO create mapping text file
     static final int BUILDING_SIZE = 160; // can vary by picture
     static final int B1_X_START = 245;
@@ -43,24 +43,24 @@ public class Panel extends JPanel implements Runnable {
 
     // Helper variables to manipulate the game state
     public static boolean running = false;
-    // @TODO move to menu class
+    // @TODO migrate to menu class
     public static boolean pause;
 
     // Helper variables to track dynamic data that needs a global scope
-    // @TODO move to item class
+    // @TODO migrate to item class
     static int money;
-    // @TODO move to timer class?
+    // @TODO migrate to timer class?
     static long startTime;
 
     // Variables to track graphics
-    // @TODO move to tile class
-    static int[][] backgroundGrid;
-    // @TODO move to item class
-    static int[][] bulletGrid;
-    static int[][] moneyGrid;
+    // @TODO migrate to tile class
+    public static int[][] backgroundGrid;
+    // @TODO migrate to item class
+    public static int[][] bulletGrid;
+    public static int[][] moneyGrid;
 
     // Menus
-    // @TODO move to menu class
+    // @TODO migrate to menu class
     public static JPopupMenu pauseMenu = new JPopupMenu();
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
