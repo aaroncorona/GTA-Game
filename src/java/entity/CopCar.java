@@ -1,5 +1,8 @@
 package entity;
 
+import tile.Tile;
+import tile.TileManager;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,11 +30,10 @@ public class CopCar extends Car {
         collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
                                       panel.UNIT_SIZE, panel.UNIT_SIZE/2);
 
-        // @TODO fix when the Tile manager class is complete
-//        // Reset if the Cop spawns off the road
-//        if(panel.backgroundGrid[xPos][yPos] != 2) {
-//            setDefaultValues();
-//        }
+        // Reset if the Cop spawn on a tile that would cause an instant collision
+        if(TileManager.tiles[TileManager.tileMap[yPos / panel.UNIT_SIZE][xPos / panel.UNIT_SIZE]].collision == true) {
+            setDefaultValues();
+        }
     }
 
     @Override

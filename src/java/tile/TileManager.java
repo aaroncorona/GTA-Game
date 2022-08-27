@@ -101,8 +101,7 @@ public class TileManager {
         // Use the map data to draw each tile
         for (int i = 0; i < tileMap.length; i++) {
             for (int j = 0; j < tileMap[i].length; j++) {
-                int tileNum = tileMap[i][j];
-                g.drawImage(tiles[tileNum].image, j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+                g.drawImage(tiles[tileMap[i][j]].image, j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
             }
         }
     }
