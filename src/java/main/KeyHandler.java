@@ -9,6 +9,7 @@ import java.awt.event.KeyListener;
 // Class to map key inputs to public variables to inform other classes
 public class KeyHandler implements KeyListener {
 
+    // Singleton instance tracking
     private static KeyHandler instance = null;
 
     // Variables to track when a key is pressed

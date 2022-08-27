@@ -26,7 +26,7 @@ public class PlayerCar extends Car {
 
     // Helper Method to update the Car's direction and nitro values based on key input
     private void updateDir() {
-        // Map key presses to determine the player's direction
+        // Key mappings for the player's direction
         if(key.upPress == true) {
             direction = 'U';
             key.upPress = false; // movement processed
@@ -44,39 +44,41 @@ public class PlayerCar extends Car {
             key.leftPress = false;
         }
 
-        // R key for nitro
+        // R key to toggle nitro (triple speed)
         if(key.rPress == true && nitro == false) {
             nitro = true;
+            speed = speed*3;
             key.rPress = false;
         }
         if(key.rPress == true && nitro == true) {
             nitro = false;
+            speed = speed/3;
             key.rPress = false;
         }
     }
 
-    // Helper method to update the player's coordinates based on the direction and nitro
+    // Helper method to update the player's coordinates and collision area based on the direction and speed
     private void updateLocation() {
-        // Change position of the player using the direction variable
-        int spacesToMove;
-        if(nitro == true) {
-            spacesToMove = panel.UNIT_SIZE*2; // 200% speed while checking for collisions to avoid skips
-        } else {
-            spacesToMove = panel.UNIT_SIZE;
-        }
-
         switch(direction) {
             case 'R':
-                xPos = xPos + spacesToMove;
+                xPos = xPos + speed;
+                collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
+                                              panel.UNIT_SIZE, panel.UNIT_SIZE/2);
                 break;
             case 'L':
-                xPos = xPos - spacesToMove;
+                xPos = xPos - speed;
+                collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
+                                              panel.UNIT_SIZE, panel.UNIT_SIZE/2);
                 break;
             case 'U':
-                yPos = yPos - spacesToMove;
+                yPos = yPos - speed;
+                collisionArea = new Rectangle(xPos+ panel.UNIT_SIZE/4, yPos,
+                                              panel.UNIT_SIZE/2, panel.UNIT_SIZE);
                 break;
             case 'D':
-                yPos = yPos + spacesToMove;
+                yPos = yPos + speed;
+                collisionArea = new Rectangle(xPos+ panel.UNIT_SIZE/4, yPos,
+                                        panel.UNIT_SIZE/2, panel.UNIT_SIZE);
                 break;
         }
     }
@@ -103,6 +105,9 @@ public class PlayerCar extends Car {
     @Override
     public void draw(Graphics g) {
         g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
-//        g.drawOval(xPos, yPos, 1, 1);
+
+        // ad hoc check of collision area
+//        g.setColor(Color.BLACK);
+//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
     }
 }

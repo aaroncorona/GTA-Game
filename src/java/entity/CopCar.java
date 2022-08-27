@@ -22,7 +22,10 @@ public class CopCar extends Car {
         xPos = new Random().nextInt((int) (panel.SCREEN_WIDTH/panel.UNIT_SIZE)) * panel.UNIT_SIZE;
         yPos = new Random().nextInt((int) (panel.SCREEN_HEIGHT/panel.UNIT_SIZE)) * panel.UNIT_SIZE;
         direction = 'R';
-        nitro = false;
+        speed = panel.UNIT_SIZE; // default speed is moving 1 full position
+
+        collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
+                                      panel.UNIT_SIZE, panel.UNIT_SIZE/2);
 
         // @TODO fix when the Tile manager class is complete
 //        // Reset if the Cop spawns off the road

@@ -73,7 +73,7 @@ public class Panel extends JPanel implements Runnable {
     @Override
     public void run() {
         // Set rendering frequency
-        final double FPS = 3.0;
+        final double FPS = 15.0;
         double timeToNextUpdate = 1000000000.0 / FPS;
         long startTime = System.nanoTime();
         double timePassedSinceUpdate = 0;

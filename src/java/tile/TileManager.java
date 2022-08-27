@@ -10,7 +10,10 @@ import java.util.Scanner;
 
 public class TileManager {
 
+    // Singleton instance tracking
     private static TileManager instance = null;
+
+    // Global vars
     public static main.Panel panel;
     public static Tile[] tiles;
     public static int[][] tileMap;
