@@ -53,3 +53,4 @@ $ javac main.Main.java
 $ java main.Main
 ```
 4. *(Optional)* Erase the high scores to track your own personal high scores.
+
