@@ -1,6 +1,11 @@
 package entity;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
 public class PlayerCar extends Car {
 
@@ -9,12 +14,6 @@ public class PlayerCar extends Car {
         this.key = key;
 
         setDefaultValues();
-        loadImages();
-    }
-
-    @Override
-    public void loadImages() {
-
     }
 
     @Override
@@ -83,7 +82,26 @@ public class PlayerCar extends Car {
     }
 
     @Override
-    public void draw(Graphics g) {
+    public void getImage() {
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/player/player_car_";
+        // Determine the image direction and nitro status
+        filePath += direction;
+        // Determine if it should be a nitro image
+        if(nitro == true) {
+            filePath += "_nitro";
+        }
+        filePath += ".png";
+        try {
+            image = ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    @Override
+    public void draw(Graphics g) {
+        getImage();
+        g.drawImage(image, xPos, yPos, CAR_SIZE, CAR_SIZE, null);
+//        g.drawOval(xPos, yPos, 1, 1);
     }
 }

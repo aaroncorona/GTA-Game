@@ -1,19 +1,22 @@
 package entity;
 
+import java.awt.image.BufferedImage;
+
 public abstract class Car implements Entity {
-    main.Panel panel;
-    main.KeyHandler key;
+    public static main.Panel panel;
+    public static main.KeyHandler key;
+    public static final int CAR_SIZE = panel.UNIT_SIZE*2;
+
     public int xPos, yPos;
     public char direction;
     public boolean nitro = false;
-    // Images  @TODO determine if this can be added here?
-//    BufferedImage
+    BufferedImage image;
 
     // Default method implementation for setting default position to the center of the screen
     @Override
     public final void setDefaultValues() {
-        xPos = 200;
-        yPos = 200;
+        xPos = 150;
+        yPos = 150;
         direction = 'R';
         nitro = false;
     }

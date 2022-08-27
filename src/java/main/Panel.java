@@ -1,5 +1,6 @@
 package main;
 
+import entity.Car;
 import entity.PlayerCar;
 
 import javax.swing.*;
@@ -12,7 +13,6 @@ public class Panel extends JPanel implements Runnable {
 
     // Constants for pixel sizes
     public static final int UNIT_SIZE = 25;
-    public static final int PLAYER_UNIT_SIZE = UNIT_SIZE*2; // player takes up 2 by 2 units (4 total)
     public static final int ROAD_SIZE = UNIT_SIZE*5;
     public static final int WATER_SIZE = UNIT_SIZE*2;
     public static final int SIDEWALK_SIZE = UNIT_SIZE;
@@ -40,13 +40,13 @@ public class Panel extends JPanel implements Runnable {
     static final int B8_X_START = B6_X_START;
     static final int B8_Y_START = B3_Y_START+20;;
 
-    // Helper variables to manipulate the game mechanics
+    // Helper variables to manipulate the game state
     public static boolean running = false;
+    // @TODO move to menu class
     public static boolean pause;
-    public static KeyHandler key = new KeyHandler();
 
     // Helper variables to track dynamic data that needs a global scope
-    // @TODO move to object class?
+    // @TODO move to item class
     static int money;
     // @TODO move to timer class?
     static long startTime;
@@ -57,16 +57,20 @@ public class Panel extends JPanel implements Runnable {
     static int copYLocation;
     // @TODO move to tile class
     static int[][] backgroundGrid;
-    // @TODO move to object class?
+    // @TODO move to item class
     static int[][] bulletGrid;
     static int[][] moneyGrid;
 
     // Menus
+    // @TODO move to menu class
     public static JPopupMenu pauseMenu = new JPopupMenu();
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
 
-    // Create Entity objects
+    // Key handler
+    public static KeyHandler key = new KeyHandler();
+
+    // Entity objects
     PlayerCar playerCar = new PlayerCar(this, key);
 
     // Create game panel (constructor)
@@ -120,7 +124,7 @@ public class Panel extends JPanel implements Runnable {
     // Method to update positions and check for collisions
     public void updateData() {
 
-        // Basic game functionalities
+        // Basic game mechanics
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
         if (key.enterPress == true && running == false) {
             resetGame();
@@ -131,6 +135,7 @@ public class Panel extends JPanel implements Runnable {
             System.exit(0);
             key.backSpacePress = false;
         }
+        // @TODO move to menu class
         // Space bar to pause or resume game
         if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
@@ -143,8 +148,7 @@ public class Panel extends JPanel implements Runnable {
 
         playerCar.update();
 
-        // @TODO move to bullet class? within object package like money?
-        // @TODO bullet should have its own direction variable?
+        // @TODO move to bullet class
         // E key for bullet, which is set based on the car direction
         if(key.ePress == true) {
             int bulletType = 0;
@@ -168,7 +172,9 @@ public class Panel extends JPanel implements Runnable {
         }
 
         if(running) {
+            // @TODO move to bullet class
             moveBullet();
+            // @TODO move to collison class
             checkGameOver();
         }
     }
@@ -177,8 +183,7 @@ public class Panel extends JPanel implements Runnable {
     public void paint(Graphics g) {
         super.paint(g);
 
-        playerCar.draw(g);
-
+        // @TODO add to tile manager
         // Paint water and roads
         for(int i = 0; i < backgroundGrid.length; i++) {
             for(int j = 0; j < backgroundGrid[i].length; j++) {
@@ -195,6 +200,7 @@ public class Panel extends JPanel implements Runnable {
             }
         }
 
+        // @TODO add to tile manager
         // Draw street lines
         Graphics2D g2d = (Graphics2D) g.create();
         Stroke dashed = new BasicStroke(3, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL,
@@ -211,8 +217,9 @@ public class Panel extends JPanel implements Runnable {
         g2d.drawLine(860, 220, 860, SCREEN_HEIGHT - 240);
         g2d.dispose();
 
-        // @TODO replace with sprites
-        // Draw building #1=
+        // @TODO add to tile manager
+        // @TODO replace with tree sprites?
+        // Draw building #1
         String filePathB1 = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/building1.png";
         ImageIcon b1 = new ImageIcon(new ImageIcon(filePathB1).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE-30, Image.SCALE_DEFAULT));
         b1.paintIcon(this, g, B1_X_START, B1_Y_START);
@@ -250,21 +257,22 @@ public class Panel extends JPanel implements Runnable {
         ImageIcon b8 = new ImageIcon(new ImageIcon(filePathB8).getImage().getScaledInstance(BUILDING_SIZE, BUILDING_SIZE - 70, Image.SCALE_DEFAULT));
         b8.paintIcon(this, g, B8_X_START, B8_Y_START);
 
+        // @TODO add to item class
         // Draw bullet effects (splash or explosion)
         for(int i = 0; i < bulletGrid.length; i++) {
             for(int j = 0; j < bulletGrid[i].length; j++) {
                 // Draw splash
                 if(bulletGrid[i][j] == 5) {
                     String filePathSplash = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_S_N.png";
-                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    ImageIcon splash = new ImageIcon(new ImageIcon(filePathSplash).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
                     splash.paintIcon(this, g, i, j);
                     bulletGrid[i][j] = 0; // reset
                     generateNewCopBullet(); // cop waits to shoot again until impact
-                    // Draw Explosion
+                 // Draw Explosion
                 } else if(bulletGrid[i][j] == 6 || bulletGrid[i][j] == 7){
                     String filePathExplosion = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_E_N.png";
-                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                    explosion.paintIcon(this, g, i-25, j);
+                    ImageIcon explosion = new ImageIcon(new ImageIcon(filePathExplosion).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
+                    explosion.paintIcon(this, g, i, j);
                     if(bulletGrid[i][j] == 7) {
                         moneyGrid[i][j] = 1; // 7 results in money, 6 does not
                         bulletGrid[i][j] = 0;
@@ -277,17 +285,37 @@ public class Panel extends JPanel implements Runnable {
             }
         }
 
+        // @TODO add to item class
         // Draw Money
         for(int i = 0; i < moneyGrid.length; i++) {
             for(int j = 0; j < moneyGrid[i].length; j++) {
                 if(moneyGrid[i][j] == 1) {
                     String filePathMoney = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/money.png";
-                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
+                    ImageIcon money = new ImageIcon(new ImageIcon(filePathMoney).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
                     money.paintIcon(this, g, i, j);
                 }
             }
         }
 
+        // @TODO add to Cop Car class
+        // Draw the cop
+        String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
+        ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(Car.CAR_SIZE, Car.CAR_SIZE, Image.SCALE_DEFAULT));
+        cop.paintIcon(this, g, copXLocation - 15, copYLocation - 20);
+
+        // @TODO add to menu class
+        // Display current score (money)
+        g.setColor(Color.GREEN.brighter());
+        g.setFont(new Font("Serif", Font.PLAIN, 50));
+        g.drawString("Bank Account: $" + money,20,40); // coordinates start in the top left
+
+        // @TODO add to menu class
+        // Display stop watch
+        g.setColor(Color.WHITE);
+        g.setFont(new Font("Serif", Font.PLAIN, 25));
+        g.drawString(getTimePassed(),20,70);
+
+        // @TODO replace with menu class
         // Initial Pause menu
         if(running == false && money == 0) {
             // Draw the pause menu
@@ -299,36 +327,8 @@ public class Panel extends JPanel implements Runnable {
             g.setFont(new Font("Serif", Font.ITALIC, 50));
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
-        // @TODO replace with sprites
-        // Player Icons - draw this after the game starts
-        else {
-            // Draw the car icon based on the movement direction so it faces the correct way
-            // Note: Must draw icon on slightly modified player location to align with the image expansion
-            char regularOrNitroImage = 'R';
-            if(playerCar.nitro == true) {
-                regularOrNitroImage = 'N';
-            }
-            String filePathCar = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/car_" + playerCar.direction + "_" + regularOrNitroImage + ".png";
-            if(playerCar.direction == 'e') { // make explosions larger
-                ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE*2, PLAYER_UNIT_SIZE*2, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerCar.xPos - 20, playerCar.yPos - 20);
-            } else {
-                ImageIcon player = new ImageIcon(new ImageIcon(filePathCar).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-                player.paintIcon(this, g, playerCar.xPos - 20, playerCar.yPos - 15);
-            }
-            // Draw the cop
-            String filePathCop = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/cop.png";
-            ImageIcon cop = new ImageIcon(new ImageIcon(filePathCop).getImage().getScaledInstance(PLAYER_UNIT_SIZE, PLAYER_UNIT_SIZE, Image.SCALE_DEFAULT));
-            cop.paintIcon(this, g, copXLocation - 15, copYLocation - 20);
-            // Display current score (money)
-            g.setColor(Color.GREEN.brighter());
-            g.setFont(new Font("Serif", Font.PLAIN, 50));
-            g.drawString("Bank Account: $" + money,20,40); // coordinates start in the top left
-            // Display stop watch
-            g.setColor(Color.WHITE);
-            g.setFont(new Font("Serif", Font.PLAIN, 25));
-            g.drawString(getTimePassed(),20,70);
-        }
+
+        playerCar.draw(g);
     }
 
     // Method to reset all game settings and start the game loop
@@ -357,6 +357,8 @@ public class Panel extends JPanel implements Runnable {
         startTime = System.currentTimeMillis();
     }
 
+    // @ TODO move to tile manager class
+    // @ TODO replace with text file mapping
     // Method to establish all the default background particles (sidewalk, water, road, and building)
     public void fillStartingGrids() {
         /*
@@ -486,6 +488,7 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
+    // @TODO add to menu class
     // Method to stop the game loop and bring up the pause menu
     public void pauseGame() {
         pause = true;
@@ -506,6 +509,7 @@ public class Panel extends JPanel implements Runnable {
         pauseMenu.setVisible(true);
     }
 
+    // @TODO add to menu class
     // Method to run the game again and hide the pause menu
     public void resumeGame() {
         pause = false;
@@ -513,6 +517,7 @@ public class Panel extends JPanel implements Runnable {
         pauseMenu.setVisible(false);
     }
 
+    // @TODO add to cop car class
     // Method to respawn the cop player on a road tile
     public void generateNewCopLocation() {
         copXLocation = new Random().nextInt((int) (SCREEN_WIDTH/UNIT_SIZE)) * UNIT_SIZE;
@@ -525,6 +530,7 @@ public class Panel extends JPanel implements Runnable {
         generateNewCopBullet();
     }
 
+    // @TODO add to item class
     // Method to create another bullet traveling west or north from the cop
     public void generateNewCopBullet() {
         Random rand = new Random();
@@ -539,6 +545,7 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
+    // @TODO add to item class
     // Method to move the bullets to the next position based on its direction
     public void moveBullet() {
         // Move bullet right and down (traverse grid ascending)
@@ -613,28 +620,28 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
-    // Check if the player hits any particle that causes a reaction (not road or sidewalk)
     // @TODO add to Collision class
+    // Check if the player hits any particle that causes a reaction (not road or sidewalk)
     public void checkPlayerContact() {
         // Cop: Check for player to cop collision, which ends the game
         if(Math.abs(playerCar.xPos - copXLocation) < UNIT_SIZE
                 && Math.abs(playerCar.yPos - copYLocation) <= UNIT_SIZE) {
-            playerCar.direction = 'E'; // triggers explosion image
+//            playerCar.direction = 'E'; // triggers explosion image
             generateNewCopLocation();
             running = false;
         }
         // Water: Check for player to water collision, which ends the game
-        else if(playerCar.xPos < PLAYER_UNIT_SIZE
-                || playerCar.xPos > SCREEN_WIDTH - PLAYER_UNIT_SIZE
-                || playerCar.yPos < PLAYER_UNIT_SIZE
-                || playerCar.yPos > SCREEN_HEIGHT - PLAYER_UNIT_SIZE) {
-            playerCar.direction = 'S'; // triggers splash image
+        else if(playerCar.xPos < Car.CAR_SIZE
+                || playerCar.xPos > SCREEN_WIDTH - Car.CAR_SIZE
+                || playerCar.yPos < Car.CAR_SIZE
+                || playerCar.yPos > SCREEN_HEIGHT - Car.CAR_SIZE) {
+//            playerCar.direction = 'S'; // triggers splash image
             running = false; // stop the game (which triggers end game message)
             System.out.println("* GAME OVER (You Drowned)");
         }
         // Building: Check for player to building collision, which ends the game
         else if(backgroundGrid[playerCar.xPos][playerCar.yPos] == 3) {
-            playerCar.direction = 'E';
+//            playerCar.direction = 'E'; // triggers explosion image
             running = false;
             System.out.println("* GAME OVER (You crashed into a Building)");
         }
@@ -654,12 +661,13 @@ public class Panel extends JPanel implements Runnable {
         }
         // Bullet: Check for player getting shot, which ends the game
         else if(bulletGrid[playerCar.xPos][playerCar.yPos] >= 1) {
-            playerCar.direction = 'E';
+//            playerCar.direction = 'E';
             running = false;
             System.out.println("* GAME OVER (You were shot)");
         }
     }
 
+    // @TODO add to Menu class
     // Method to check if the game stopped running and therefore log the score and display the game over menus
     public void checkGameOver() {
         // When the game ends, log the final score if the game ends with a minimum score achieved
@@ -712,6 +720,7 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
+    // @TODO add to Timer class
     // Method to extract the min & seconds passed for the current game
     public String getTimePassed() {
         long now = System.currentTimeMillis();
@@ -721,6 +730,7 @@ public class Panel extends JPanel implements Runnable {
         return elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
     }
 
+    // @TODO add to Menu class
     // Method to read the high score file and return the high score results
     public String getHighScoreMessage() {
         // Create TreeMap to hold the scores for deduping and ordering
