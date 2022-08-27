@@ -39,23 +39,28 @@ public class TileManager {
 
             // Road
             BufferedImage roadImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/road.png"));
-            Tile road = new Tile(roadImage, true);
+            Tile road = new Tile(roadImage, false);
             tiles[1] = road;
 
             // Sidewalk
             BufferedImage sidewalkImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/sidewalk.png"));
-            Tile sidewalk = new Tile(sidewalkImage, true);
+            Tile sidewalk = new Tile(sidewalkImage, false);
             tiles[2] = sidewalk;
+
+            // Grass
+            BufferedImage grassImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/grass.png"));
+            Tile grass = new Tile(grassImage, false);
+            tiles[3] = grass;
 
             // Tree
             BufferedImage treeImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/tree.png"));
             Tile tree = new Tile(treeImage, true);
-            tiles[3] = tree;
+            tiles[4] = tree;
 
             // Hut
             BufferedImage hutImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/hut.png"));
             Tile hut = new Tile(hutImage, true);
-            tiles[4] = hut;
+            tiles[5] = hut;
 
 
         } catch (IOException e) {}
@@ -71,6 +76,7 @@ public class TileManager {
         g.drawImage(tiles[2].image, 250, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
         g.drawImage(tiles[3].image, 300, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
         g.drawImage(tiles[4].image, 350, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        g.drawImage(tiles[5].image, 400, 150, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 
     }
 }
