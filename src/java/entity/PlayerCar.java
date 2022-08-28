@@ -1,5 +1,7 @@
 package entity;
 
+import main.ContactChecker;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -19,8 +21,12 @@ public class PlayerCar extends Car {
     @Override
     public void update() {
         if(panel.running) {
+            // Update location
             updateDir();
             updateLocation();
+            // Manage events
+            handleDeadlyCollision();
+            handleMoneyCollection();
         }
     }
 
@@ -83,9 +89,39 @@ public class PlayerCar extends Car {
         }
     }
 
+    // Helper method to respond to collision events that should end the game
+    private void handleDeadlyCollision() {
+        // First, check for a deadly collision with a tile
+        if(ContactChecker.getTileTouched(this).collision == true) {
+            dead = true;
+            panel.running = false;
+            System.out.println("deadly collision - tile");
+        }
+        // Second, check for a deadly collision with a cop
+        if(ContactChecker.checkCopCollision(this, panel.copCar) == true) {
+            dead = true;
+            panel.running = false;
+            System.out.println("deadly collision - cop");
+        }
+        // @TODO update after the bullet class is built
+        // Check for a deadly collision with a bullet
+//        if(ContactChecker.checkBulletCollision(this, panel.bullet) == true) {
+//            death = true;
+//            panel.running = false;
+//            System.out.println("deadly collision - bullet");
+//        }
+    }
+
+    // @TODO update after the money class is built
+    // Helper method to check if money is collected
+    private void handleMoneyCollection() {
+
+    }
+
     @Override
     public BufferedImage getImage() {
         BufferedImage image = null;
+
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
         // Determine the image direction and nitro status
         filePath += direction;
@@ -106,7 +142,7 @@ public class PlayerCar extends Car {
     public void draw(Graphics g) {
         g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 
-        // ad hoc check of collision area
+        // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);
 //        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
     }

@@ -48,8 +48,8 @@ public class Panel extends JPanel implements Runnable {
     private TileManager tileManager = TileManager.getInstance(this);
 
     // Entity objects
-    private PlayerCar playerCar = new PlayerCar(this, key);
-    private CopCar copCar = new CopCar(this);
+    public PlayerCar playerCar = new PlayerCar(this, key);
+    public CopCar copCar = new CopCar(this);
 
     // Create game panel (constructor)
     Panel() {
@@ -87,7 +87,7 @@ public class Panel extends JPanel implements Runnable {
             // Update the screen and data once the FPS time has passed
             if(timePassedSinceUpdate >= 1) {
                 // Update screen
-                updateData();
+                update();
                 repaint();
                 // Update timing tracker
                 timePassedSinceUpdate = 0;
@@ -96,9 +96,38 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to update positions of all entities and objects as well as and checking for collisions
-    public void updateData() {
+    public void update() {
+        handleKeyInput();
+        playerCar.update();
+        copCar.update();
 
-        // Basic game mechanics
+        // @TODO migrate to bullet class
+        // E key for bullet, which is set based on the car direction
+//        if(key.ePress == true) {
+//            int bulletType = 0;
+//            switch(playerCar.direction) {
+//                case 'R':
+//                    bulletType = 1;
+//                    break;
+//                case 'L':
+//                    bulletType = 2;
+//                    break;
+//                case 'U':
+//                    bulletType = 3;
+//                    break;
+//                case 'D':
+//                    bulletType = 4;
+//                    break;
+//            }
+//            // Shoot bullet
+//            bulletGrid[playerCar.xPos][playerCar.yPos] = bulletType;
+//            key.ePress = false;
+//        }
+//        moveBullet();
+    }
+
+    // Helper method to handle key inputs for basic game mechanics
+    private void handleKeyInput() {
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
         if (key.enterPress == true && running == false) {
             resetGame();
@@ -110,57 +139,21 @@ public class Panel extends JPanel implements Runnable {
             key.backSpacePress = false;
         }
         // @TODO migrate to menu class
-        // Space bar to pause or resume game
+        // Space bar to pause game
         if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
             key.spacePress = false;
         }
+        // Space bar to resume game
         if (key.spacePress == true && pause == true && running == false) {
             resumeGame();
             key.spacePress = false;
-        }
-
-        playerCar.update();
-        copCar.update();
-
-        // @TODO migrate to bullet class
-        // E key for bullet, which is set based on the car direction
-        if(key.ePress == true) {
-            int bulletType = 0;
-            switch(playerCar.direction) {
-                case 'R':
-                    bulletType = 1;
-                    break;
-                case 'L':
-                    bulletType = 2;
-                    break;
-                case 'U':
-                    bulletType = 3;
-                    break;
-                case 'D':
-                    bulletType = 4;
-                    break;
-            }
-            // Shoot bullet
-            bulletGrid[playerCar.xPos][playerCar.yPos] = bulletType;
-            key.ePress = false;
-        }
-
-        if(running) {
-            // @TODO move to bullet class
-            moveBullet();
-            // @TODO move to collison class
-            checkPlayerContact();
-            checkGameOver();
         }
     }
 
     @ Override
     public void paint(Graphics g) {
         super.paint(g);
-
-        // @TODO add to collision class
-        // Draw bullet (splash or explosion effect)
 
         // @TODO add to item class
         // Draw Money
@@ -262,16 +255,6 @@ public class Panel extends JPanel implements Runnable {
                 bulletGrid[copCar.xPos][copCar.yPos - UNIT_SIZE*2] = 3;
                 break;
         }
-    }
-
-    // @TODO add to item class
-    // Method to move the bullets to the next position based on its direction
-    public void moveBullet() {
-    }
-
-    // @TODO add to Collision class
-    // Check if the player hits any particle that causes a reaction (not road or sidewalk)
-    public void checkPlayerContact() {
     }
 
     // @TODO add to Menu class

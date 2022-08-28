@@ -12,6 +12,7 @@ public abstract class Car implements Entity {
     public char direction;
     public int speed;  // pixels to move per frame
     public boolean nitro;
+    public boolean dead;
 
     // Collision tracking vars
     public Rectangle collisionArea;
@@ -24,6 +25,7 @@ public abstract class Car implements Entity {
         direction = 'R';
         speed = 5;
         nitro = false;
+        dead = false;
         collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
                                       panel.UNIT_SIZE, panel.UNIT_SIZE/2);
     }

@@ -42,32 +42,32 @@ public class TileManager {
         try {
             // Water
             BufferedImage waterImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/water.png"));
-            Tile water = new Tile(waterImage, true);
+            Tile water = new Tile("Water", waterImage, true);
             tiles[0] = water;
 
             // Sidewalk
             BufferedImage sidewalkImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/sidewalk.png"));
-            Tile sidewalk = new Tile(sidewalkImage, false);
+            Tile sidewalk = new Tile("Sidewalk", sidewalkImage, false);
             tiles[1] = sidewalk;
 
             // Road
             BufferedImage roadImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/road.png"));
-            Tile road = new Tile(roadImage, false);
+            Tile road = new Tile("Road", roadImage, false);
             tiles[2] = road;
 
             // Grass
             BufferedImage grassImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/grass.png"));
-            Tile grass = new Tile(grassImage, false);
+            Tile grass = new Tile("Grass", grassImage, false);
             tiles[3] = grass;
 
             // Tree
             BufferedImage treeImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/tree.png"));
-            Tile tree = new Tile(treeImage, true);
+            Tile tree = new Tile("Tree", treeImage, true);
             tiles[4] = tree;
 
             // Hut
             BufferedImage hutImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/hut.png"));
-            Tile hut = new Tile(hutImage, true);
+            Tile hut = new Tile("Hut", hutImage, true);
             tiles[5] = hut;
 
 
