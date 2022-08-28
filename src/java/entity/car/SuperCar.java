@@ -1,11 +1,12 @@
-package entity;
+package entity.car;
+
+import entity.Entity;
 
 import java.awt.*;
 
-public abstract class Car implements Entity {
-    // Game mechanics vars
+public abstract class SuperCar implements Entity {
+    // Game mechanics
     public static main.Panel panel;
-    public static main.KeyHandler key;
 
     // Position tracking vars
     public int xPos, yPos;

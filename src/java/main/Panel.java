@@ -1,7 +1,7 @@
 package main;
 
-import entity.CopCar;
-import entity.PlayerCar;
+import entity.car.CopCar;
+import entity.car.PlayerCar;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -48,7 +48,7 @@ public class Panel extends JPanel implements Runnable {
     private TileManager tileManager = TileManager.getInstance(this);
 
     // Entity objects
-    public PlayerCar playerCar = new PlayerCar(this, key);
+    public PlayerCar playerCar = new PlayerCar(this);
     public CopCar copCar = new CopCar(this);
 
     // Create game panel (constructor)

@@ -1,7 +1,6 @@
-package entity;
+package entity.car;
 
 import main.ContactChecker;
-import tile.Tile;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
@@ -11,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-public class CopCar extends Car {
+public class CopCar extends SuperCar {
 
     // Constructor to create Cop NPC
     public CopCar(main.Panel panel) {

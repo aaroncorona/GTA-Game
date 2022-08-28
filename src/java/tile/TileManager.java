@@ -17,6 +17,7 @@ public class TileManager {
     public static main.Panel panel;
     public static Tile[] tiles;
     public static int[][] tileMap;
+    public static Rectangle[][] tileMapCollisionArea;
 
     // Private Constructor - Singleton class
     private TileManager() {
@@ -80,15 +81,28 @@ public class TileManager {
     private void createTileMap() {
         // Use a scanner to load the text file into the array
         tileMap = new int[panel.SCREEN_ROWS][panel.SCREEN_COLS];
+        tileMapCollisionArea = new Rectangle[panel.SCREEN_ROWS][panel.SCREEN_COLS];
         try {
             Scanner scan = new Scanner(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/maps/tile_map.txt"));
+            // Fill the tile maps
             for (int i = 0; i < tileMap.length; i++) {
                 for (int j = 0; j < tileMap[i].length; j++) {
+                    // Fill the int tile map (nums represent array pos in the tiles array)
                     try {
                         tileMap[i][j] = Integer.parseInt(scan.next());
                     } catch (NumberFormatException e) {
                         tileMap[i][j] = 0; // can't parse 00
                     }
+
+                    // Fill the collision tile map (rects to represent the collision area)
+                    int collisionSize;
+                    if(TileManager.tiles[TileManager.tileMap[i][j]].collision == true) {
+                        collisionSize = 30; // assume the same collision size
+                    } else {
+                        collisionSize = 0; // no collision
+                    }
+                    tileMapCollisionArea[i][j] = new Rectangle(j * panel.UNIT_SIZE+10, i * panel.UNIT_SIZE+15,
+                                                               collisionSize, collisionSize);
                 }
             }
         } catch (FileNotFoundException e) {
@@ -106,6 +120,7 @@ public class TileManager {
                 // ad hoc check of the collision area
 //                g.setColor(Color.BLACK);
 //                g.drawRect(j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE);
+//                g.drawRect(tileMapCollisionArea[i][j].x, tileMapCollisionArea[i][j].y, tileMapCollisionArea[i][j].width, tileMapCollisionArea[i][j].height);
             }
         }
     }
