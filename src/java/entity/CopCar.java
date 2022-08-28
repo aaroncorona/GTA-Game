@@ -49,7 +49,6 @@ public class CopCar extends Car {
         // Check for a deadly collision with the player
         if(ContactChecker.checkCarCollision(this, panel.playerCar) == true) {
             dead = true;
-            setDefaultValues();
         }
         // @TODO update after the bullet class is built
         // Check for a deadly collision with a bullet
@@ -95,5 +94,10 @@ public class CopCar extends Car {
     @Override
     public void draw(Graphics g) {
         g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+
+        // ad hoc check of the collision area
+//        g.setColor(Color.BLACK);
+//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
+//        g.drawRect(xPos, yPos, 5, 5);
     }
 }

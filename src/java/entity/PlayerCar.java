@@ -95,13 +95,13 @@ public class PlayerCar extends Car {
         if(ContactChecker.checkTileCollision(this) == true) {
             dead = true;
             panel.running = false;
-            System.out.println("deadly collision - tile - " + ContactChecker.getTileTouched(this).name);
+            System.out.println("deadly collision - Tile - " + ContactChecker.getTileTouched(this).name);
         }
         // Second, check for a deadly collision with another car
         if(ContactChecker.checkCarCollision(this, panel.copCar) == true) {
             dead = true;
             panel.running = false;
-            System.out.println("deadly collision - cop");
+            System.out.println("deadly collision - Cop Car");
         }
         // @TODO update after the bullet class is built
         // Check for a deadly collision with a bullet
@@ -157,5 +157,6 @@ public class PlayerCar extends Car {
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);
 //        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
+//        g.drawRect(xPos, yPos, 5, 5);
     }
 }
