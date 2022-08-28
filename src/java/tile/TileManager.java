@@ -103,8 +103,9 @@ public class TileManager {
             for (int j = 0; j < tileMap[i].length; j++) {
                 g.drawImage(tiles[tileMap[i][j]].image, j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 
-                g.setColor(Color.BLACK);
-                g.drawRect(j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE);
+                // ad hoc check of the collision area
+//                g.setColor(Color.BLACK);
+//                g.drawRect(j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE);
             }
         }
     }

@@ -14,7 +14,7 @@ public abstract class Car implements Entity {
     public boolean nitro;
     public boolean dead;
 
-    // Collision tracking vars
+    // Collision tracking
     public Rectangle collisionArea;
 
     // Default method implementation for setting the reset position

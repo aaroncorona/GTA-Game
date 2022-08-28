@@ -13,16 +13,39 @@ public class ContactChecker {
 
     // Method to check for a car colliding with a tile
     public static boolean checkTileCollision(Car car) {
-        // @TODO loop through all tiles touched to check for a collision
-        boolean collision = ContactChecker.getTileTouched(car).collision;
-        return collision;
+        Tile[] tilesTouched = getTilesTouched(car);
+        for(int i=0; i < tilesTouched.length; i++) {
+            if(tilesTouched[i].collision == true) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Method to get the background tile in the entity's collision area
-    public static Tile getTileTouched(Car car) {
-        // @TODO determine what tiles the collision area is on, change to Tile[] getTilesTouched()
-        Tile currentTile = TileManager.tiles[TileManager.tileMap[car.yPos/Panel.UNIT_SIZE][car.xPos/Panel.UNIT_SIZE]];
-        return currentTile;
+    public static Tile[] getTilesTouched(Car car) {
+        // Get the tiles that the 4 corners of the collision rectangle are on
+        int carXPos1 = car.collisionArea.x;
+        int carYPos1 = car.collisionArea.y;
+        int carXPos2 = car.collisionArea.x + car.collisionArea.width;
+        int carYPos2 = car.collisionArea.y;
+        int carXPos3 = car.collisionArea.x;
+        int carYPos3 = car.collisionArea.y + car.collisionArea.height;
+        int carXPos4 = car.collisionArea.x + car.collisionArea.width;
+        int carYPos4 = car.collisionArea.y + car.collisionArea.height;
+
+        // Get the corresponding 4 Tiles and add them to the array
+        Tile[] tilesTouched = new Tile[4];
+        Tile tile1 = TileManager.tiles[TileManager.tileMap[carYPos1/Panel.UNIT_SIZE][carXPos1/Panel.UNIT_SIZE]];
+        tilesTouched[0] = tile1;
+        Tile tile2 = TileManager.tiles[TileManager.tileMap[carYPos2/Panel.UNIT_SIZE][carXPos2/Panel.UNIT_SIZE]];
+        tilesTouched[1] = tile2;
+        Tile tile3 = TileManager.tiles[TileManager.tileMap[carYPos3/Panel.UNIT_SIZE][carXPos3/Panel.UNIT_SIZE]];
+        tilesTouched[2] = tile3;
+        Tile tile4 = TileManager.tiles[TileManager.tileMap[carYPos4/Panel.UNIT_SIZE][carXPos4/Panel.UNIT_SIZE]];
+        tilesTouched[3] = tile4;
+
+        return tilesTouched;
     }
 
     // Method to check for a car colliding with another car

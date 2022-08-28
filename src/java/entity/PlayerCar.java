@@ -95,13 +95,13 @@ public class PlayerCar extends Car {
         if(ContactChecker.checkTileCollision(this) == true) {
             dead = true;
             panel.running = false;
-            System.out.println("deadly collision - Tile - " + ContactChecker.getTileTouched(this).name);
+            System.out.println("Deadly Collision - Tile");
         }
         // Second, check for a deadly collision with another car
         if(ContactChecker.checkCarCollision(this, panel.copCar) == true) {
             dead = true;
             panel.running = false;
-            System.out.println("deadly collision - Cop Car");
+            System.out.println("Deadly Collision - Cop Car");
         }
         // @TODO update after the bullet class is built
         // Check for a deadly collision with a bullet
