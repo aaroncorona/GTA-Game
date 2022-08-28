@@ -92,13 +92,13 @@ public class PlayerCar extends Car {
     // Helper method to respond to collision events that should end the game
     private void handleDeadlyCollision() {
         // First, check for a deadly collision with a tile
-        if(ContactChecker.getTileTouched(this).collision == true) {
+        if(ContactChecker.checkTileCollision(this) == true) {
             dead = true;
             panel.running = false;
-            System.out.println("deadly collision - tile");
+            System.out.println("deadly collision - tile - " + ContactChecker.getTileTouched(this).name);
         }
-        // Second, check for a deadly collision with a cop
-        if(ContactChecker.checkCopCollision(this, panel.copCar) == true) {
+        // Second, check for a deadly collision with another car
+        if(ContactChecker.checkCarCollision(this, panel.copCar) == true) {
             dead = true;
             panel.running = false;
             System.out.println("deadly collision - cop");
@@ -122,10 +122,22 @@ public class PlayerCar extends Car {
     public BufferedImage getImage() {
         BufferedImage image = null;
 
+        // Return the explosion image if the car has died
+        if(dead == true) {
+            String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
+            try {
+                image = ImageIO.read(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return image;
+        }
+
+        // Otherwise, return the correct sprite
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
-        // Determine the image direction and nitro status
+        // Update the file path for the direction
         filePath += direction;
-        // Determine if it should be a nitro image
+        // Update the file path for the nitro status
         if(nitro == true) {
             filePath += "_nitro";
         }

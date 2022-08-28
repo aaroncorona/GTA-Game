@@ -1,5 +1,6 @@
 package entity;
 
+import main.ContactChecker;
 import tile.Tile;
 import tile.TileManager;
 
@@ -26,6 +27,7 @@ public class CopCar extends Car {
         yPos = new Random().nextInt((int) (panel.SCREEN_HEIGHT/panel.UNIT_SIZE)) * panel.UNIT_SIZE;
         direction = 'R';
         speed = panel.UNIT_SIZE; // default speed is moving 1 full position
+        dead = false;
 
         collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
                                       panel.UNIT_SIZE, panel.UNIT_SIZE/2);
@@ -38,16 +40,46 @@ public class CopCar extends Car {
 
     @Override
     public void update() {
-        // Not currently used, the cop doesn't move or take key inputs
+        // Manage events
+        handleDeadlyCollision();
+    }
+
+    // Helper method to respond to collision events that should end the game
+    private void handleDeadlyCollision() {
+        // Check for a deadly collision with the player
+        if(ContactChecker.checkCarCollision(this, panel.playerCar) == true) {
+            dead = true;
+            setDefaultValues();
+        }
+        // @TODO update after the bullet class is built
+        // Check for a deadly collision with a bullet
+//        if(ContactChecker.checkBulletCollision(this, panel.bullet) == true) {
+//            death = true;
+//            panel.running = false;
+//            System.out.println("deadly collision - bullet");
+//        }
     }
 
     @Override
     public BufferedImage getImage() {
         BufferedImage image = null;
+
+        // Return the explosion image if the car has died
+        if(dead == true) {
+            String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
+            try {
+                image = ImageIO.read(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return image;
+        }
+
+        // Otherwise, return the correct sprite
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/cop_car/cop_car_";
-        // Determine the image direction and nitro status
+        // Update the file path for the direction
         filePath += direction;
-        // Determine if it should be a nitro image
+        // Update the file path for the nitro status
         if(nitro == true) {
             filePath += "_nitro";
         }
