@@ -25,15 +25,14 @@ public class Panel extends JPanel implements Runnable {
     public static boolean pause;
 
     // Helper variables to track dynamic data that needs a global scope
-    // @TODO migrate to item class
+    // @TODO migrate to item manager
     public static int money;
     // @TODO migrate to timer class
     public static long startTime;
 
     // Variables to track graphics
-    // @TODO migrate to item class
+    // @TODO migrate to item manager
     public static int[][] bulletGrid;
-    public static int[][] moneyGrid;
 
     // Menus
     // @TODO migrate to menu class
@@ -154,9 +153,6 @@ public class Panel extends JPanel implements Runnable {
     @ Override
     public void paint(Graphics g) {
         super.paint(g);
-
-        // @TODO add to item class
-        // Draw Money
 
         // @TODO migrate to menu class
         // Display current score (money)

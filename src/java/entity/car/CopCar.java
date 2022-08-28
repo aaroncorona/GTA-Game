@@ -39,8 +39,10 @@ public class CopCar extends SuperCar {
 
     @Override
     public void update() {
-        // Manage events
-        handleDeadlyCollision();
+        if(panel.running) {
+            // Manage events
+            handleDeadlyCollision();
+        }
     }
 
     // Helper method to respond to collision events that should end the game

@@ -5,7 +5,7 @@ import entity.Entity;
 import java.awt.*;
 
 public abstract class SuperCar implements Entity {
-    // Game mechanics
+    // Panel to track game state
     public static main.Panel panel;
 
     // Position tracking vars
