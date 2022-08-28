@@ -14,19 +14,19 @@ public class Money extends SuperItem {
     public int value;
     public boolean collected;
 
-    // Constructor to create Cop NPC
-    public Money(main.Panel panel) {
-        this.panel = panel;
+    // Constructor to create a single Money
+    public Money(int xPos, int yPos) {
+        this.xPos = xPos;
+        this.yPos = yPos;
+
         setDefaultValues();
     }
 
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        xPos = 400;
-        yPos = 400;
-        direction = 'R';
-        speed = 5;
+        direction = 'R'; // direction does not apply
+        speed = 1; // speed does not apply
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                 Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
         collected = false;
@@ -35,7 +35,7 @@ public class Money extends SuperItem {
 
     @Override
     public void update() {
-        // Not currently used - money does not move
+
     }
 
 
@@ -43,7 +43,6 @@ public class Money extends SuperItem {
     public BufferedImage getImage() {
         BufferedImage image = null;
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/items/money.png";
-        filePath += ".png";
         try {
             image = ImageIO.read(new File(filePath));
         } catch (IOException e) {
@@ -54,7 +53,7 @@ public class Money extends SuperItem {
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        g.drawImage(getImage(), xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);
