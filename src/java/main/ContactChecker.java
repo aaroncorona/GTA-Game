@@ -1,11 +1,11 @@
 package main;
 
 import entity.car.SuperCar;
-import tile.Tile;
 import tile.TileManager;
 
 import java.awt.geom.Rectangle2D;
 
+// The Contact Checker checks for overlap in collision area between objects
 public class ContactChecker {
 
     // Private constructor - Noninstantiable class

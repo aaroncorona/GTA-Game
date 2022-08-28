@@ -4,7 +4,6 @@ import main.Panel;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -24,6 +23,8 @@ public class Bullet extends SuperItem {
     @Override
     public void setDefaultValues() {
         speed = 20;
+        collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                                      Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }
 
     @Override
@@ -59,8 +60,7 @@ public class Bullet extends SuperItem {
     }
 
     @Override
-    public BufferedImage getImage() {
-        BufferedImage image = null;
+    public void loadImage() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/items/bullet/bullet_";
         filePath += direction;
         filePath += ".png";
@@ -69,16 +69,16 @@ public class Bullet extends SuperItem {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return image;
     }
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(getImage(), xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        loadImage();
+        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);
-//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
+        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
 //        g.drawRect(xPos, yPos, 5, 5);
     }
 }

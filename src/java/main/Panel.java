@@ -2,6 +2,7 @@ package main;
 
 import entity.car.CopCar;
 import entity.car.PlayerCar;
+import entity.item.ItemManager;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -43,12 +44,13 @@ public class Panel extends JPanel implements Runnable {
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
 
-    // Background tile manager
-    private TileManager tileManager = TileManager.getInstance(this);
+    // Managers
+    private static TileManager tileManager = TileManager.getInstance();
+    private static ItemManager itemManager = ItemManager.getInstance();
 
     // Entity objects
-    public PlayerCar playerCar = new PlayerCar(this);
-    public CopCar copCar = new CopCar(this);
+    public static PlayerCar playerCar = new PlayerCar();
+    public static CopCar copCar = new CopCar();
 
     // Create game panel (constructor)
     Panel() {
@@ -97,10 +99,14 @@ public class Panel extends JPanel implements Runnable {
     // Method to update positions of all entities and objects as well as and checking for collisions
     public void update() {
         handleKeyInput();
-        playerCar.update();
-        copCar.update();
 
-        // @TODO migrate to bullet class
+        if(running) {
+            itemManager.update();
+            playerCar.update();
+            copCar.update();
+        }
+
+        // @TODO migrate to player class
         // E key for bullet, which is set based on the car direction
 //        if(key.ePress == true) {
 //            int bulletType = 0;
@@ -122,6 +128,7 @@ public class Panel extends JPanel implements Runnable {
 //            bulletGrid[playerCar.xPos][playerCar.yPos] = bulletType;
 //            key.ePress = false;
 //        }
+        // @TODO migrate to bullet class
 //        moveBullet();
     }
 
@@ -180,6 +187,7 @@ public class Panel extends JPanel implements Runnable {
         }
 
         tileManager.draw(g);
+        itemManager.draw(g);
         playerCar.draw(g);
         copCar.draw(g);
     }
@@ -238,7 +246,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
 
-    // @TODO add to item class
+    // @TODO add to cop car class
     // Method to create another bullet traveling west or north from the cop
     public void generateNewCopBullet() {
         Random rand = new Random();

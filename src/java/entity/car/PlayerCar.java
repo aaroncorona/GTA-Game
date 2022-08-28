@@ -1,33 +1,29 @@
 package entity.car;
 
+import entity.item.ItemManager;
 import main.ContactChecker;
 import main.KeyHandler;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class PlayerCar extends SuperCar {
 
     // Constructor to create Player Car
-    public PlayerCar(main.Panel panel) {
-        this.panel = panel;
-
+    public PlayerCar() {
         setDefaultValues();
     }
 
     @Override
     public void update() {
-        if(panel.running) {
-            // Update location
-            updateDir();
-            updateLocation();
-            // Manage events
-            handleDeadlyCollision();
-            handleMoneyCollection();
-        }
+        // Update location
+        updateDir();
+        updateLocation();
+        // Manage events
+        handleDeadlyCollision();
+        handleMoneyCollection();
     }
 
     // Helper Method to update the Car's direction and nitro values based on key input
@@ -60,6 +56,12 @@ public class PlayerCar extends SuperCar {
             nitro = false;
             speed = speed/3;
             KeyHandler.rPress = false;
+        }
+
+        // E key to shoot bullet
+        if(KeyHandler.ePress == true) {
+            ItemManager.createBullet(xPos, yPos, direction);
+            KeyHandler.ePress = false;
         }
     }
 
@@ -119,10 +121,8 @@ public class PlayerCar extends SuperCar {
     }
 
     @Override
-    public BufferedImage getImage() {
-        BufferedImage image = null;
-
-        // Return the explosion image if the car has died
+    public void loadImage() {
+        // Get the explosion image if the car has died
         if(dead == true) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
@@ -130,29 +130,28 @@ public class PlayerCar extends SuperCar {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return image;
+        } else {
+            // Otherwise, return the correct sprite
+            String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
+            // Update the file path for the direction
+            filePath += direction;
+            // Update the file path for the nitro status
+            if(nitro == true) {
+                filePath += "_nitro";
+            }
+            filePath += ".png";
+            try {
+                image = ImageIO.read(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
-        // Otherwise, return the correct sprite
-        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
-        // Update the file path for the direction
-        filePath += direction;
-        // Update the file path for the nitro status
-        if(nitro == true) {
-            filePath += "_nitro";
-        }
-        filePath += ".png";
-        try {
-            image = ImageIO.read(new File(filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return image;
     }
 
     @Override
     public void draw(Graphics g) {
-        g.drawImage(getImage(), xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        loadImage();
+        g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);

@@ -8,6 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Scanner;
 
+// The Tile Manager creates all Tile objects based on the World Map text file
 public class TileManager {
 
     // Singleton instance tracking
@@ -29,7 +30,7 @@ public class TileManager {
     }
 
     // Singleton constructor method to ensure there is only 1 Tile manager obj per game
-    public static TileManager getInstance(Panel panel) {
+    public static TileManager getInstance() {
         if(instance == null) {
             instance = new TileManager();
             return instance;
@@ -80,8 +81,8 @@ public class TileManager {
     // Helper method to load the tile map
     private void createTileMap() {
         // Use a scanner to load the text file into the array
-        tileMap = new int[panel.SCREEN_ROWS][panel.SCREEN_COLS];
-        tileMapCollisionArea = new Rectangle[panel.SCREEN_ROWS][panel.SCREEN_COLS];
+        tileMap = new int[Panel.SCREEN_ROWS][Panel.SCREEN_COLS];
+        tileMapCollisionArea = new Rectangle[Panel.SCREEN_ROWS][Panel.SCREEN_COLS];
         try {
             Scanner scan = new Scanner(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/maps/tile_map.txt"));
             // Fill the tile maps
@@ -101,7 +102,7 @@ public class TileManager {
                     } else {
                         collisionSize = 0; // no collision
                     }
-                    tileMapCollisionArea[i][j] = new Rectangle(j * panel.UNIT_SIZE+10, i * panel.UNIT_SIZE+15,
+                    tileMapCollisionArea[i][j] = new Rectangle(j * Panel.UNIT_SIZE+10, i * Panel.UNIT_SIZE+15,
                                                                collisionSize, collisionSize);
                 }
             }
@@ -115,7 +116,7 @@ public class TileManager {
         // Use the map data to draw each tile
         for (int i = 0; i < tileMap.length; i++) {
             for (int j = 0; j < tileMap[i].length; j++) {
-                g.drawImage(tiles[tileMap[i][j]].image, j * panel.UNIT_SIZE, i * panel.UNIT_SIZE, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+                g.drawImage(tiles[tileMap[i][j]].image, j * Panel.UNIT_SIZE, i * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
                 // ad hoc check of the collision area
 //                g.setColor(Color.BLACK);
