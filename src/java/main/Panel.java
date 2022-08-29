@@ -20,15 +20,12 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
 
-    // Helper variables for the game state
+    // Variables for the game state
     public static boolean running = false;
-    // @TODO migrate to menu class
     public static boolean pause;
 
     // Helper variables to track dynamic data that needs a global scope
-    // @TODO migrate to item manager
-    public static int money;
-    // @TODO migrate to timer class
+    // @TODO migrate to menu class
     public static long startTime;
 
     // Variables to track graphics
@@ -99,37 +96,11 @@ public class Panel extends JPanel implements Runnable {
     // Method to update positions of all entities and objects as well as and checking for collisions
     public void update() {
         handleKeyInput();
-
         if(running) {
             itemManager.update();
             playerCar.update();
             copCar.update();
         }
-
-        // @TODO migrate to player class
-        // E key for bullet, which is set based on the car direction
-//        if(key.ePress == true) {
-//            int bulletType = 0;
-//            switch(playerCar.direction) {
-//                case 'R':
-//                    bulletType = 1;
-//                    break;
-//                case 'L':
-//                    bulletType = 2;
-//                    break;
-//                case 'U':
-//                    bulletType = 3;
-//                    break;
-//                case 'D':
-//                    bulletType = 4;
-//                    break;
-//            }
-//            // Shoot bullet
-//            bulletGrid[playerCar.xPos][playerCar.yPos] = bulletType;
-//            key.ePress = false;
-//        }
-        // @TODO migrate to bullet class
-//        moveBullet();
     }
 
     // Helper method to handle key inputs for basic game mechanics
@@ -165,7 +136,7 @@ public class Panel extends JPanel implements Runnable {
         // Display current score (money)
         g.setColor(Color.GREEN.brighter());
         g.setFont(new Font("Serif", Font.PLAIN, 50));
-        g.drawString("Bank Account: $" + money,20,40); // coordinates start in the top left
+        g.drawString("Bank Account: $" + itemManager.moneyValueTotal,20,40); // coordinates start in the top left
 
         // @TODO migrate to menu class
         // Display stop watch
@@ -175,7 +146,7 @@ public class Panel extends JPanel implements Runnable {
 
         // @TODO migrate to menu class
         // Initial Pause menu
-        if(running == false && money == 0) {
+        if(running == false && itemManager.moneyValueTotal == 0) {
             // Draw the pause menu
             String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/start_menu.png";
             ImageIcon startMenu = new ImageIcon(new ImageIcon(filePathStartMenu).getImage().getScaledInstance((SCREEN_WIDTH/2)+50, SCREEN_HEIGHT-50, Image.SCALE_DEFAULT));
@@ -192,28 +163,16 @@ public class Panel extends JPanel implements Runnable {
         copCar.draw(g);
     }
 
-    // Method to reset all game settings and start the game loop
+    // Method to reset all game mechanics
     public void resetGame() {
-
-        // Reset player and cop locations
+        // Reset object values
+        itemManager.setDefaultValues();
         playerCar.setDefaultValues();
         copCar.setDefaultValues();
 
-        // @TODO use item class to reset
-        // Restart money at 1
-        money = 1;
-
-        // Reset trigger variables
+        // Start the game
         running = true;
         pause = false;
-
-        // Hide menus that may be open upon restarting
-        pauseMenu.setVisible(false);
-        gameOverMenu.setVisible(false);
-        highScoreMenu.setVisible(false);
-
-        // Start stopwatch
-        startTime = System.currentTimeMillis();
     }
 
     // @TODO add to menu class
@@ -234,7 +193,7 @@ public class Panel extends JPanel implements Runnable {
         pauseMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
         pauseMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
         pauseMenu.add(pauseMenuLabel);
-        pauseMenu.setVisible(true);
+//        pauseMenu.setVisible(true);
     }
 
     // @TODO add to menu class
@@ -268,14 +227,14 @@ public class Panel extends JPanel implements Runnable {
         if(running == false && pause == false) {
 
             // Log final score in the CSV file if it's past a certain minimum
-            if (money >= 20) {
+            if (itemManager.moneyValueTotal >= 20) {
                 try {
                     // Create or append file
                     FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
                     PrintWriter write = new PrintWriter(fw);
                     // Print the score to the csv file and the time on the column next to it
                     write.println(); // Skip to new row
-                    write.print(money);
+                    write.print(itemManager.moneyValueTotal);
                     write.print(","); // comma separate to print to the next column
                     write.print(System.currentTimeMillis());
                     // Close and finish the job
@@ -314,7 +273,7 @@ public class Panel extends JPanel implements Runnable {
         }
     }
 
-    // @TODO add to Timer class
+    // @TODO add to menu class
     // Method to extract the min & seconds passed for the current game
     public String getTimePassed() {
         long now = System.currentTimeMillis();
@@ -350,8 +309,8 @@ public class Panel extends JPanel implements Runnable {
 
         // Return a message with the user's score and the top three scores of all time
         String message;
-        message = "<html> Your Final Score is <b>" + money + "</b><br>";
-        if (money > scoreMap.lastKey()) {
+        message = "<html> Your Final Score is <b>" + itemManager.moneyValueTotal + "</b><br>";
+        if (itemManager.moneyValueTotal > scoreMap.lastKey()) {
             message += "CONGRATS! You have the all time best score! <br>";
         } else{
             message += "<i>You did not beat the high score</i><br>";
