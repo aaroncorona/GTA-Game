@@ -39,6 +39,10 @@ public class CopCar extends SuperCar {
     public void update() {
         // Manage events
         handleDeadlyCollision();
+        // Upon dying, the cop should respawn
+        if(dead) {
+            setDefaultValues();
+        }
     }
 
     // Helper method to respond to collision events that should end the game
@@ -47,13 +51,6 @@ public class CopCar extends SuperCar {
         if(CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
             dead = true;
         }
-        // @TODO update after the bullet class is built
-        // Check for a deadly collision with a bullet, which creates money
-//        if(ContactChecker.checkBulletCollision(this, panel.bullet) == true) {
-//            death = true;
-//        ItemManager.createMoney(xPos, yPos);
-
-//        }
     }
 
     @Override

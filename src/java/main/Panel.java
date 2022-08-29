@@ -21,16 +21,8 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
 
     // Variables for the game state
-    public static boolean running = false;
+    public static boolean running;
     public static boolean pause;
-
-    // Helper variables to track dynamic data that needs a global scope
-    // @TODO migrate to menu class
-    public static long startTime;
-
-    // Variables to track graphics
-    // @TODO migrate to item manager
-    public static int[][] bulletGrid;
 
     // Menus
     // @TODO migrate to menu class
@@ -97,9 +89,12 @@ public class Panel extends JPanel implements Runnable {
     public void update() {
         handleKeyInput();
         if(running) {
+            // Object states
             itemManager.update();
             playerCar.update();
             copCar.update();
+            // Game state
+            handleGameOver();
         }
     }
 
@@ -139,12 +134,6 @@ public class Panel extends JPanel implements Runnable {
         g.drawString("Bank Account: $" + itemManager.moneyValueTotal,20,40); // coordinates start in the top left
 
         // @TODO migrate to menu class
-        // Display stop watch
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Serif", Font.PLAIN, 25));
-        g.drawString(getTimePassed(),20,70);
-
-        // @TODO migrate to menu class
         // Initial Pause menu
         if(running == false && itemManager.moneyValueTotal == 0) {
             // Draw the pause menu
@@ -163,69 +152,16 @@ public class Panel extends JPanel implements Runnable {
         copCar.draw(g);
     }
 
-    // Method to reset all game mechanics
-    public void resetGame() {
-        // Reset object values
-        itemManager.setDefaultValues();
-        playerCar.setDefaultValues();
-        copCar.setDefaultValues();
-
-        // Start the game
-        running = true;
-        pause = false;
-    }
-
-    // @TODO add to menu class
-    // Method to stop the game loop and bring up the pause menu
-    public void pauseGame() {
-        pause = true;
-        running = false;
-        pauseMenu = new JPopupMenu();
-        pauseMenu.setLocation(600, 400);
-        pauseMenu.setPreferredSize(new Dimension(500, 30));
-        pauseMenu.setBackground(Color.WHITE);
-        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
-        pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
-        // Create Pause Menu Label
-        JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
-        pauseMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-        pauseMenuLabel.setForeground(Color.BLACK);
-        pauseMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
-        pauseMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
-        pauseMenu.add(pauseMenuLabel);
-//        pauseMenu.setVisible(true);
-    }
-
-    // @TODO add to menu class
-    // Method to run the game again and hide the pause menu
-    public void resumeGame() {
-        pause = false;
-        running = true;
-        pauseMenu.setVisible(false);
-    }
-
-
-    // @TODO add to cop car class
-    // Method to create another bullet traveling west or north from the cop
-    public void generateNewCopBullet() {
-        Random rand = new Random();
-        int bulletType = rand.nextInt(2) + 2;
-        switch (bulletType) {
-            case 2:
-                bulletGrid[copCar.xPos - UNIT_SIZE*2][copCar.yPos] = 2; // avoid shooting oneself
-                break;
-            case 3:
-                bulletGrid[copCar.xPos][copCar.yPos - UNIT_SIZE*2] = 3;
-                break;
-        }
-    }
-
-    // @TODO add to Menu class
-    // Method to check if the game stopped running and therefore log the score and display the game over menus
-    public void checkGameOver() {
-        // When the game ends, log the final score if the game ends with a minimum score achieved
-        if(running == false && pause == false) {
-
+    // Method to check for an event that ends the game and respond accoringly
+    public void handleGameOver() {
+        // The player dying is currently the only way to lose
+        if(playerCar.dead) {
+            // Stop the game
+            running = false;
+            // Draw the player explosion before the menus
+            repaint();
+            // Trigger menus
+            // @TODO add to Menu class
             // Log final score in the CSV file if it's past a certain minimum
             if (itemManager.moneyValueTotal >= 20) {
                 try {
@@ -269,18 +205,56 @@ public class Panel extends JPanel implements Runnable {
             highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
             highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
             highScoreMenu.add(highScoreMenuLabel);
-            highScoreMenu.setVisible(true);
+//            highScoreMenu.setVisible(true);
         }
     }
 
-    // @TODO add to menu class
-    // Method to extract the min & seconds passed for the current game
-    public String getTimePassed() {
-        long now = System.currentTimeMillis();
-        int elapsedTime = (int) (now - startTime); // Convert timestamp difference to seconds
-        int elapsedMins = (int) Math.floor(elapsedTime / 1000 / 60);
-        int elapsedSecondsRemainder = (int) Math.floor(elapsedTime / 1000 % 60);
-        return elapsedMins + " Mins and " + elapsedSecondsRemainder + " Seconds";
+    // Method to stop the game loop and bring up the pause menu
+    public void pauseGame() {
+        pause = true;
+        running = false;
+        // @TODO add to menu class
+        pauseMenu = new JPopupMenu();
+        pauseMenu.setLocation(600, 400);
+        pauseMenu.setPreferredSize(new Dimension(500, 30));
+        pauseMenu.setBackground(Color.WHITE);
+        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
+        pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
+        // Create Pause Menu Label
+        JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
+        pauseMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+        pauseMenuLabel.setForeground(Color.BLACK);
+        pauseMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
+        pauseMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
+        pauseMenu.add(pauseMenuLabel);
+//        pauseMenu.setVisible(true);
+    }
+
+    // Method to run the game again and hide the pause menu
+    public void resumeGame() {
+        pause = false;
+        running = true;
+        // @TODO add to menu class
+        pauseMenu.setVisible(false);
+    }
+
+    // Method to reset all game mechanics
+    public void resetGame() {
+        // Reset object values
+        itemManager.setDefaultValues();
+        playerCar.setDefaultValues();
+        copCar.setDefaultValues();
+        // @TODO menus should be closed
+
+        // Start the game
+        running = true;
+        pause = false;
+    }
+
+
+    // @TODO add to cop car class
+    // Method to create another bullet traveling west or north from the cop
+    public void generateNewCopBullet() {
     }
 
     // @TODO add to Menu class
@@ -288,7 +262,7 @@ public class Panel extends JPanel implements Runnable {
     public String getHighScoreMessage() {
         // Create TreeMap to hold the scores for deduping and ordering
         TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
-        File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/gta_high_scores.csv");
+        File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv");
         // Read the local CSV file
         try {
             Scanner myScanner = new Scanner(fileObj);
