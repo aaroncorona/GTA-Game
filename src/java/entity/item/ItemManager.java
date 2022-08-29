@@ -12,11 +12,14 @@ public class ItemManager implements Entity {
     private static ItemManager instance = null;
 
     // Total Item tracking
-    public static ArrayList<SuperItem> items = new ArrayList<>();
-    public static int moneyValueTotal = 0;
+    public static ArrayList<SuperItem> items;
+    public static int moneyValueTotal;
 
     // Private Constructor - Singleton class
-    private ItemManager() {}
+    private ItemManager() {
+        items = new ArrayList<>();
+        moneyValueTotal = 0;
+    }
 
     // Singleton constructor method to ensure there is only 1 Tile manager obj per game
     public static ItemManager getInstance() {
@@ -28,10 +31,11 @@ public class ItemManager implements Entity {
         }
     }
 
-    // Delete all item objects
+    // Delete all items from being tracked
     @Override
     public void setDefaultValues() {
         items = new ArrayList<>();
+        moneyValueTotal = 0;
     }
 
     // Run update on all Items

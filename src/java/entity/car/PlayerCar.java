@@ -1,8 +1,9 @@
 package entity.car;
 
-import entity.item.ItemManager;
 import main.CollisionChecker;
 import main.KeyHandler;
+import main.Panel;
+import entity.item.ItemManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -59,7 +60,21 @@ public class PlayerCar extends SuperCar {
 
         // E key to shoot bullet
         if(KeyHandler.ePress == true) {
-            ItemManager.createBullet(xPos, yPos, direction);
+            // Spawn the bullet a safe distance from the player to avoid instant death
+            switch(direction) {
+                case 'R':
+                    ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, direction);
+                    break;
+                case 'L':
+                    ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, direction);
+                    break;
+                case 'U':
+                    ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, direction);
+                    break;
+                case 'D':
+                    ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, direction);
+                    break;
+            }
             KeyHandler.ePress = false;
         }
     }
@@ -69,23 +84,23 @@ public class PlayerCar extends SuperCar {
         switch(direction) {
             case 'R':
                 xPos = xPos + speed;
-                collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
-                                              panel.UNIT_SIZE, panel.UNIT_SIZE/2);
+                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                                              Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'L':
                 xPos = xPos - speed;
-                collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
-                                              panel.UNIT_SIZE, panel.UNIT_SIZE/2);
+                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                                              Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'U':
                 yPos = yPos - speed;
-                collisionArea = new Rectangle(xPos+ panel.UNIT_SIZE/4, yPos,
-                                              panel.UNIT_SIZE/2, panel.UNIT_SIZE);
+                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                                        Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
             case 'D':
                 yPos = yPos + speed;
-                collisionArea = new Rectangle(xPos+ panel.UNIT_SIZE/4, yPos,
-                                        panel.UNIT_SIZE/2, panel.UNIT_SIZE);
+                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                                        Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
         }
     }
@@ -98,7 +113,7 @@ public class PlayerCar extends SuperCar {
             System.out.println("Deadly Collision - Tile");
         }
         // Second, check for a deadly collision with the cop car
-        if(CollisionChecker.checkEntityCollision(this, panel.copCar) == true) {
+        if(CollisionChecker.checkEntityCollision(this, Panel.copCar) == true) {
             dead = true;
             System.out.println("Deadly Collision - Cop Car");
         }
@@ -135,7 +150,7 @@ public class PlayerCar extends SuperCar {
     @Override
     public void draw(Graphics g) {
         loadImage();
-        g.drawImage(image, xPos, yPos, panel.UNIT_SIZE, panel.UNIT_SIZE, null);
+        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);

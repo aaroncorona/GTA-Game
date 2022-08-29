@@ -1,7 +1,9 @@
 package entity.car;
 
+import entity.item.ItemManager;
 import main.CollisionChecker;
 import main.Panel;
+import tile.Tile;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
@@ -39,10 +41,7 @@ public class CopCar extends SuperCar {
     public void update() {
         // Manage events
         handleDeadlyCollision();
-        // Upon dying, the cop should respawn
-        if(dead) {
-            setDefaultValues();
-        }
+        handleDeath();
     }
 
     // Helper method to respond to collision events that should end the game
@@ -50,6 +49,14 @@ public class CopCar extends SuperCar {
         // Check for a deadly collision with the player
         if(CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
             dead = true;
+        }
+    }
+
+    // Helper method to respond to Cop death by creating money and then respawning
+    private void handleDeath() {
+        if(dead) {
+            ItemManager.createMoney(xPos, yPos);
+            setDefaultValues();
         }
     }
 

@@ -10,8 +10,8 @@ import java.io.IOException;
 
 public class Bullet extends SuperItem {
 
-    // Constructor to create a single Money
-    public Bullet(int xPos, int yPos, char direction) {
+    // Constructor to create a single Bullet item. Only the TileManager should use this method
+    protected Bullet(int xPos, int yPos, char direction) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.direction = direction;
@@ -23,7 +23,7 @@ public class Bullet extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        speed = 20;
+        speed = 25;
         dead = false;
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);

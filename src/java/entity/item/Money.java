@@ -14,8 +14,8 @@ public class Money extends SuperItem {
 
     public int value;
 
-    // Constructor to create a single Money item
-    public Money(int xPos, int yPos) {
+    // Constructor to create a single Money item. Only the TileManager should use this method
+    protected Money(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
 
@@ -44,6 +44,7 @@ public class Money extends SuperItem {
         if(checkEntityCollision(Panel.playerCar, this) == true) {
             ItemManager.moneyValueTotal += value;
             dead = true;
+            System.out.println("Money collected! New bank account balance: $" + ItemManager.moneyValueTotal);
         }
     }
 

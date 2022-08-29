@@ -1,15 +1,13 @@
 package entity.car;
 
 import entity.Entity;
+import main.Panel;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 // This super class provides a foundation for creating car classes
 public abstract class SuperCar implements Entity {
-    // Panel to track game state
-    public static main.Panel panel;
-
     // Position tracking vars
     public int xPos, yPos;
     public char direction;
@@ -30,7 +28,7 @@ public abstract class SuperCar implements Entity {
         speed = 5;
         nitro = false;
         dead = false;
-        collisionArea = new Rectangle(xPos, yPos + panel.UNIT_SIZE/4,
-                                      panel.UNIT_SIZE, panel.UNIT_SIZE/2);
+        collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                                      Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }
 }

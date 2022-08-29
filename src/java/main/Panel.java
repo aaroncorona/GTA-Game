@@ -156,10 +156,11 @@ public class Panel extends JPanel implements Runnable {
     public void handleGameOver() {
         // The player dying is currently the only way to lose
         if(playerCar.dead) {
+            // Draw the player explosion first
+            repaint();
             // Stop the game
             running = false;
-            // Draw the player explosion before the menus
-            repaint();
+            System.out.println("Final Score: $" + itemManager.moneyValueTotal);
             // Trigger menus
             // @TODO add to Menu class
             // Log final score in the CSV file if it's past a certain minimum
@@ -191,7 +192,7 @@ public class Panel extends JPanel implements Runnable {
             gameOverMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
             gameOverMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
             gameOverMenu.add(gameOverMenuLabel);
-            gameOverMenu.setVisible(true);
+//            gameOverMenu.setVisible(true);
 
             // Create High Score Menu
             highScoreMenu = new JPopupMenu();
