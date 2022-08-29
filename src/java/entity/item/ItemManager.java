@@ -5,7 +5,7 @@ import entity.Entity;
 import java.awt.*;
 import java.util.ArrayList;
 
-// The Item Manager runs the Item methods for all objects and gives methods to add or delete items
+// The Item Manager runs the Entity methods for all objects and provides functions to add more Item objects
 public class ItemManager implements Entity {
 
     // Singleton instance tracking
@@ -71,7 +71,7 @@ public class ItemManager implements Entity {
 
     @Override
     public void loadImage() {
-        // Not currently used, each item obj loads their own image
+        // Not currently used, each item loads their own image
     }
 
     // Method to call the draw method for every Item

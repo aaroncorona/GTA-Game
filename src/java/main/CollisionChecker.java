@@ -59,4 +59,14 @@ public class CollisionChecker {
             return false;
         }
     }
+
+    // Method to check for an item colliding with an item
+    public static boolean checkEntityCollision(SuperItem item1, SuperItem item2) {
+        Rectangle2D overlapArea = item1.collisionArea.createIntersection(item2.collisionArea);
+        if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

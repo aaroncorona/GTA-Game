@@ -80,6 +80,15 @@ public class Bullet extends SuperItem {
             dead = true;
             Panel.copCar.dead = true;
         }
+        // Check for a collision with any other item
+        for (int i = 0; i < ItemManager.items.size(); i++) {
+            SuperItem item = ItemManager.items.get(i);
+            if(!item.equals(this)
+               && CollisionChecker.checkEntityCollision(item, this) == true) {
+                dead = true;
+                item.dead = true;
+            }
+        }
     }
 
     @Override

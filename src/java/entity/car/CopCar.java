@@ -33,7 +33,7 @@ public class CopCar extends SuperCar {
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
 
         // Reset if the Cop spawn on a tile that would cause an instant collision
-        if(TileManager.tiles[TileManager.tileMap[yPos / Panel.UNIT_SIZE][xPos / Panel.UNIT_SIZE]].collision == true) {
+        if(CollisionChecker.checkTileCollision(this) == true) {
             setDefaultValues();
         }
     }

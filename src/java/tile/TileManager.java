@@ -97,7 +97,7 @@ public class TileManager {
 
                     // Fill the collision tile map (rects to represent the collision area)
                     int collisionSize;
-                    if(TileManager.tiles[TileManager.tileMap[i][j]].collision == true) {
+                    if(TileManager.tiles[TileManager.tileMap[i][j]].causeCollision == true) {
                         collisionSize = 30; // assume the same collision size
                     } else {
                         collisionSize = 0; // no collision
