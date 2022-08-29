@@ -1,13 +1,11 @@
 package entity.car;
 
-import entity.item.ItemManager;
-import main.ContactChecker;
+import main.CollisionChecker;
 import main.Panel;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
@@ -46,7 +44,7 @@ public class CopCar extends SuperCar {
     // Helper method to respond to collision events that should end the game
     private void handleDeadlyCollision() {
         // Check for a deadly collision with the player
-        if(ContactChecker.checkCarCollision(this, Panel.playerCar) == true) {
+        if(CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
             dead = true;
         }
         // @TODO update after the bullet class is built

@@ -28,45 +28,42 @@ public class ItemManager implements Entity {
         }
     }
 
-    // Run reset on all Items
+    // Delete all item objects
     @Override
     public void setDefaultValues() {
-        for (int i = 0; i < items.size(); i++) {
-            items.get(i).setDefaultValues();
-        }
+        items = new ArrayList<>();
     }
 
     // Run update on all Items
     @Override
     public void update() {
+        // Overall item management
+        deleteDeadItems();
+        // Individual item updates
         for (int i = 0; i < items.size(); i++) {
             items.get(i).update();
         }
     }
 
-    // Method to create a Money Item object as needed
+    // Method for other classes to create a Money Item object
     public static void createMoney(int xPos, int yPos) {
         Money money = new Money(xPos,yPos);
         items.add(money);
     }
 
-    // Method to increment the score and delete the Money Item
-    public static void collectMoney(Money money) {
-        // Add to money score
-        moneyValueTotal += money.value;
-
-        // Remove that money object from the array so it disappears from the screen
-        for (int i = 0; i < items.size(); i++) {
-            if(items.get(i).equals(money)) {
-                items.remove(i);
-            }
-        }
-    }
-
-    // Method to create a Bullet Item object as needed
+    // Method for other classes to create a Bullet Item object
     public static void createBullet(int xPos, int yPos, char direction) {
         Bullet bullet1 = new Bullet(xPos, yPos, direction);
         items.add(bullet1);
+    }
+
+    // Helper Method to remove unused ("dead") items from the list to improve item manager performance
+    private static void deleteDeadItems() {
+        for (int i = 0; i < items.size(); i++) {
+            if(items.get(i).dead == true) {
+                items.remove(i);
+            }
+        }
     }
 
     @Override

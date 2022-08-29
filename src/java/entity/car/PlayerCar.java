@@ -1,7 +1,7 @@
 package entity.car;
 
 import entity.item.ItemManager;
-import main.ContactChecker;
+import main.CollisionChecker;
 import main.KeyHandler;
 
 import javax.imageio.ImageIO;
@@ -23,7 +23,6 @@ public class PlayerCar extends SuperCar {
         updateLocation();
         // Manage events
         handleDeadlyCollision();
-        handleMoneyCollection();
     }
 
     // Helper Method to update the Car's direction and nitro values based on key input
@@ -94,30 +93,17 @@ public class PlayerCar extends SuperCar {
     // Helper method to respond to collision events that should end the game
     private void handleDeadlyCollision() {
         // First, check for a deadly collision with a tile
-        if(ContactChecker.checkTileCollision(this) == true) {
+        if(CollisionChecker.checkTileCollision(this) == true) {
             dead = true;
             panel.running = false;
             System.out.println("Deadly Collision - Tile");
         }
-        // Second, check for a deadly collision with another car
-        if(ContactChecker.checkCarCollision(this, panel.copCar) == true) {
+        // Second, check for a deadly collision with the cop car
+        if(CollisionChecker.checkEntityCollision(this, panel.copCar) == true) {
             dead = true;
             panel.running = false;
             System.out.println("Deadly Collision - Cop Car");
         }
-        // @TODO update after the bullet class is built
-        // Check for a deadly collision with a bullet
-//        if(ContactChecker.checkBulletCollision(this, panel.bullet) == true) {
-//            death = true;
-//            panel.running = false;
-//            System.out.println("deadly collision - bullet");
-//        }
-    }
-
-    // @TODO update after the money class is built
-    // Helper method to check if money is collected
-    private void handleMoneyCollection() {
-
     }
 
     @Override

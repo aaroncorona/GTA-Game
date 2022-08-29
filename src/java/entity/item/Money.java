@@ -8,6 +8,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
+import static main.CollisionChecker.checkEntityCollision;
+
 public class Money extends SuperItem {
 
     public int value;
@@ -25,15 +27,25 @@ public class Money extends SuperItem {
     public void setDefaultValues() {
         direction = 'R'; // direction does not apply
         speed = 1; // speed does not apply
+        dead = false;
         collisionArea = new Rectangle(xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
         value = new Random().nextInt(20) + 1;
     }
 
     @Override
     public void update() {
-        // Not currently used
+        // Handle events
+        handleMoneyCollection();
     }
 
+    // Helper method to check if the money object is contacted by the player, whereby
+    // a "collection" should occur and increment the overal money score
+    private void handleMoneyCollection() {
+        if(checkEntityCollision(Panel.playerCar, this) == true) {
+            ItemManager.moneyValueTotal += value;
+            dead = true;
+        }
+    }
 
     @Override
     public void loadImage() {

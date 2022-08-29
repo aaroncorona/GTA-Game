@@ -1,5 +1,6 @@
 package entity.item;
 
+import main.CollisionChecker;
 import main.Panel;
 
 import javax.imageio.ImageIO;
@@ -23,6 +24,7 @@ public class Bullet extends SuperItem {
     @Override
     public void setDefaultValues() {
         speed = 20;
+        dead = false;
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }
@@ -31,6 +33,8 @@ public class Bullet extends SuperItem {
     public void update() {
         // Update location
         updateLocation();
+        // Handle events
+        handleDeadlyCollision();
     }
 
     // Helper method to update the bullet coordinates
@@ -59,15 +63,44 @@ public class Bullet extends SuperItem {
         }
     }
 
+    // Helper method to respond to the bullet hitting a tile
+    private void handleDeadlyCollision() {
+        // Check for a tile collision
+        if(CollisionChecker.checkTileCollision(this) == true) {
+            dead = true;
+        }
+        // Check for a player collision
+        if(CollisionChecker.checkEntityCollision(Panel.playerCar, this) == true) {
+            dead = true;
+            Panel.playerCar.dead = true;
+        }
+        // Check for a cop collision
+        if(CollisionChecker.checkEntityCollision(Panel.copCar, this) == true) {
+            dead = true;
+            Panel.copCar.dead = true;
+        }
+    }
+
     @Override
     public void loadImage() {
-        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/items/bullet/bullet_";
-        filePath += direction;
-        filePath += ".png";
-        try {
-            image = ImageIO.read(new File(filePath));
-        } catch (IOException e) {
-            e.printStackTrace();
+        // Check if the bullet should explode
+        if(dead == true) {
+            String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
+            try {
+                image = ImageIO.read(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            // Otherwise, return the correct sprite
+            String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/items/bullet/bullet_";
+            filePath += direction;
+            filePath += ".png";
+            try {
+                image = ImageIO.read(new File(filePath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -78,7 +111,7 @@ public class Bullet extends SuperItem {
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);
-        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
+//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
 //        g.drawRect(xPos, yPos, 5, 5);
     }
 }

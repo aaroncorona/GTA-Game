@@ -10,6 +10,7 @@ public abstract class SuperItem implements Entity {
     public int xPos, yPos;
     public char direction;
     public int speed;
+    public boolean dead;
     BufferedImage image;
 
     // Collision tracking
