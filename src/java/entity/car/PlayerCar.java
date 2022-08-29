@@ -23,10 +23,12 @@ public class PlayerCar extends SuperCar {
         updateDir();
         updateLocation();
         // Manage events
+        handleNitro();
+        handleShooting();
         handleDeadlyCollision();
     }
 
-    // Helper Method to update the Car's direction and nitro values based on key input
+    // Helper Method to update the Car's direction based on key input
     private void updateDir() {
         // Key mappings for the player's direction
         if(KeyHandler.upPress == true) {
@@ -44,38 +46,6 @@ public class PlayerCar extends SuperCar {
         if(KeyHandler.leftPress == true) {
             direction = 'L';
             KeyHandler.leftPress = false;
-        }
-
-        // R key to toggle nitro (triple speed)
-        if(KeyHandler.rPress == true && nitro == false) {
-            nitro = true;
-            speed = speed*3;
-            KeyHandler.rPress = false;
-        }
-        if(KeyHandler.rPress == true && nitro == true) {
-            nitro = false;
-            speed = speed/3;
-            KeyHandler.rPress = false;
-        }
-
-        // E key to shoot bullet
-        if(KeyHandler.ePress == true) {
-            // Spawn the bullet a safe distance from the player to avoid instant death
-            switch(direction) {
-                case 'R':
-                    ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, direction);
-                    break;
-                case 'L':
-                    ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, direction);
-                    break;
-                case 'U':
-                    ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, direction);
-                    break;
-                case 'D':
-                    ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, direction);
-                    break;
-            }
-            KeyHandler.ePress = false;
         }
     }
 
@@ -102,6 +72,44 @@ public class PlayerCar extends SuperCar {
                 collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
+        }
+    }
+
+    // Helper Method to update the Car's nitro values based on key input
+    private void handleNitro() {
+        // R key to toggle nitro (triple speed)
+        if(KeyHandler.rPress == true && nitro == false) {
+            nitro = true;
+            speed = speed*3;
+            KeyHandler.rPress = false;
+        }
+        if(KeyHandler.rPress == true && nitro == true) {
+            nitro = false;
+            speed = speed/3;
+            KeyHandler.rPress = false;
+        }
+    }
+
+    // Helper Method to create a bullet based on key input
+    private void handleShooting() {
+        // E key to shoot bullet
+        if(KeyHandler.ePress == true) {
+            // Spawn the bullet a safe distance from the player to avoid instant death
+            switch(direction) {
+                case 'R':
+                    ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, direction);
+                    break;
+                case 'L':
+                    ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, direction);
+                    break;
+                case 'U':
+                    ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, direction);
+                    break;
+                case 'D':
+                    ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, direction);
+                    break;
+            }
+            KeyHandler.ePress = false;
         }
     }
 

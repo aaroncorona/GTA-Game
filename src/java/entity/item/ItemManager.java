@@ -17,8 +17,7 @@ public class ItemManager implements Entity {
 
     // Private Constructor - Singleton class
     private ItemManager() {
-        items = new ArrayList<>();
-        moneyValueTotal = 0;
+        setDefaultValues();
     }
 
     // Singleton constructor method to ensure there is only 1 Tile manager obj per game

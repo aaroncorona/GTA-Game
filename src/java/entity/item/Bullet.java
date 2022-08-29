@@ -71,8 +71,8 @@ public class Bullet extends SuperItem {
         }
         // Check for a player collision
         if(CollisionChecker.checkEntityCollision(Panel.playerCar, this) == true) {
-//            dead = true;
-//            Panel.playerCar.dead = true;
+            dead = true;
+            Panel.playerCar.dead = true;
             System.out.println("Deadly Collision - Bullet");
         }
         // Check for a cop collision
