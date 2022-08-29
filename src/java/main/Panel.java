@@ -252,12 +252,6 @@ public class Panel extends JPanel implements Runnable {
         pause = false;
     }
 
-
-    // @TODO add to cop car class
-    // Method to create another bullet traveling west or north from the cop
-    public void generateNewCopBullet() {
-    }
-
     // @TODO add to Menu class
     // Method to read the high score file and return the high score results
     public String getHighScoreMessage() {
