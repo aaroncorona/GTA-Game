@@ -1,7 +1,6 @@
 package entity;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 
 // Interface to create the players and NPCs in the game
 public interface Entity {

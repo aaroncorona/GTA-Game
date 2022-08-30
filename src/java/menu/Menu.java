@@ -1,12 +1,15 @@
 package menu;
 
-import java.awt.image.BufferedImage;
+import java.awt.*;
 
-// This super class provides a foundation for creating menu classes
-public abstract class Menu {
-    // Position tracking vars
-    public int xPos, yPos;
-    public int height;
-    public int width;
-    BufferedImage image;
+// Interface to create menu classes
+public interface Menu {
+    // Method to open the menu
+    public void openMenu();
+    // Method to hide the menu
+    public void closeMenu();
+    // Method to get the correct image file for the menu
+    public void loadImage();
+    // Method to draw the menu
+    public void draw(Graphics g);
 }
