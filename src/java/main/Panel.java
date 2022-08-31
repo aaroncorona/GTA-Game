@@ -21,14 +21,11 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
 
-    // Variables for the game state
-    public static boolean running;
-    public static boolean pause;
-
-    // Menus
-    // @TODO migrate to menu class
-    public static JPopupMenu gameOverMenu = new JPopupMenu();
-    public static JPopupMenu highScoreMenu = new JPopupMenu();
+    // Game state
+    public static boolean playState;
+    // @TODO add title state
+    public static boolean titleState;
+    public static boolean pauseState;
 
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
@@ -43,6 +40,10 @@ public class Panel extends JPanel implements Runnable {
 
     // Menus
     private static PauseMenu pauseMenu = new PauseMenu();
+    // @TODO migrate to menu classes
+    private static JPopupMenu titleMenu = new JPopupMenu();
+    public static JPopupMenu gameOverMenu = new JPopupMenu();
+    public static JPopupMenu highScoreMenu = new JPopupMenu();
 
     // Constructor to create the game panel within a Frame
     Panel() {
@@ -63,7 +64,7 @@ public class Panel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    // Game thread logic that the Thread will run
+    // Game loop logic that the game thread runs
     @Override
     public void run() {
         // Set rendering frequency
@@ -92,7 +93,7 @@ public class Panel extends JPanel implements Runnable {
     // Method to update positions of all entities and objects as well as and checking for collisions
     public void update() {
         handleKeyInput();
-        if(running) {
+        if(playState) {
             // Update all game components
             itemManager.update();
             playerCar.update();
@@ -105,22 +106,22 @@ public class Panel extends JPanel implements Runnable {
     // Helper method to handle key inputs for the game state
     private void handleKeyInput() {
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
-        if (key.enterPress == true && running == false) {
+        if (key.enterPress == true && playState == false) {
             resetGame();
             key.enterPress = false;
         }
         // Delete key to exit game (if stopped)
-        if (key.backSpacePress == true && running == false) {
+        if (key.backSpacePress == true && playState == false) {
             System.exit(0);
             key.backSpacePress = false;
         }
         // Space bar to pause game
-        if (key.spacePress == true && pause == false && running == true) {
+        if (key.spacePress == true && pauseState == false) {
             pauseGame();
             key.spacePress = false;
         }
         // Space bar to resume game
-        if (key.spacePress == true && pause == true && running == false) {
+        if (key.spacePress == true && pauseState == true) {
             resumeGame();
             key.spacePress = false;
         }
@@ -138,7 +139,7 @@ public class Panel extends JPanel implements Runnable {
 
         // @TODO migrate to menu class
         // Initial Pause menu
-        if(running == false && itemManager.moneyValueTotal == 0) {
+        if(playState == false && itemManager.moneyValueTotal == 0) {
             // Draw the pause menu
             String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/start_menu.png";
             ImageIcon startMenu = new ImageIcon(new ImageIcon(filePathStartMenu).getImage().getScaledInstance((SCREEN_WIDTH/2)+50, SCREEN_HEIGHT-50, Image.SCALE_DEFAULT));
@@ -154,7 +155,12 @@ public class Panel extends JPanel implements Runnable {
         itemManager.draw(g);
         playerCar.draw(g);
         copCar.draw(g);
-        pauseMenu.draw(g);
+//        pauseMenu.draw(g);
+
+//        // Draw menus according to the game state
+//        if(pauseState) {
+//            pauseMenu.draw(g);
+//        }
     }
 
     // Method to check for an event that ends the game and respond accordingly
@@ -164,7 +170,7 @@ public class Panel extends JPanel implements Runnable {
             // Draw the player explosion first
             repaint();
             // Stop the game
-            running = false;
+            playState = false;
             System.out.println("Final Score: $" + itemManager.moneyValueTotal);
             // Trigger menus
             // @TODO add to Menu class
@@ -211,29 +217,28 @@ public class Panel extends JPanel implements Runnable {
             highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
             highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
             highScoreMenu.add(highScoreMenuLabel);
-//            highScoreMenu.setVisible(true);
         }
     }
 
-    // Method to stop the game loop and bring up the pause menu
+    // Method to stop the game loop and open the pause menu
     public void pauseGame() {
+        playState = false;
+        pauseState = true;
         pauseMenu.openMenu();
-        pause = true;
-        running = false;
     }
 
     // Method to run the game again and hide the pause menu
     public void resumeGame() {
+        playState = true;
+        pauseState = false;
         pauseMenu.closeMenu();
-        pause = false;
-        running = true;
     }
 
     // Method to reset all game mechanics
     public void resetGame() {
         // Start the game
-        running = true;
-        pause = false;
+        playState = true;
+        pauseState = false;
 
         // Reset all game components
         itemManager.setDefaultValues();

@@ -2,29 +2,42 @@ package menu;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class PauseMenu implements Menu {
 
-    public JPopupMenu pauseMenu;
+    public final JPopupMenu pauseMenu;
     int xPos, yPos;
     int width, height;
+    JMenuItem item1;
 
     // Constructor
     public PauseMenu() {
+
+        // Instantiate menu objects
         pauseMenu = new JPopupMenu();
+        JMenuItem item1 = new JMenuItem("Option 1");
+        pauseMenu.add(item1);
 
         setDefaultValues();
     }
 
     @Override
     public void setDefaultValues() {
-        // Menu placement
+        // Placement vars
         xPos = 500;
         yPos = 500;
         width = 400;
         height = 100;
+
+        // Default Menu UI settings
         pauseMenu.setLocation(xPos, yPos);
-        pauseMenu.setPreferredSize(new Dimension(500, 30));
+        pauseMenu.setPreferredSize(new Dimension(500, 200));
+        pauseMenu.setBackground(Color.WHITE);
+        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
+        pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
         closeMenu();
     }
 
@@ -45,17 +58,25 @@ public class PauseMenu implements Menu {
 
     @Override
     public void draw(Graphics g) {
-        // Menu UI
-        pauseMenu.setBackground(Color.WHITE);
-        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
-        pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
 
-        // Create Menu Label
-        JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
-        pauseMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-        pauseMenuLabel.setForeground(Color.BLACK);
-        pauseMenuLabel.setAlignmentX(Panel.CENTER_ALIGNMENT);
-        pauseMenuLabel.setAlignmentY(Panel.CENTER_ALIGNMENT);
-        pauseMenu.add(pauseMenuLabel);
     }
 }
+
+// Add JMenuItems
+
+
+//        pauseMenu.add(new JMenuItem(new AbstractAction("Option 2") {
+//            public void actionPerformed(ActionEvent e) {
+//            }
+//        }));
+
+// Add JButton
+//        final JButton button = new JButton("Options");
+//        button.addMouseListener(new MouseAdapter() {
+//            public void mousePressed(MouseEvent e) {
+//                pauseMenu.show(e.getComponent(), e.getX(), e.getY());
+//            }
+//        });
+
+// Icon
+//        item1.setIcon(new ImageIcon("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png"));

@@ -6,7 +6,7 @@ import java.awt.*;
 public interface Menu {
     // Method to establish the basic menu settings
     public void setDefaultValues();
-    // Method to open the menu
+    // Method to reveal the menu
     public void openMenu();
     // Method to hide the menu
     public void closeMenu();
