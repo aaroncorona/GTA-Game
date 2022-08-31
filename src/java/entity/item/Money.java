@@ -25,9 +25,10 @@ public class Money extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
+        name = "Money";
+        dead = false;
         direction = 'R'; // direction does not apply
         speed = 1; // speed does not apply
-        dead = false;
         collisionArea = new Rectangle(xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
         value = new Random().nextInt(20) + 1;
     }

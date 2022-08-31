@@ -6,11 +6,9 @@ public class Frame extends JFrame {
 
     // Constructor
     Frame() {
-
         // Create panel
         Panel panel = new Panel();
-
-        // Set frame details
+        // Frame UI settings
         this.setTitle("GTA");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
@@ -18,9 +16,6 @@ public class Frame extends JFrame {
         this.pack(); // to automatically size the main.Frame to the main.Panel settings
         this.setLayout(null);
         this.setLocationRelativeTo(null);
-
-        // Start game loop
-        panel.startGameThread();
     }
 }
 

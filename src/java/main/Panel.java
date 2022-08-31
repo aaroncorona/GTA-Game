@@ -3,6 +3,7 @@ package main;
 import entity.car.CopCar;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
+import menu.PauseMenu;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -26,14 +27,13 @@ public class Panel extends JPanel implements Runnable {
 
     // Menus
     // @TODO migrate to menu class
-    public static JPopupMenu pauseMenu = new JPopupMenu();
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
 
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
 
-    // Managers
+    // Tile and Item Managers
     private static TileManager tileManager = TileManager.getInstance();
     private static ItemManager itemManager = ItemManager.getInstance();
 
@@ -41,21 +41,25 @@ public class Panel extends JPanel implements Runnable {
     public static PlayerCar playerCar = new PlayerCar();
     public static CopCar copCar = new CopCar();
 
-    // Create game panel (constructor)
+    // Menus
+    private static PauseMenu pauseMenu = new PauseMenu();
+
+    // Constructor to create the game panel within a Frame
     Panel() {
-        // Add Panel details
+        // Panel UI settings
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));
         this.setFocusable(true);
-
-        // Add the Key listener to the panel
+        // Add a Key listener
         this.addKeyListener(key);
+        // Start the game loop
+        startGameThread(this);
     }
 
     // Method to launch the game loop
-    public void startGameThread() {
+    public void startGameThread(Panel panel) {
         // Start thread
-        Thread gameThread = new Thread(this);
+        Thread gameThread = new Thread(panel);
         gameThread.start();
     }
 
@@ -89,16 +93,16 @@ public class Panel extends JPanel implements Runnable {
     public void update() {
         handleKeyInput();
         if(running) {
-            // Object states
+            // Update all game components
             itemManager.update();
             playerCar.update();
             copCar.update();
-            // Game state
+            // Check for game over
             handleGameOver();
         }
     }
 
-    // Helper method to handle key inputs for basic game mechanics
+    // Helper method to handle key inputs for the game state
     private void handleKeyInput() {
         // Enter key to restart game (if stopped) or start the game from the initial pause menu
         if (key.enterPress == true && running == false) {
@@ -110,7 +114,6 @@ public class Panel extends JPanel implements Runnable {
             System.exit(0);
             key.backSpacePress = false;
         }
-        // @TODO migrate to menu class
         // Space bar to pause game
         if (key.spacePress == true && pause == false && running == true) {
             pauseGame();
@@ -146,15 +149,17 @@ public class Panel extends JPanel implements Runnable {
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
 
+        // Draw all game components
         tileManager.draw(g);
         itemManager.draw(g);
         playerCar.draw(g);
         copCar.draw(g);
+        pauseMenu.draw(g);
     }
 
-    // Method to check for an event that ends the game and respond accoringly
+    // Method to check for an event that ends the game and respond accordingly
     public void handleGameOver() {
-        // The player dying is currently the only way to lose
+        // Check for the player dying, this is currently the only way to lose
         if(playerCar.dead) {
             // Draw the player explosion first
             repaint();
@@ -212,44 +217,29 @@ public class Panel extends JPanel implements Runnable {
 
     // Method to stop the game loop and bring up the pause menu
     public void pauseGame() {
+        pauseMenu.openMenu();
         pause = true;
         running = false;
-        // @TODO add to menu class
-        pauseMenu = new JPopupMenu();
-        pauseMenu.setLocation(600, 400);
-        pauseMenu.setPreferredSize(new Dimension(500, 30));
-        pauseMenu.setBackground(Color.WHITE);
-        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.PINK, 3));
-        pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
-        // Create Pause Menu Label
-        JLabel pauseMenuLabel = new JLabel("Press SPACE to Resume");
-        pauseMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-        pauseMenuLabel.setForeground(Color.BLACK);
-        pauseMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
-        pauseMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
-        pauseMenu.add(pauseMenuLabel);
-//        pauseMenu.setVisible(true);
     }
 
     // Method to run the game again and hide the pause menu
     public void resumeGame() {
+        pauseMenu.closeMenu();
         pause = false;
         running = true;
-        // @TODO add to menu class
-        pauseMenu.setVisible(false);
     }
 
     // Method to reset all game mechanics
     public void resetGame() {
-        // Reset object values
-        itemManager.setDefaultValues();
-        playerCar.setDefaultValues();
-        copCar.setDefaultValues();
-        // @TODO menus should be closed
-
         // Start the game
         running = true;
         pause = false;
+
+        // Reset all game components
+        itemManager.setDefaultValues();
+        playerCar.setDefaultValues();
+        copCar.setDefaultValues();
+        pauseMenu.setDefaultValues();
     }
 
     // @TODO add to Menu class

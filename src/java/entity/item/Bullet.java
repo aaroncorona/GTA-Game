@@ -23,8 +23,9 @@ public class Bullet extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        speed = 25;
+        name = "Bullet";
         dead = false;
+        speed = 25;
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }
@@ -67,17 +68,22 @@ public class Bullet extends SuperItem {
     private void handleDeadlyCollision() {
         // Check for a tile collision
         if(CollisionChecker.checkTileCollision(this) == true) {
+            // Bullet blows up only
             dead = true;
         }
         // Check for a player collision
         if(CollisionChecker.checkEntityCollision(Panel.playerCar, this) == true) {
+            // Bullet blows up
             dead = true;
+            // Car blows up
             Panel.playerCar.dead = true;
             System.out.println("Deadly Collision - Bullet");
         }
         // Check for a cop collision
         if(CollisionChecker.checkEntityCollision(Panel.copCar, this) == true) {
+            // Bullet blows up
             dead = true;
+            // Car blows up
             Panel.copCar.dead = true;
         }
         // Check for a collision with any other item
@@ -85,8 +91,11 @@ public class Bullet extends SuperItem {
             SuperItem item = ItemManager.items.get(i);
             if(!item.equals(this)
                && CollisionChecker.checkEntityCollision(item, this) == true) {
+                // 2 Bullets blows up, but not money
                 dead = true;
-                item.dead = true;
+                if(item.name.equals("Bullet")) {
+                    item.dead = true;
+                }
             }
         }
     }
