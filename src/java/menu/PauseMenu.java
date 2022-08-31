@@ -1,22 +1,19 @@
 package menu;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 
-import static java.awt.Component.CENTER_ALIGNMENT;
-
+// Class for a Pause Menu, which is Popup Menu with buttons and no graphics
 public class PauseMenu implements Menu {
 
-    public final JPopupMenu pauseMenu;
+    public JPopupMenu pauseMenu;
+    public boolean open;
+    // Position tracking
     int xPos, yPos;
     int width, height;
+    // Sub Components
     JLabel label;
     JButton button1, button2, button3, button4;
-    BufferedImage image;
 
     // Constructor
     public PauseMenu() {
@@ -28,7 +25,8 @@ public class PauseMenu implements Menu {
         label = new JLabel("PAUSED");
         pauseMenu.add(label);
 
-        // Menu Items
+        // Menu Button
+        // TODO add click listeners
         button1 = new JButton("Resume");
         pauseMenu.add(button1);
         button2 = new JButton("Controls");
@@ -44,18 +42,18 @@ public class PauseMenu implements Menu {
     @Override
     public void setDefaultValues() {
         // Placement vars
-        xPos = 650;
-        yPos = 300;
+        xPos = 640;
+        yPos = 240;
         width = 400;
         height = 100;
+        open = false;
 
         // Menu UI
         pauseMenu.setLocation(xPos, yPos);
         pauseMenu.setPreferredSize(new Dimension(400, 170));
         pauseMenu.setBackground(Color.CYAN);
-        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.GRAY, 2));
+        pauseMenu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         pauseMenu.setFocusable(false); // Prevent the menu from taking focus from the panel
-        closeMenu();
 
         // Label UI
         label.setFont(new Font("Verdana", Font.PLAIN, 30));
@@ -70,25 +68,21 @@ public class PauseMenu implements Menu {
     }
 
     @Override
-    public void openMenu() {
-        pauseMenu.setVisible(true);
-    }
-
-    @Override
-    public void closeMenu() {
-        pauseMenu.setVisible(false);
-    }
-
-    @Override
-    public void loadImages() {
-
+    public void loadImage() {
+        // No images
     }
 
     @Override
     public void draw(Graphics g) {
-
+        // No graphics to draw
+        if(open) {
+            pauseMenu.setVisible(true);
+        } else {
+            pauseMenu.setVisible(false);
+        }
     }
 }
+
 
 //        pauseMenu.add(new JMenuItem(new AbstractAction("Option 2") {
 //            public void actionPerformed(ActionEvent e) {
@@ -102,6 +96,3 @@ public class PauseMenu implements Menu {
 //                pauseMenu.show(e.getComponent(), e.getX(), e.getY());
 //            }
 //        });
-
-// Icon
-//        item1.setIcon(new ImageIcon("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png"));

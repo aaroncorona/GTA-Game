@@ -3,6 +3,7 @@ package main;
 import entity.car.CopCar;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
+import menu.ControlMenu;
 import menu.PauseMenu;
 import tile.TileManager;
 
@@ -39,7 +40,8 @@ public class Panel extends JPanel implements Runnable {
     public static CopCar copCar = new CopCar();
 
     // Menus
-    private static PauseMenu pauseMenu = new PauseMenu();
+    public static PauseMenu pauseMenu = new PauseMenu();
+    public static ControlMenu controlMenu = new ControlMenu();
     // @TODO migrate to menu classes
     private static JPopupMenu titleMenu = new JPopupMenu();
     public static JPopupMenu gameOverMenu = new JPopupMenu();
@@ -105,7 +107,7 @@ public class Panel extends JPanel implements Runnable {
 
     // Helper method to handle key inputs for the game state
     private void handleKeyInput() {
-        // Enter key to restart game (if stopped) or start the game from the initial pause menu
+        // Enter key to restart game (if stopped)
         if (key.enterPress == true && playState == false) {
             resetGame();
             key.enterPress = false;
@@ -150,17 +152,15 @@ public class Panel extends JPanel implements Runnable {
             g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
         }
 
-        // Draw all game components
+        // Draw game components
         tileManager.draw(g);
         itemManager.draw(g);
         playerCar.draw(g);
         copCar.draw(g);
-//        pauseMenu.draw(g);
 
-//        // Draw menus according to the game state
-//        if(pauseState) {
-//            pauseMenu.draw(g);
-//        }
+        // Draw menus
+        pauseMenu.draw(g);
+        controlMenu.draw(g);
     }
 
     // Method to check for an event that ends the game and respond accordingly
@@ -224,14 +224,14 @@ public class Panel extends JPanel implements Runnable {
     public void pauseGame() {
         playState = false;
         pauseState = true;
-        pauseMenu.openMenu();
+        pauseMenu.open = true;
     }
 
     // Method to run the game again and hide the pause menu
     public void resumeGame() {
         playState = true;
         pauseState = false;
-        pauseMenu.closeMenu();
+        pauseMenu.open = false;
     }
 
     // Method to reset all game mechanics
@@ -244,7 +244,10 @@ public class Panel extends JPanel implements Runnable {
         itemManager.setDefaultValues();
         playerCar.setDefaultValues();
         copCar.setDefaultValues();
+
+        // Reset all menu settings
         pauseMenu.setDefaultValues();
+        controlMenu.setDefaultValues();
     }
 
     // @TODO add to Menu class

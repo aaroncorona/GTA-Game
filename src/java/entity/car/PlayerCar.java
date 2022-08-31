@@ -159,10 +159,5 @@ public class PlayerCar extends SuperCar {
     public void draw(Graphics g) {
         loadImage();
         g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-
-        // ad hoc check of the collision area
-//        g.setColor(Color.BLACK);
-//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
-//        g.drawRect(xPos, yPos, 5, 5);
     }
 }
