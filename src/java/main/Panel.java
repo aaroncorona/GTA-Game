@@ -106,7 +106,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Helper method to handle key inputs for the game state
-    private void handleKeyInput() {
+    private static void handleKeyInput() {
         // Enter key to restart game (if stopped)
         if (key.enterPress == true && playState == false) {
             resetGame();
@@ -221,21 +221,22 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to stop the game loop and open the pause menu
-    public void pauseGame() {
+    public static void pauseGame() {
         playState = false;
         pauseState = true;
         pauseMenu.open = true;
     }
 
     // Method to run the game again and hide the pause menu
-    public void resumeGame() {
+    public static void resumeGame() {
         playState = true;
         pauseState = false;
         pauseMenu.open = false;
+        controlMenu.open = false;
     }
 
     // Method to reset all game mechanics
-    public void resetGame() {
+    public static void resetGame() {
         // Start the game
         playState = true;
         pauseState = false;
@@ -252,7 +253,7 @@ public class Panel extends JPanel implements Runnable {
 
     // @TODO add to Menu class
     // Method to read the high score file and return the high score results
-    public String getHighScoreMessage() {
+    public static String getHighScoreMessage() {
         // Create TreeMap to hold the scores for deduping and ordering
         TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
         File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv");

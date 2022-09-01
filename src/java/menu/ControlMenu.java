@@ -26,6 +26,7 @@ public class ControlMenu implements Menu {
         yPos = 300;
         width = 400;
         height = 100;
+        open = false;
     }
 
     @Override

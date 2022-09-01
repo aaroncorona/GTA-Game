@@ -1,7 +1,10 @@
 package menu;
 
+import main.Panel;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 // Class for a Pause Menu, which is Popup Menu with buttons and no graphics
 public class PauseMenu implements Menu {
@@ -25,15 +28,38 @@ public class PauseMenu implements Menu {
         label = new JLabel("PAUSED");
         pauseMenu.add(label);
 
-        // Menu Button
-        // TODO add click listeners
+        // Menu Buttons and their corresponding click events
         button1 = new JButton("Resume");
+        button1.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                Panel.resumeGame();
+            }
+        });
         pauseMenu.add(button1);
         button2 = new JButton("Controls");
+        button2.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if(Panel.controlMenu.open == false) {
+                    Panel.controlMenu.open = true;
+                } else {
+                    Panel.controlMenu.open = false;
+                }
+            }
+        });
         pauseMenu.add(button2);
         button3 = new JButton("Restart");
+        button3.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                Panel.resetGame();
+            }
+        });
         pauseMenu.add(button3);
         button4 = new JButton("Quit");
+        button4.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                System.exit(0);
+            }
+        });
         pauseMenu.add(button4);
 
         setDefaultValues();
@@ -83,16 +109,3 @@ public class PauseMenu implements Menu {
     }
 }
 
-
-//        pauseMenu.add(new JMenuItem(new AbstractAction("Option 2") {
-//            public void actionPerformed(ActionEvent e) {
-//            }
-//        }));
-
-// Add JButton
-//        final JButton button = new JButton("Options");
-//        button.addMouseListener(new MouseAdapter() {
-//            public void mousePressed(MouseEvent e) {
-//                pauseMenu.show(e.getComponent(), e.getX(), e.getY());
-//            }
-//        });
