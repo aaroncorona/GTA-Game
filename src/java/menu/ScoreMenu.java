@@ -46,7 +46,7 @@ public class ScoreMenu implements Menu {
             // Draw bank
             loadImage();
             g.drawImage(image, xPos, yPos, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-            // Draw the current score in text
+            // Draw the current score
             g.setColor(Color.GREEN.darker());
             g.setFont(new Font("Serif", Font.ITALIC, 30));
             g.drawString("$" + ItemManager.moneyValueTotal,xPos + 58,yPos + 37);
