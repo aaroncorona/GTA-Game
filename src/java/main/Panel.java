@@ -38,7 +38,6 @@ public class Panel extends JPanel implements Runnable {
     public static ControlMenu controlMenu = new ControlMenu();
     public static GameOverMenu gameOverMenu = new GameOverMenu();
     public static PauseMenu pauseMenu = new PauseMenu();
-    public static ScoreMenu scoreMenu = new ScoreMenu();
     public static TitleMenu titleMenu = new TitleMenu();
 
     // Constructor to create the game panel within a Frame
@@ -152,7 +151,6 @@ public class Panel extends JPanel implements Runnable {
         controlMenu.draw(g);
         gameOverMenu.draw(g);
         pauseMenu.draw(g);
-        scoreMenu.draw(g);
         titleMenu.draw(g);
     }
 
@@ -202,7 +200,6 @@ public class Panel extends JPanel implements Runnable {
         controlMenu.setDefaultValues();
         gameOverMenu.setDefaultValues();
         pauseMenu.setDefaultValues();
-        scoreMenu.setDefaultValues();
         titleMenu.setDefaultValues();
     }
 }

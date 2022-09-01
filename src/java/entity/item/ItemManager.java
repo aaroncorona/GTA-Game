@@ -1,8 +1,13 @@
 package entity.item;
 
 import entity.Entity;
+import main.Panel;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 // The Item Manager runs the Entity methods for all objects and provides functions to add more Item objects
@@ -14,6 +19,7 @@ public class ItemManager implements Entity {
     // Total Item tracking
     public static ArrayList<SuperItem> items;
     public static int moneyValueTotal;
+    BufferedImage image;
 
     // Private Constructor - Singleton class
     private ItemManager() {
@@ -71,7 +77,13 @@ public class ItemManager implements Entity {
 
     @Override
     public void loadImage() {
-        // Not currently used, each item loads their own image
+        // Bank icon to display money total
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/bank.png";
+        try {
+            image = ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // Method to call the draw method for every Item
@@ -79,6 +91,16 @@ public class ItemManager implements Entity {
     public void draw(Graphics g) {
         for (int i = 0; i < items.size(); i++) {
             items.get(i).draw(g);
+        }
+        // Draw the money total while the game is running
+        if(Panel.titleState == false) {
+            // Draw bank
+            loadImage();
+            g.drawImage(image, 50, 1, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            // Draw the current score
+            g.setColor(Color.GREEN.darker());
+            g.setFont(new Font("Serif", Font.ITALIC, 30));
+            g.drawString("$" + ItemManager.moneyValueTotal,108,38);
         }
     }
 }
