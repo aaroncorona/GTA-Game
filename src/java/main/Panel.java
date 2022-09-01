@@ -5,6 +5,7 @@ import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import menu.ControlMenu;
 import menu.PauseMenu;
+import menu.TitleMenu;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -23,9 +24,8 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
 
     // Game state
-    public static boolean playState;
-    // @TODO add title state
     public static boolean titleState;
+    public static boolean playState;
     public static boolean pauseState;
 
     // Key handler
@@ -40,10 +40,10 @@ public class Panel extends JPanel implements Runnable {
     public static CopCar copCar = new CopCar();
 
     // Menus
+    public static TitleMenu titleMenu = new TitleMenu();
     public static PauseMenu pauseMenu = new PauseMenu();
     public static ControlMenu controlMenu = new ControlMenu();
     // @TODO migrate to menu classes
-    private static JPopupMenu titleMenu = new JPopupMenu();
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
 
@@ -57,6 +57,11 @@ public class Panel extends JPanel implements Runnable {
         this.addKeyListener(key);
         // Start the game loop
         startGameThread(this);
+        // Initial game state
+        titleState = true;
+        playState = false;
+        pauseState = false;
+        titleMenu.open = true;
     }
 
     // Method to launch the game loop
@@ -139,19 +144,6 @@ public class Panel extends JPanel implements Runnable {
         g.setFont(new Font("Serif", Font.PLAIN, 50));
         g.drawString("Bank Account: $" + itemManager.moneyValueTotal,20,40); // coordinates start in the top left
 
-        // @TODO migrate to menu class
-        // Initial Pause menu
-        if(playState == false && itemManager.moneyValueTotal == 0) {
-            // Draw the pause menu
-            String filePathStartMenu = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/start_menu.png";
-            ImageIcon startMenu = new ImageIcon(new ImageIcon(filePathStartMenu).getImage().getScaledInstance((SCREEN_WIDTH/2)+50, SCREEN_HEIGHT-50, Image.SCALE_DEFAULT));
-            startMenu.paintIcon(this, g, SCREEN_WIDTH/4, 10);
-            // Draw text
-            g.setColor(Color.ORANGE.brighter());
-            g.setFont(new Font("Serif", Font.ITALIC, 50));
-            g.drawString("Press ENTER to Play",(SCREEN_WIDTH/4)+150,660);
-        }
-
         // Draw game components
         tileManager.draw(g);
         itemManager.draw(g);
@@ -159,6 +151,7 @@ public class Panel extends JPanel implements Runnable {
         copCar.draw(g);
 
         // Draw menus
+        titleMenu.draw(g);
         pauseMenu.draw(g);
         controlMenu.draw(g);
     }
@@ -238,6 +231,7 @@ public class Panel extends JPanel implements Runnable {
     // Method to reset all game mechanics
     public static void resetGame() {
         // Start the game
+        titleState = false;
         playState = true;
         pauseState = false;
 
@@ -247,6 +241,7 @@ public class Panel extends JPanel implements Runnable {
         copCar.setDefaultValues();
 
         // Reset all menu settings
+        titleMenu.setDefaultValues();
         pauseMenu.setDefaultValues();
         controlMenu.setDefaultValues();
     }
