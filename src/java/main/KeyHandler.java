@@ -14,7 +14,8 @@ public class KeyHandler implements KeyListener {
 
     // Variables to track when a key is pressed
     public static boolean upPress, downPress, rightPress, leftPress,
-                          spacePress, backSpacePress, enterPress, ePress, rPress;
+                          spacePress, backSpacePress, enterPress,
+                          cPress, ePress, rPress;
 
     // Private Constructor - Singleton class
     private KeyHandler() {}
@@ -51,6 +52,9 @@ public class KeyHandler implements KeyListener {
         }
         if(e.getKeyCode() == KeyEvent.VK_ENTER) {
             enterPress = true;
+        }
+        if(e.getKeyCode() == KeyEvent.VK_C) {
+            cPress = true;
         }
         if(e.getKeyCode() == KeyEvent.VK_E) {
             ePress = true;

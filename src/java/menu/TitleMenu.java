@@ -43,13 +43,18 @@ public class TitleMenu implements Menu {
     @Override
     public void draw(Graphics g) {
         if(open) {
-            // Draw the title screen
+            // Draw the title screen image
             loadImage();
             g.drawImage(image, xPos, yPos, width, height, null);
+            // Draw rect background for text
+            int textBoxY = height-160;
+            g.setColor(Color.LIGHT_GRAY);
+            g.fillRect(xPos + 40, textBoxY, width - 70, 130);
             // Draw text
             g.setColor(Color.YELLOW);
             g.setFont(new Font("Serif", Font.ITALIC, 50));
-            g.drawString("Press ENTER to Play",xPos + 50,550);
+            g.drawString("Press ENTER to Begin",xPos + 50,textBoxY + 50);
+            g.drawString(" Press C for Controls",xPos + 50,textBoxY + 110);
         }
     }
 }

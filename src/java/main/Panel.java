@@ -123,7 +123,7 @@ public class Panel extends JPanel implements Runnable {
             key.backSpacePress = false;
         }
         // Space bar to pause game
-        if (key.spacePress == true && pauseState == false) {
+        if (key.spacePress == true && pauseState == false && titleState == false) {
             pauseGame();
             key.spacePress = false;
         }
@@ -131,6 +131,16 @@ public class Panel extends JPanel implements Runnable {
         if (key.spacePress == true && pauseState == true) {
             resumeGame();
             key.spacePress = false;
+        }
+        // C key to show the Control menu
+        if (key.cPress == true && controlMenu.open == false) {
+            controlMenu.open = true;
+            key.cPress = false;
+        }
+        // C key to hide the Control menu
+        if (key.cPress == true&& controlMenu.open == true) {
+            controlMenu.open = false;
+            key.cPress = false;
         }
     }
 
