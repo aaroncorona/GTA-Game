@@ -147,12 +147,6 @@ public class Panel extends JPanel implements Runnable {
     public void paint(Graphics g) {
         super.paint(g);
 
-        // @TODO migrate to menu class
-        // Display current score (money)
-        g.setColor(Color.GREEN.brighter());
-        g.setFont(new Font("Serif", Font.PLAIN, 50));
-        g.drawString("Bank Account: $" + itemManager.moneyValueTotal,20,40); // coordinates start in the top left
-
         // Draw game components
         tileManager.draw(g);
         itemManager.draw(g);

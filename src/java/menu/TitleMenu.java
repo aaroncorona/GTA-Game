@@ -1,6 +1,5 @@
 package menu;
 
-import main.Panel;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
