@@ -95,12 +95,12 @@ public class PauseMenu implements Menu {
 
     @Override
     public void loadImage() {
-        // No images
+        // Not currently used
     }
 
     @Override
     public void draw(Graphics g) {
-        // No graphics to draw
+        // No graphics to draw, just reveal the menu
         if(open) {
             pauseMenu.setVisible(true);
         } else {

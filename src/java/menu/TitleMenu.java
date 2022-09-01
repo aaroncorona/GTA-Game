@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-// Class for a Menu that shows controls, which is just a Graphic and not a component
+// Class for a Title Menu that displays an image and provides starting instructions
 public class TitleMenu implements Menu {
 
     public boolean open;

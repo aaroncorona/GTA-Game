@@ -3,9 +3,7 @@ package main;
 import entity.car.CopCar;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
-import menu.ControlMenu;
-import menu.PauseMenu;
-import menu.TitleMenu;
+import menu.*;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -40,9 +38,10 @@ public class Panel extends JPanel implements Runnable {
     public static CopCar copCar = new CopCar();
 
     // Menus
-    public static TitleMenu titleMenu = new TitleMenu();
-    public static PauseMenu pauseMenu = new PauseMenu();
     public static ControlMenu controlMenu = new ControlMenu();
+    public static PauseMenu pauseMenu = new PauseMenu();
+    public static ScoreMenu scoreMenu = new ScoreMenu();
+    public static TitleMenu titleMenu = new TitleMenu();
     // @TODO migrate to menu classes
     public static JPopupMenu gameOverMenu = new JPopupMenu();
     public static JPopupMenu highScoreMenu = new JPopupMenu();
@@ -161,9 +160,10 @@ public class Panel extends JPanel implements Runnable {
         copCar.draw(g);
 
         // Draw menus
-        titleMenu.draw(g);
-        pauseMenu.draw(g);
         controlMenu.draw(g);
+        pauseMenu.draw(g);
+        scoreMenu.draw(g);
+        titleMenu.draw(g);
     }
 
     // Method to check for an event that ends the game and respond accordingly
@@ -251,9 +251,10 @@ public class Panel extends JPanel implements Runnable {
         copCar.setDefaultValues();
 
         // Reset all menu settings
-        titleMenu.setDefaultValues();
-        pauseMenu.setDefaultValues();
         controlMenu.setDefaultValues();
+        pauseMenu.setDefaultValues();
+        scoreMenu.setDefaultValues();
+        titleMenu.setDefaultValues();
     }
 
     // @TODO add to Menu class
