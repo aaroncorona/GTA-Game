@@ -14,7 +14,7 @@ public class Money extends SuperItem {
 
     public int value;
 
-    // Constructor to create a single Money item. Only the TileManager should use this method
+    // Protected Constructor to create a single Money item. Only the TileManager should use this method
     protected Money(int xPos, int yPos) {
         this.xPos = xPos;
         this.yPos = yPos;
@@ -25,12 +25,12 @@ public class Money extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        name = "Money";
+        type = 1;
         dead = false;
         direction = 'R'; // direction does not apply
         speed = 1; // speed does not apply
         collisionArea = new Rectangle(xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
-        value = new Random().nextInt(20) + 1;
+        value = new Random().nextInt(20) + 10;
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Money extends SuperItem {
         handleMoneyCollection();
     }
 
-    // Helper method to check if the money object is contacted by the player, whereby
+    // Helper method to check if the given money object is contacted by the player, whereby
     // a "collection" should occur and increment the overal money score
     private void handleMoneyCollection() {
         if(checkEntityCollision(Panel.playerCar, this) == true) {

@@ -120,10 +120,13 @@ public class PlayerCar extends SuperCar {
             dead = true;
             System.out.println("Deadly Collision - Tile");
         }
-        // Second, check for a deadly collision with the cop car
-        if(CollisionChecker.checkEntityCollision(this, Panel.copCar) == true) {
-            dead = true;
-            System.out.println("Deadly Collision - Cop Car");
+        // Second, check for a deadly collision with a cop car
+        for(int i = 0; i < CopCarManager.cops.size(); i++) {
+            if(CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
+                dead = true;
+                CopCarManager.cops.get(i).dead = true;
+                System.out.println("Deadly Collision - Cop Car");
+            }
         }
     }
 

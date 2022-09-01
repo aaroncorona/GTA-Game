@@ -15,7 +15,6 @@ public class TileManager {
     private static TileManager instance = null;
 
     // Global vars
-    public static main.Panel panel;
     public static Tile[] tiles;
     public static int[][] tileMap;
     public static Rectangle[][] tileMapCollisionArea;

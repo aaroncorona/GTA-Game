@@ -1,5 +1,6 @@
 package entity.item;
 
+import entity.car.CopCarManager;
 import main.CollisionChecker;
 import main.Panel;
 
@@ -23,7 +24,7 @@ public class Bullet extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        name = "Bullet";
+        type = 0;
         dead = false;
         speed = 25;
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
@@ -80,11 +81,14 @@ public class Bullet extends SuperItem {
             System.out.println("Deadly Collision - Bullet");
         }
         // Check for a cop collision
-        if(CollisionChecker.checkEntityCollision(Panel.copCar, this) == true) {
-            // Bullet blows up
-            dead = true;
-            // Car blows up
-            Panel.copCar.dead = true;
+        for(int i = 0; i < CopCarManager.cops.size(); i++) {
+            if(CollisionChecker.checkEntityCollision(CopCarManager.cops.get(i), this) == true) {
+                // Bullet blows up
+                dead = true;
+                // Car blows up
+                CopCarManager.cops.get(i).dead = true;
+                System.out.println("Deadly Collision - Cop Car");
+            }
         }
         // Check for a collision with any other item
         for (int i = 0; i < ItemManager.items.size(); i++) {
@@ -93,7 +97,7 @@ public class Bullet extends SuperItem {
                && CollisionChecker.checkEntityCollision(item, this) == true) {
                 // 2 Bullets blows up, but not money
                 dead = true;
-                if(item.name.equals("Bullet")) {
+                if(item.type == 1) {
                     item.dead = true;
                 }
             }

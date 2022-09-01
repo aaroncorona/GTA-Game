@@ -15,8 +15,8 @@ import java.util.Random;
 
 public class CopCar extends SuperCar {
 
-    // Constructor to create Cop NPC
-    public CopCar() {
+    // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
+    protected CopCar() {
         setDefaultValues();
     }
 
@@ -48,40 +48,42 @@ public class CopCar extends SuperCar {
 
     // Helper Method to create a bullet from the Cop randomly
     private void handleShooting() {
-        // Get random decision to shoot a bullet in the current frame or not
-        int randomNum = new Random().nextInt(10);
-        if(randomNum == 1) {
-            // Get random direction to shoot
-            int randomDir = new Random().nextInt(4);
-            char bulletDir = 'R';
-            switch(randomDir) {
-                case 0:
-                    bulletDir = 'R';
-                    break;
-                case 1:
-                    bulletDir = 'L';
-                    break;
-                case 2:
-                    bulletDir = 'U';
-                    break;
-                case 3:
-                    bulletDir = 'D';
-                    break;
-            }
-            // Spawn the bullet a safe distance from the cop to avoid instant death
-            switch(bulletDir) {
-                case 'R':
-                    ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, bulletDir);
-                    break;
-                case 'L':
-                    ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, bulletDir);
-                    break;
-                case 'U':
-                    ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, bulletDir);
-                    break;
-                case 'D':
-                    ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, bulletDir);
-                    break;
+        // Get random decision to shoot a bullet in the current frame or not if there is a Wanted level
+        if(CopCarManager.wantedLevel >= 1) {
+            int randomNum = new Random().nextInt(10);
+            if(randomNum == 1) {
+                // Get random direction to shoot
+                int randomDir = new Random().nextInt(4);
+                char bulletDir = 'R';
+                switch(randomDir) {
+                    case 0:
+                        bulletDir = 'R';
+                        break;
+                    case 1:
+                        bulletDir = 'L';
+                        break;
+                    case 2:
+                        bulletDir = 'U';
+                        break;
+                    case 3:
+                        bulletDir = 'D';
+                        break;
+                }
+                // Spawn the bullet a safe distance from the cop to avoid instant death
+                switch(bulletDir) {
+                    case 'R':
+                        ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, bulletDir);
+                        break;
+                    case 'L':
+                        ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, bulletDir);
+                        break;
+                    case 'U':
+                        ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, bulletDir);
+                        break;
+                    case 'D':
+                        ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, bulletDir);
+                        break;
+                }
             }
         }
     }

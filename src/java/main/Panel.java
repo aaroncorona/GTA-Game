@@ -1,6 +1,6 @@
 package main;
 
-import entity.car.CopCar;
+import entity.car.CopCarManager;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import menu.*;
@@ -32,7 +32,7 @@ public class Panel extends JPanel implements Runnable {
 
     // Entity objects
     public static PlayerCar playerCar = new PlayerCar();
-    public static CopCar copCar = new CopCar();
+    public static CopCarManager copCarManager = CopCarManager.getInstance();
 
     // Menus
     public static ControlMenu controlMenu = new ControlMenu();
@@ -97,7 +97,7 @@ public class Panel extends JPanel implements Runnable {
             // Update all game components
             itemManager.update();
             playerCar.update();
-            copCar.update();
+            copCarManager.update();
             // Check for game over
             handleGameOver();
         }
@@ -145,7 +145,7 @@ public class Panel extends JPanel implements Runnable {
         tileManager.draw(g);
         itemManager.draw(g);
         playerCar.draw(g);
-        copCar.draw(g);
+        copCarManager.draw(g);
 
         // Draw menus
         controlMenu.draw(g);
@@ -194,7 +194,7 @@ public class Panel extends JPanel implements Runnable {
         // Reset all game components
         itemManager.setDefaultValues();
         playerCar.setDefaultValues();
-        copCar.setDefaultValues();
+        copCarManager.setDefaultValues();
 
         // Reset all menu settings
         controlMenu.setDefaultValues();

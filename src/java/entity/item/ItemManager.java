@@ -46,12 +46,12 @@ public class ItemManager implements Entity {
     // Run update on all Items
     @Override
     public void update() {
-        // Overall item management
-        deleteDeadItems();
         // Individual item updates
         for (int i = 0; i < items.size(); i++) {
             items.get(i).update();
         }
+        // Overall item management
+        deleteDeadItems();
     }
 
     // Method for other classes to create a Money Item object
@@ -86,9 +86,10 @@ public class ItemManager implements Entity {
         }
     }
 
-    // Method to call the draw method for every Item
+    // Method to call the draw method for every Item as well as the bank account
     @Override
     public void draw(Graphics g) {
+        // Draw each Item object
         for (int i = 0; i < items.size(); i++) {
             items.get(i).draw(g);
         }
