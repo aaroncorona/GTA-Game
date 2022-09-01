@@ -8,9 +8,6 @@ import tile.TileManager;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.*;
-import java.sql.Timestamp;
-import java.util.*;
 
 public class Panel extends JPanel implements Runnable {
 
@@ -39,12 +36,10 @@ public class Panel extends JPanel implements Runnable {
 
     // Menus
     public static ControlMenu controlMenu = new ControlMenu();
+    public static GameOverMenu gameOverMenu = new GameOverMenu();
     public static PauseMenu pauseMenu = new PauseMenu();
     public static ScoreMenu scoreMenu = new ScoreMenu();
     public static TitleMenu titleMenu = new TitleMenu();
-    // @TODO migrate to menu classes
-    public static JPopupMenu gameOverMenu = new JPopupMenu();
-    public static JPopupMenu highScoreMenu = new JPopupMenu();
 
     // Constructor to create the game panel within a Frame
     Panel() {
@@ -155,6 +150,7 @@ public class Panel extends JPanel implements Runnable {
 
         // Draw menus
         controlMenu.draw(g);
+        gameOverMenu.draw(g);
         pauseMenu.draw(g);
         scoreMenu.draw(g);
         titleMenu.draw(g);
@@ -166,54 +162,12 @@ public class Panel extends JPanel implements Runnable {
         if(playerCar.dead) {
             // Draw the player explosion first
             repaint();
-            // Stop the game
+            // Then stop the game
             playState = false;
             System.out.println("Final Score: $" + itemManager.moneyValueTotal);
-            // Trigger menus
-            // @TODO add to Menu class
-            // Log final score in the CSV file if it's past a certain minimum
-            if (itemManager.moneyValueTotal >= 20) {
-                try {
-                    // Create or append file
-                    FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
-                    PrintWriter write = new PrintWriter(fw);
-                    // Print the score to the csv file and the time on the column next to it
-                    write.println(); // Skip to new row
-                    write.print(itemManager.moneyValueTotal);
-                    write.print(","); // comma separate to print to the next column
-                    write.print(System.currentTimeMillis());
-                    // Close and finish the job
-                    write.close();
-                } catch(IOException e) {
-                    System.out.print(e);
-                }
-            }
-
-            // Create Game Over Menu
-            gameOverMenu = new JPopupMenu();
-            gameOverMenu.setLocation(600, 300);
-            gameOverMenu.setBackground(Color.WHITE);
-            gameOverMenu.setFocusable(false);
-            JLabel gameOverMenuLabel = new JLabel("WASTED");
-            gameOverMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 100));
-            gameOverMenuLabel.setForeground(Color.RED.darker());
-            gameOverMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
-            gameOverMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
-            gameOverMenu.add(gameOverMenuLabel);
-//            gameOverMenu.setVisible(true);
-
-            // Create High Score Menu
-            highScoreMenu = new JPopupMenu();
-            highScoreMenu.setLocation(530, 440);
-            highScoreMenu.setBackground(new Color(255, 105, 97));
-            highScoreMenu.setBorder(BorderFactory.createLineBorder(new Color(255, 105, 97), 30));
-            highScoreMenu.setFocusable(false);
-            JLabel highScoreMenuLabel = new JLabel(getHighScoreMessage());
-            highScoreMenuLabel.setFont(new Font("Verdana", Font.PLAIN, 30)); // Buffer
-            highScoreMenuLabel.setForeground(Color.BLACK);
-            highScoreMenuLabel.setAlignmentX(CENTER_ALIGNMENT);
-            highScoreMenuLabel.setAlignmentY(CENTER_ALIGNMENT);
-            highScoreMenu.add(highScoreMenuLabel);
+            // Log score and open ending menu
+            gameOverMenu.logScore();
+            gameOverMenu.open = true;
         }
     }
 
@@ -246,52 +200,10 @@ public class Panel extends JPanel implements Runnable {
 
         // Reset all menu settings
         controlMenu.setDefaultValues();
+        gameOverMenu.setDefaultValues();
         pauseMenu.setDefaultValues();
         scoreMenu.setDefaultValues();
         titleMenu.setDefaultValues();
-    }
-
-    // @TODO add to Menu class
-    // Method to read the high score file and return the high score results
-    public static String getHighScoreMessage() {
-        // Create TreeMap to hold the scores for deduping and ordering
-        TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
-        File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv");
-        // Read the local CSV file
-        try {
-            Scanner myScanner = new Scanner(fileObj);
-            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
-            // Fill the tree map using the CSV
-            for(int i = 0; myScanner.hasNext(); i++) {
-                for(int j = 0; j < 1; j++) {
-                    int score = (int) Integer.parseInt(myScanner.next().trim());
-                    String date = new Date(new Timestamp((long) Long.parseLong(myScanner.next().trim())).getTime())
-                                            .toString().substring(4, 10);
-                    scoreMap.put(score, date);
-                }
-            }
-            myScanner.close();
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
-        }
-
-        // Return a message with the user's score and the top three scores of all time
-        String message;
-        message = "<html> Your Final Score is <b>" + itemManager.moneyValueTotal + "</b><br>";
-        if (itemManager.moneyValueTotal > scoreMap.lastKey()) {
-            message += "CONGRATS! You have the all time best score! <br>";
-        } else{
-            message += "<i>You did not beat the high score</i><br>";
-        }
-        int i = 0;
-        for (Map.Entry entry : scoreMap.descendingMap().entrySet()) {
-            if (i++ < 3) {
-                int currentScore = (int) entry.getKey();
-                message += ("<u> Score #" + i + "</u>: <b>" + currentScore + "</b> on " +
-                        entry.getValue() + "<br>");
-            }
-        }
-        return message;
     }
 }
 
