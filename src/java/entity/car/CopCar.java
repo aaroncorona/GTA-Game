@@ -2,10 +2,7 @@ package entity.car;
 
 import entity.item.ItemManager;
 import main.CollisionChecker;
-import main.KeyHandler;
 import main.Panel;
-import tile.Tile;
-import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -27,7 +24,7 @@ public class CopCar extends SuperCar {
         yPos = new Random().nextInt((int) (Panel.SCREEN_HEIGHT/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
         direction = 'R';
         speed = Panel.UNIT_SIZE; // default speed is moving 1 full position
-        dead = false;
+        health = 3;
 
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
@@ -42,7 +39,7 @@ public class CopCar extends SuperCar {
     public void update() {
         // Manage events
         handleShooting();
-        handleDeadlyCollision();
+        handleCollision();
         handleDeath();
     }
 
@@ -89,28 +86,28 @@ public class CopCar extends SuperCar {
     }
 
     // Helper method to respond to collision events that should end the game
-    private void handleDeadlyCollision() {
+    private void handleCollision() {
         // Check for a deadly collision with the player
         if(CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
-            dead = true;
+            health = 0;
         }
     }
 
     // Helper method to respond to Cop death by creating money and then respawning
     private void handleDeath() {
-        if(dead) {
+        if(health == 0) {
             ItemManager.createMoney(xPos, yPos);
             setDefaultValues();
         }
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Return the explosion image if the car has died
-        if(dead == true) {
+        if(health == 0) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageCar = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -125,7 +122,7 @@ public class CopCar extends SuperCar {
             }
             filePath += ".png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageCar = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -134,7 +131,7 @@ public class CopCar extends SuperCar {
 
     @Override
     public void draw(Graphics g) {
-        loadImage();
-        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        loadImages();
+        g.drawImage(imageCar, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

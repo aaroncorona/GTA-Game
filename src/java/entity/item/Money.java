@@ -50,10 +50,10 @@ public class Money extends SuperItem {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/items/money.png";
         try {
-            image = ImageIO.read(new File(filePath));
+            imageItem = ImageIO.read(new File(filePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -61,7 +61,7 @@ public class Money extends SuperItem {
 
     @Override
     public void draw(Graphics g) {
-        loadImage();
-        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        loadImages();
+        g.drawImage(imageItem, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

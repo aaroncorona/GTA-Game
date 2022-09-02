@@ -65,7 +65,7 @@ public class GameOverMenu implements Menu {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Not currently used
     }
 
@@ -122,7 +122,7 @@ public class GameOverMenu implements Menu {
         // Return a message with the user's score and the top three scores of all time
         String scoreMessage;
         scoreMessage = "<html> <center> Your Final Score is <b>" + ItemManager.moneyValueTotal + "</b><br>";
-        if (ItemManager.moneyValueTotal > scoreMap.lastKey()) {
+        if (ItemManager.moneyValueTotal >= scoreMap.lastKey()) {
             scoreMessage += "CONGRATS! You have the all time best score! <br>";
         } else{
             scoreMessage += "<i>You did not beat the high score</i><br>";

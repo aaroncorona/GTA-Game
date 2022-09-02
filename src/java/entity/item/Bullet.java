@@ -36,7 +36,7 @@ public class Bullet extends SuperItem {
         // Update location
         updateLocation();
         // Handle events
-        handleDeadlyCollision();
+        handleCollision();
     }
 
     // Helper method to update the bullet coordinates
@@ -66,7 +66,7 @@ public class Bullet extends SuperItem {
     }
 
     // Helper method to respond to the bullet hitting a tile
-    private void handleDeadlyCollision() {
+    private void handleCollision() {
         // Check for a tile collision
         if(CollisionChecker.checkTileCollision(this) == true) {
             // Bullet blows up only
@@ -76,8 +76,8 @@ public class Bullet extends SuperItem {
         if(CollisionChecker.checkEntityCollision(Panel.playerCar, this) == true) {
             // Bullet blows up
             dead = true;
-            // Car blows up
-            Panel.playerCar.dead = true;
+            // Reduce player health
+            Panel.playerCar.health--;
             System.out.println("Deadly Collision - Bullet");
         }
         // Check for a cop collision
@@ -86,7 +86,7 @@ public class Bullet extends SuperItem {
                 // Bullet blows up
                 dead = true;
                 // Car blows up
-                CopCarManager.cops.get(i).dead = true;
+                CopCarManager.cops.get(i).health = 0;
                 System.out.println("Deadly Collision - Cop Car");
             }
         }
@@ -105,12 +105,12 @@ public class Bullet extends SuperItem {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Check if the bullet should explode
         if(dead == true) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageItem = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -120,7 +120,7 @@ public class Bullet extends SuperItem {
             filePath += direction;
             filePath += ".png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageItem = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -129,8 +129,8 @@ public class Bullet extends SuperItem {
 
     @Override
     public void draw(Graphics g) {
-        loadImage();
-        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        loadImages();
+        g.drawImage(imageItem, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);

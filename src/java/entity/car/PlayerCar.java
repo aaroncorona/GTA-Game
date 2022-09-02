@@ -7,6 +7,7 @@ import entity.item.ItemManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -25,7 +26,7 @@ public class PlayerCar extends SuperCar {
         // Manage events
         handleNitro();
         handleShooting();
-        handleDeadlyCollision();
+        handleCollision();
     }
 
     // Helper Method to update the Car's direction based on key input
@@ -114,29 +115,29 @@ public class PlayerCar extends SuperCar {
     }
 
     // Helper method to respond to collision events that should end the game
-    private void handleDeadlyCollision() {
+    private void handleCollision() {
         // First, check for a deadly collision with a tile
         if(CollisionChecker.checkTileCollision(this) == true) {
-            dead = true;
+            health = 0;
             System.out.println("Deadly Collision - Tile");
         }
         // Second, check for a deadly collision with a cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
             if(CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
-                dead = true;
-                CopCarManager.cops.get(i).dead = true;
+                health = 0;
+                CopCarManager.cops.get(i).health = 0;
                 System.out.println("Deadly Collision - Cop Car");
             }
         }
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Get the explosion image if the car has died
-        if(dead == true) {
+        if(health == 0) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageCar = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -151,16 +152,28 @@ public class PlayerCar extends SuperCar {
             }
             filePath += ".png";
             try {
-                image = ImageIO.read(new File(filePath));
+                imageCar = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+        // Get the correct health bar image
+        String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/health_";
+        filePath += health;
+        filePath += ".png";
+        try {
+            imageHealth = ImageIO.read(new File(filePath));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
     public void draw(Graphics g) {
-        loadImage();
-        g.drawImage(image, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        if(Panel.titleState == false) {
+            loadImages();
+            g.drawImage(imageCar, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            g.drawImage(imageHealth, 350, 3, Panel.UNIT_SIZE*4, Panel.UNIT_SIZE-5, null);
+        }
     }
 }

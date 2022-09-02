@@ -9,7 +9,7 @@ public interface Entity {
     // Method to update the entity settings based on key input
     public void update();
     // Method to get the correct image file for the entity based on its status
-    public void loadImage();
+    public void loadImages();
     // Method to draw the entity based on the entity settings
     public void draw(Graphics g);
 }

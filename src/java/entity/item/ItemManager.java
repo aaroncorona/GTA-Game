@@ -19,7 +19,7 @@ public class ItemManager implements Entity {
     // Total Item tracking
     public static ArrayList<SuperItem> items;
     public static int moneyValueTotal;
-    BufferedImage image;
+    BufferedImage imageBank;
 
     // Private Constructor - Singleton class
     private ItemManager() {
@@ -76,11 +76,11 @@ public class ItemManager implements Entity {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Bank icon to display money total
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/bank.png";
         try {
-            image = ImageIO.read(new File(filePath));
+            imageBank = ImageIO.read(new File(filePath));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,12 +96,12 @@ public class ItemManager implements Entity {
         // Draw the money total while the game is running
         if(Panel.titleState == false) {
             // Draw bank
-            loadImage();
-            g.drawImage(image, 50, 1, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-            // Draw the current score
+            loadImages();
+            g.drawImage(imageBank, 180, 1, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            // Draw the current bank account total
             g.setColor(Color.GREEN.darker());
             g.setFont(new Font("Serif", Font.ITALIC, 30));
-            g.drawString("$" + ItemManager.moneyValueTotal,108,38);
+            g.drawString("$" + ItemManager.moneyValueTotal,235,38);
         }
     }
 }

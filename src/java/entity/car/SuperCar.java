@@ -13,8 +13,11 @@ public abstract class SuperCar implements Entity {
     public char direction;
     public int speed;  // pixels to move per frame
     public boolean nitro;
-    public boolean dead;
-    BufferedImage image;
+
+    // Health tracking
+    public int health;
+    BufferedImage imageCar;
+    BufferedImage imageHealth;
 
     // Collision tracking
     public Rectangle collisionArea;
@@ -27,7 +30,7 @@ public abstract class SuperCar implements Entity {
         direction = 'R';
         speed = 5;
         nitro = false;
-        dead = false;
+        health = 3;
         collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }

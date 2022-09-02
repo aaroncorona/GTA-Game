@@ -157,7 +157,7 @@ public class Panel extends JPanel implements Runnable {
     // Method to check for an event that ends the game and respond accordingly
     public void handleGameOver() {
         // Check for the player dying, this is currently the only way to lose
-        if(playerCar.dead) {
+        if(playerCar.health == 0) {
             // Draw the player explosion first
             repaint();
             // Then stop the game

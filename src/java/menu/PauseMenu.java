@@ -95,7 +95,7 @@ public class PauseMenu implements Menu {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Not currently used
     }
 

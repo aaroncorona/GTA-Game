@@ -88,14 +88,14 @@ public class CopCarManager implements Entity {
     // Helper Method to remove unused ("dead") items from the list to improve item manager performance
     private static void deleteDeadCops() {
         for (int i = 0; i < cops.size(); i++) {
-            if(cops.get(i).dead == true) {
+            if(cops.get(i).health == 0) {
                 cops.remove(i);
             }
         }
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         // Get the badge image
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/cop_car/badge.png";
         try {
@@ -117,15 +117,15 @@ public class CopCarManager implements Entity {
     // Method to call the draw method for every Item as well as the Wanted level
     @Override
     public void draw(Graphics g) {
-        // Draw all Cop objects
-        for (int i = 0; i < cops.size(); i++) {
-            cops.get(i).draw(g);
-        }
-        // Draw the Badge and Wanted level at the top next to the Bank account
         if(Panel.titleState == false) {
-            loadImage();
-            g.drawImage(imageBadge, 200, 1, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-            g.drawImage(imageStars, 245, 2, Panel.UNIT_SIZE*4, Panel.UNIT_SIZE, null);
+            // Draw all Cop objects
+            for (int i = 0; i < cops.size(); i++) {
+                cops.get(i).draw(g);
+            }
+            // Draw the Badge and Wanted level at the top next to the Bank account
+            loadImages();
+            g.drawImage(imageBadge, 630, 1, Panel.UNIT_SIZE, Panel.UNIT_SIZE-2, null);
+            g.drawImage(imageStars, 675, 2, Panel.UNIT_SIZE*4+10, Panel.UNIT_SIZE-2, null);
         }
     }
 }

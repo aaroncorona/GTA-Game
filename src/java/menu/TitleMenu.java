@@ -30,7 +30,7 @@ public class TitleMenu implements Menu {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/start_menu.png";
         try {
             image = ImageIO.read(new File(filePath));
@@ -43,7 +43,7 @@ public class TitleMenu implements Menu {
     public void draw(Graphics g) {
         if(open) {
             // Draw the title screen image
-            loadImage();
+            loadImages();
             g.drawImage(image, xPos, yPos, width, height, null);
             // Draw rect background for text
             int textBoxY = height-160;

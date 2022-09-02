@@ -8,8 +8,8 @@ import java.awt.image.BufferedImage;
 public abstract class SuperItem implements Entity {
     // Item settings
     public static int type;
-    BufferedImage image;
     public boolean dead;
+    BufferedImage imageItem;
 
     // Position tracking vars
     public int xPos, yPos;

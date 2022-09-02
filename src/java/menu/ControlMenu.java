@@ -30,7 +30,7 @@ public class ControlMenu implements Menu {
     }
 
     @Override
-    public void loadImage() {
+    public void loadImages() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/menus/control_menu.png";
         try {
             image = ImageIO.read(new File(filePath));
@@ -43,7 +43,7 @@ public class ControlMenu implements Menu {
     public void draw(Graphics g) {
         if(open) {
             // Draw the control image
-            loadImage();
+            loadImages();
             g.drawImage(image, xPos, yPos, width, height, null);
         }
     }
