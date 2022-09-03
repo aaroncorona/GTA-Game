@@ -7,11 +7,14 @@ import entity.item.ItemManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class PlayerCar extends SuperCar {
+
+    // Player should always be at the center of the screen
+    public final int xScreenPos = Panel.SCREEN_WIDTH/2 - Panel.UNIT_SIZE/2;
+    public final int yScreenPos = Panel.SCREEN_HEIGHT/2 - Panel.UNIT_SIZE/2;
 
     // Constructor to create Player Car
     public PlayerCar() {
@@ -23,7 +26,7 @@ public class PlayerCar extends SuperCar {
         // Update location
         updateDir();
         updateLocation();
-        // Manage events
+        // Manage event
         handleNitro();
         handleShooting();
         handleCollision();
@@ -54,23 +57,23 @@ public class PlayerCar extends SuperCar {
     private void updateLocation() {
         switch(direction) {
             case 'R':
-                xPos = xPos + speed;
-                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                xMapPos = xMapPos + speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                               Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'L':
-                xPos = xPos - speed;
-                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                xMapPos = xMapPos - speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                               Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'U':
-                yPos = yPos - speed;
-                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                yMapPos = yMapPos - speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
             case 'D':
-                yPos = yPos + speed;
-                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                yMapPos = yMapPos + speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
         }
@@ -98,16 +101,16 @@ public class PlayerCar extends SuperCar {
             // Spawn the bullet a safe distance from the player to avoid instant death
             switch(direction) {
                 case 'R':
-                    ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, direction);
+                    ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
                     break;
                 case 'L':
-                    ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, direction);
+                    ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
                     break;
                 case 'U':
-                    ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, direction);
+                    ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
                     break;
                 case 'D':
-                    ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, direction);
+                    ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
                     break;
             }
             KeyHandler.ePress = false;
@@ -119,14 +122,12 @@ public class PlayerCar extends SuperCar {
         // First, check for a deadly collision with a tile
         if(CollisionChecker.checkTileCollision(this) == true) {
             health = 0;
-            System.out.println("Deadly Collision - Tile");
         }
         // Second, check for a deadly collision with a cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
             if(CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
                 health = 0;
                 CopCarManager.cops.get(i).health = 0;
-                System.out.println("Deadly Collision - Cop Car");
             }
         }
     }
@@ -172,7 +173,9 @@ public class PlayerCar extends SuperCar {
     public void draw(Graphics g) {
         if(Panel.titleState == false) {
             loadImages();
-            g.drawImage(imageCar, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            // Draw player in center
+            g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            // Draw health
             g.drawImage(imageHealth, 350, 3, Panel.UNIT_SIZE*4, Panel.UNIT_SIZE-5, null);
         }
     }

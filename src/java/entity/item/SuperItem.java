@@ -12,7 +12,7 @@ public abstract class SuperItem implements Entity {
     BufferedImage imageItem;
 
     // Position tracking vars
-    public int xPos, yPos;
+    public int xMapPos, yMapPos;
     public char direction;
     public int speed;
 

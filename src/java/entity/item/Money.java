@@ -1,6 +1,7 @@
 package entity.item;
 
 import main.Panel;
+import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -16,8 +17,8 @@ public class Money extends SuperItem {
 
     // Protected Constructor to create a single Money item. Only the TileManager should use this method
     protected Money(int xPos, int yPos) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+        this.xMapPos = xPos;
+        this.yMapPos = yPos;
 
         setDefaultValues();
     }
@@ -29,7 +30,7 @@ public class Money extends SuperItem {
         dead = false;
         direction = 'R'; // direction does not apply
         speed = 1; // speed does not apply
-        collisionArea = new Rectangle(xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
+        collisionArea = new Rectangle(xMapPos, yMapPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
         value = new Random().nextInt(20) + 10;
     }
 
@@ -45,7 +46,7 @@ public class Money extends SuperItem {
         if(checkEntityCollision(Panel.playerCar, this) == true) {
             ItemManager.moneyValueTotal += value;
             dead = true;
-            System.out.println("Money collected! New bank account balance: $" + ItemManager.moneyValueTotal);
+//            System.out.println("Money collected! New bank account balance: $" + ItemManager.moneyValueTotal);
         }
     }
 
@@ -62,6 +63,8 @@ public class Money extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        g.drawImage(imageItem, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
+        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
+        g.drawImage(imageItem, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

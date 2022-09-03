@@ -3,6 +3,7 @@ package entity.item;
 import entity.car.CopCarManager;
 import main.CollisionChecker;
 import main.Panel;
+import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -12,9 +13,9 @@ import java.io.IOException;
 public class Bullet extends SuperItem {
 
     // Constructor to create a single Bullet item. Only the TileManager should use this method
-    protected Bullet(int xPos, int yPos, char direction) {
-        this.xPos = xPos;
-        this.yPos = yPos;
+    protected Bullet(int xMapPos, int yMapPos, char direction) {
+        this.xMapPos = xMapPos;
+        this.yMapPos = yMapPos;
         this.direction = direction;
 
         setDefaultValues();
@@ -27,7 +28,7 @@ public class Bullet extends SuperItem {
         type = 0;
         dead = false;
         speed = 25;
-        collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+        collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
     }
 
@@ -43,23 +44,23 @@ public class Bullet extends SuperItem {
     private void updateLocation() {
         switch(direction) {
             case 'R':
-                xPos = xPos + speed;
-                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                xMapPos = xMapPos + speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                               Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'L':
-                xPos = xPos - speed;
-                collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+                xMapPos = xMapPos - speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                               Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
                 break;
             case 'U':
-                yPos = yPos - speed;
-                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                yMapPos = yMapPos - speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
             case 'D':
-                yPos = yPos + speed;
-                collisionArea = new Rectangle(xPos+ Panel.UNIT_SIZE/4, yPos,
+                yMapPos = yMapPos + speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
         }
@@ -78,7 +79,6 @@ public class Bullet extends SuperItem {
             dead = true;
             // Reduce player health
             Panel.playerCar.health--;
-            System.out.println("Deadly Collision - Bullet");
         }
         // Check for a cop collision
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
@@ -87,7 +87,6 @@ public class Bullet extends SuperItem {
                 dead = true;
                 // Car blows up
                 CopCarManager.cops.get(i).health = 0;
-                System.out.println("Deadly Collision - Cop Car");
             }
         }
         // Check for a collision with any other item
@@ -130,7 +129,9 @@ public class Bullet extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        g.drawImage(imageItem, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
+        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
+        g.drawImage(imageItem, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // ad hoc check of the collision area
 //        g.setColor(Color.BLACK);

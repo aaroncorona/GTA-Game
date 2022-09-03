@@ -3,6 +3,7 @@ package entity.car;
 import entity.item.ItemManager;
 import main.CollisionChecker;
 import main.Panel;
+import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -20,13 +21,13 @@ public class CopCar extends SuperCar {
     // Cop should spawn in a random location
     @Override
     public void setDefaultValues() {
-        xPos = new Random().nextInt((int) (Panel.SCREEN_WIDTH/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
-        yPos = new Random().nextInt((int) (Panel.SCREEN_HEIGHT/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
+        xMapPos = new Random().nextInt((int) (Panel.SCREEN_WIDTH/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
+        yMapPos = new Random().nextInt((int) (Panel.SCREEN_HEIGHT/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
         direction = 'R';
         speed = Panel.UNIT_SIZE; // default speed is moving 1 full position
         health = 3;
 
-        collisionArea = new Rectangle(xPos, yPos + Panel.UNIT_SIZE/4,
+        collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
 
         // Reset if the Cop spawn on a tile that would cause an instant collision
@@ -69,16 +70,16 @@ public class CopCar extends SuperCar {
                 // Spawn the bullet a safe distance from the cop to avoid instant death
                 switch(bulletDir) {
                     case 'R':
-                        ItemManager.createBullet(xPos + Panel.UNIT_SIZE, yPos, bulletDir);
+                        ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, bulletDir);
                         break;
                     case 'L':
-                        ItemManager.createBullet(xPos - Panel.UNIT_SIZE, yPos, bulletDir);
+                        ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, bulletDir);
                         break;
                     case 'U':
-                        ItemManager.createBullet(xPos, yPos - Panel.UNIT_SIZE, bulletDir);
+                        ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, bulletDir);
                         break;
                     case 'D':
-                        ItemManager.createBullet(xPos, yPos + Panel.UNIT_SIZE, bulletDir);
+                        ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, bulletDir);
                         break;
                 }
             }
@@ -96,7 +97,7 @@ public class CopCar extends SuperCar {
     // Helper method to respond to Cop death by creating money and then respawning
     private void handleDeath() {
         if(health == 0) {
-            ItemManager.createMoney(xPos, yPos);
+            ItemManager.createMoney(xMapPos, yMapPos);
             setDefaultValues();
         }
     }
@@ -132,6 +133,9 @@ public class CopCar extends SuperCar {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        g.drawImage(imageCar, xPos, yPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        // Connect the map position to a screen position
+        xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
+        yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
+        g.drawImage(imageCar, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

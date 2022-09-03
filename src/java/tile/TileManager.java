@@ -18,6 +18,8 @@ public class TileManager {
     public static Tile[] tiles;
     public static int[][] tileMap;
     public static Rectangle[][] tileMapCollisionArea;
+    public static int[] tileMapScreenXPos;
+    public static int[] tileMapScreenYPos;
 
     // Private Constructor - Singleton class
     private TileManager() {
@@ -25,7 +27,7 @@ public class TileManager {
 
         // Establish tile data
         createTiles();
-        createTileMap();
+        loadTileMap();
     }
 
     // Singleton constructor method to ensure there is only 1 Tile manager obj per game
@@ -78,21 +80,28 @@ public class TileManager {
     }
 
     // Helper method to load the tile map
-    private void createTileMap() {
+    private void loadTileMap() {
+        // Instantiate map arrays
+        int worldMapRows = 28;
+        int worldMapCols = 24;
+        tileMap = new int[worldMapRows][worldMapCols];
+        tileMapCollisionArea = new Rectangle[worldMapRows][worldMapCols];
+        tileMapScreenXPos = new int[worldMapCols];
+        tileMapScreenYPos = new int[worldMapRows];
         // Use a scanner to load the text file into the array
-        tileMap = new int[Panel.SCREEN_ROWS][Panel.SCREEN_COLS];
-        tileMapCollisionArea = new Rectangle[Panel.SCREEN_ROWS][Panel.SCREEN_COLS];
         try {
             Scanner scan = new Scanner(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/maps/tile_map.txt"));
             // Fill the tile maps
             for (int i = 0; i < tileMap.length; i++) {
                 for (int j = 0; j < tileMap[i].length; j++) {
                     // Fill the int tile map (nums represent array pos in the tiles array)
+                    int next;
                     try {
-                        tileMap[i][j] = Integer.parseInt(scan.next());
+                        next = Integer.parseInt(scan.next());
                     } catch (NumberFormatException e) {
-                        tileMap[i][j] = 0; // can't parse 00
+                        next = 0; // can't parse 00
                     }
+                    tileMap[i][j] = next;
 
                     // Fill the collision tile map (rects to represent the collision area)
                     int collisionSize;
@@ -112,11 +121,37 @@ public class TileManager {
 
     // Method to draw the tiles
     public void draw(Graphics g) {
-        // Use the map data to draw each tile
+        // Use the map data to draw each tile according to the camera position
+        int xCameraStart = Panel.playerCar.xScreenPos - Panel.playerCar.xMapPos;
+        int xCameraStartCol = xCameraStart / Panel.UNIT_SIZE;
+        int yCameraStart = Panel.playerCar.yScreenPos - Panel.playerCar.yMapPos;
+        int yCameraStartRow = yCameraStart / Panel.UNIT_SIZE;
+
+        int yPosCurrent = yCameraStartRow;
+        int xPosCurrent = xCameraStartCol;
+
         for (int i = 0; i < tileMap.length; i++) {
+            tileMapScreenYPos[i] = yPosCurrent;
             for (int j = 0; j < tileMap[i].length; j++) {
-                g.drawImage(tiles[tileMap[i][j]].image, j * Panel.UNIT_SIZE, i * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+                g.drawImage(tiles[tileMap[i][j]].image, xPosCurrent * Panel.UNIT_SIZE, yPosCurrent * Panel.UNIT_SIZE,
+                            Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+                tileMapScreenXPos[j] = xPosCurrent;
+                xPosCurrent++;
             }
+            xPosCurrent = xCameraStartCol;
+            yPosCurrent++;
         }
+//
+//        System.out.println("X pos");
+//        for (int i = 0; i < tileMapScreenXPos.length; i++) {
+//            System.out.print(tileMapScreenXPos[i] + " ");
+//        }
+//        System.out.println();
+//
+//        System.out.println("Y pos");
+//        for (int i = 0; i < tileMapScreenYPos.length; i++) {
+//            System.out.println(tileMapScreenYPos[i] + " ");
+//        }
+//        System.out.println();
     }
 }
