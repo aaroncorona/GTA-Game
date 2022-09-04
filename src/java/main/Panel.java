@@ -191,6 +191,9 @@ public class Panel extends JPanel implements Runnable {
         playState = true;
         pauseState = false;
 
+        // Reset keys
+        KeyHandler.setDefaultValues();
+
         // Reset all game components
         itemManager.setDefaultValues();
         playerCar.setDefaultValues();

@@ -30,6 +30,19 @@ public class KeyHandler implements KeyListener {
         }
     }
 
+    public static void setDefaultValues() {
+        upPress = false;
+        downPress = false;
+        rightPress = false;
+        leftPress = false;
+        spacePress = false;
+        backSpacePress = false;
+        enterPress = false;
+        cPress = false;
+        ePress = false;
+        rPress = false;
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_UP) {
