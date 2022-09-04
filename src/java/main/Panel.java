@@ -12,7 +12,7 @@ import java.awt.*;
 public class Panel extends JPanel implements Runnable {
 
     // Constants for screen size
-    public static final int UNIT_SIZE = 50; // most granular measurement
+    public static final int UNIT_SIZE = 50; // the most granular measurement
     public static final int SCREEN_COLS = 21;
     public static final int SCREEN_ROWS = 15;
     public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;

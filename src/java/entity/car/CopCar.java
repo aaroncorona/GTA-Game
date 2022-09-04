@@ -3,6 +3,7 @@ package entity.car;
 import entity.item.ItemManager;
 import main.CollisionChecker;
 import main.Panel;
+import tile.Camera;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
@@ -21,8 +22,8 @@ public class CopCar extends SuperCar {
     // Cop should spawn in a random location
     @Override
     public void setDefaultValues() {
-        xMapPos = new Random().nextInt((int) (Panel.SCREEN_WIDTH/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
-        yMapPos = new Random().nextInt((int) (Panel.SCREEN_HEIGHT/Panel.UNIT_SIZE)) * Panel.UNIT_SIZE;
+        xMapPos = new Random().nextInt(TileManager.worldMapCols * Panel.UNIT_SIZE);
+        yMapPos = new Random().nextInt(TileManager.worldMapRows * Panel.UNIT_SIZE);
         direction = 'R';
         speed = Panel.UNIT_SIZE; // default speed is moving 1 full position
         health = 3;
@@ -134,10 +135,8 @@ public class CopCar extends SuperCar {
     public void draw(Graphics g) {
         loadImages();
         // Connect the map position to a screen position
-        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos];
-        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos];
-//        System.out.println("Cop xPos = " + xMapPos);
-//        System.out.println("Cop xScreenPos = " + xScreenPos);
+        int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
+        int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
         g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

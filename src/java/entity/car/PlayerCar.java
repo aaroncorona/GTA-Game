@@ -13,8 +13,8 @@ import java.io.IOException;
 public class PlayerCar extends SuperCar {
 
     // Player should always be at the center of the screen
-    public final int xScreenPos = Panel.SCREEN_WIDTH/2 - Panel.UNIT_SIZE/2;
-    public final int yScreenPos = Panel.SCREEN_HEIGHT/2 - Panel.UNIT_SIZE/2;
+    public final int X_SCREEN_POS = Panel.SCREEN_WIDTH/2 - Panel.UNIT_SIZE/2;
+    public final int Y_SCREEN_POS = Panel.SCREEN_HEIGHT/2 - Panel.UNIT_SIZE/2;
 
     // Constructor to create Player Car
     public PlayerCar() {
@@ -174,7 +174,7 @@ public class PlayerCar extends SuperCar {
         if(Panel.titleState == false) {
             loadImages();
             // Draw player in center
-            g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            g.drawImage(imageCar, X_SCREEN_POS, Y_SCREEN_POS, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
             // Draw health
             g.drawImage(imageHealth, 350, 3, Panel.UNIT_SIZE*4, Panel.UNIT_SIZE-5, null);
         }

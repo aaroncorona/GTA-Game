@@ -1,6 +1,7 @@
 package entity.item;
 
 import main.Panel;
+import tile.Camera;
 import tile.TileManager;
 
 import javax.imageio.ImageIO;
@@ -63,8 +64,8 @@ public class Money extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos];
-        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos];
+        int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
+        int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
         g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }
