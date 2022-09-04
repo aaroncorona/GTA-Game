@@ -4,6 +4,7 @@ import main.CollisionChecker;
 import main.KeyHandler;
 import main.Panel;
 import entity.item.ItemManager;
+import main.Sound;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -117,6 +118,7 @@ public class PlayerCar extends SuperCar {
                     break;
             }
             KeyHandler.ePress = false;
+            Sound.playShot();
         }
     }
 

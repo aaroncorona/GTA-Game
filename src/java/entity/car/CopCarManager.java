@@ -3,6 +3,7 @@ package entity.car;
 import entity.Entity;
 import entity.item.ItemManager;
 import main.Panel;
+import main.Sound;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -76,6 +77,7 @@ public class CopCarManager implements Entity {
         // Set the num of cops based on the Wanted level
         if(cops.size()-1 < wantedLevel) {
             createCop();
+            Sound.playSiren();
         }
     }
 

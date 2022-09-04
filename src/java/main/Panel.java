@@ -166,6 +166,9 @@ public class Panel extends JPanel implements Runnable {
             // Log score and open ending menu
             gameOverMenu.logScore();
             gameOverMenu.open = true;
+            // Stop music and play game over
+            Sound.pauseBackgroundMusic();
+            Sound.playGameOver();
         }
     }
 
@@ -174,6 +177,7 @@ public class Panel extends JPanel implements Runnable {
         playState = false;
         pauseState = true;
         pauseMenu.open = true;
+        Sound.pauseBackgroundMusic();
     }
 
     // Method to run the game again and hide the pause menu
@@ -182,6 +186,7 @@ public class Panel extends JPanel implements Runnable {
         pauseState = false;
         pauseMenu.open = false;
         controlMenu.open = false;
+        Sound.resumeBackgroundMusic();
     }
 
     // Method to reset all game mechanics
@@ -204,6 +209,9 @@ public class Panel extends JPanel implements Runnable {
         gameOverMenu.setDefaultValues();
         pauseMenu.setDefaultValues();
         titleMenu.setDefaultValues();
+
+        // Reset sound
+        Sound.playBackgroundMusic();
     }
 }
 

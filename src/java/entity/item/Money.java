@@ -1,6 +1,7 @@
 package entity.item;
 
 import main.Panel;
+import main.Sound;
 import tile.Camera;
 
 import javax.imageio.ImageIO;
@@ -46,6 +47,7 @@ public class Money extends SuperItem {
         if(checkEntityCollision(Panel.playerCar, this) == true) {
             ItemManager.moneyValueTotal += value;
             dead = true;
+            Sound.playCoins();
         }
     }
 
