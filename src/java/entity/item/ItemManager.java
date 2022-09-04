@@ -108,18 +108,21 @@ public class ItemManager implements Entity {
     // Method to call the draw method for every Item as well as the bank account
     @Override
     public void draw(Graphics g) {
-        if(Panel.playState) {
+        // Draw each Item object while the game is running or paused
+        if(!Panel.titleState) {
+            for (int i = 0; i < items.size(); i++) {
+                items.get(i).draw(g);
+            }
+            // Draw top panel background
+            g.setColor(Color.WHITE);
+            g.fillRect(130, 0,  Panel.SCREEN_WIDTH - 250, Panel.UNIT_SIZE);
             // Draw bank
             loadImages();
-            g.drawImage(imageBank, 180, 1, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+            g.drawImage(imageBank, 180, 1, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
             // Draw the current bank account total
             g.setColor(Color.GREEN.darker());
             g.setFont(new Font("Serif", Font.ITALIC, 30));
             g.drawString("$" + ItemManager.moneyValueTotal, 235, 38);
-            // Draw each Item object
-            for (int i = 0; i < items.size(); i++) {
-                items.get(i).draw(g);
-            }
         }
     }
 }
