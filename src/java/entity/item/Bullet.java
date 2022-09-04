@@ -64,6 +64,13 @@ public class Bullet extends SuperItem {
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
         }
+
+        // Check for bullets offscreen
+        if(xMapPos < 0) {
+            xMapPos = 0;
+        } else if (yMapPos < 0) {
+            yMapPos = 0;
+        }
     }
 
     // Helper method to respond to the bullet hitting a tile
@@ -94,11 +101,8 @@ public class Bullet extends SuperItem {
             SuperItem item = ItemManager.items.get(i);
             if(!item.equals(this)
                && CollisionChecker.checkEntityCollision(item, this) == true) {
-                // 2 Bullets blows up, but not money
+                // Bullet blows up another bullet, but does not blow up money
                 dead = true;
-                if(item.type == 1) {
-                    item.dead = true;
-                }
             }
         }
     }
@@ -129,13 +133,8 @@ public class Bullet extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
-        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
-        g.drawImage(imageItem, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-
-        // ad hoc check of the collision area
-//        g.setColor(Color.BLACK);
-//        g.drawRect(collisionArea.x, collisionArea.y, collisionArea.width, collisionArea.height);
-//        g.drawRect(xPos, yPos, 5, 5);
+        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos];
+        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos];
+        g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

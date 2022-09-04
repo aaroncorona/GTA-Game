@@ -86,8 +86,8 @@ public class TileManager {
         int worldMapCols = 24;
         tileMap = new int[worldMapRows][worldMapCols];
         tileMapCollisionArea = new Rectangle[worldMapRows][worldMapCols];
-        tileMapScreenXPos = new int[worldMapCols];
-        tileMapScreenYPos = new int[worldMapRows];
+        tileMapScreenXPos = new int[worldMapCols * Panel.UNIT_SIZE];
+        tileMapScreenYPos = new int[worldMapRows * Panel.UNIT_SIZE];
         // Use a scanner to load the text file into the array
         try {
             Scanner scan = new Scanner(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/maps/tile_map.txt"));
@@ -122,32 +122,34 @@ public class TileManager {
     // Method to draw the tiles
     public void draw(Graphics g) {
         // Use the map data to draw each tile according to the camera position
-        int xCameraStart = Panel.playerCar.xScreenPos - Panel.playerCar.xMapPos;
-        int xCameraStartCol = xCameraStart / Panel.UNIT_SIZE;
-        int yCameraStart = Panel.playerCar.yScreenPos - Panel.playerCar.yMapPos;
-        int yCameraStartRow = yCameraStart / Panel.UNIT_SIZE;
-
-        int yPosCurrent = yCameraStartRow;
-        int xPosCurrent = xCameraStartCol;
-
+        int xScreenStart = Panel.playerCar.xScreenPos - Panel.playerCar.xMapPos;
+        int yScreenStart = Panel.playerCar.yScreenPos - Panel.playerCar.yMapPos;
+        // Iteration tracking
+        int xPosCurrent = xScreenStart;
+        int yPosCurrent = yScreenStart;
         for (int i = 0; i < tileMap.length; i++) {
-            tileMapScreenYPos[i] = yPosCurrent;
             for (int j = 0; j < tileMap[i].length; j++) {
-                g.drawImage(tiles[tileMap[i][j]].image, xPosCurrent * Panel.UNIT_SIZE, yPosCurrent * Panel.UNIT_SIZE,
+                g.drawImage(tiles[tileMap[i][j]].image, xPosCurrent, yPosCurrent,
                             Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+                xPosCurrent += Panel.UNIT_SIZE;
+            }
+            xPosCurrent = xScreenStart;
+            yPosCurrent += Panel.UNIT_SIZE;
+        }
+
+        // File position translation array
+        xPosCurrent = xScreenStart;
+        yPosCurrent = yScreenStart;
+        for (int i = 0; i < tileMapScreenYPos.length; i++) {
+            tileMapScreenYPos[i] = yPosCurrent;
+            for (int j = 0; j < tileMapScreenXPos.length; j++) {
                 tileMapScreenXPos[j] = xPosCurrent;
                 xPosCurrent++;
             }
-            xPosCurrent = xCameraStartCol;
+            xPosCurrent = xScreenStart;
             yPosCurrent++;
         }
-//
-//        System.out.println("X pos");
-//        for (int i = 0; i < tileMapScreenXPos.length; i++) {
-//            System.out.print(tileMapScreenXPos[i] + " ");
-//        }
-//        System.out.println();
-//
+
 //        System.out.println("Y pos");
 //        for (int i = 0; i < tileMapScreenYPos.length; i++) {
 //            System.out.println(tileMapScreenYPos[i] + " ");

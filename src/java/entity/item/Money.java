@@ -63,8 +63,8 @@ public class Money extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
-        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
-        g.drawImage(imageItem, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos];
+        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos];
+        g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

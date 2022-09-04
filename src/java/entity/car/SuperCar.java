@@ -10,7 +10,6 @@ import java.awt.image.BufferedImage;
 public abstract class SuperCar implements Entity {
     // Position tracking vars
     public int xMapPos, yMapPos;
-    public int xScreenPos, yScreenPos;
     public char direction;
     public int speed;  // pixels to move per frame
     public boolean nitro;

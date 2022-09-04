@@ -134,8 +134,10 @@ public class CopCar extends SuperCar {
     public void draw(Graphics g) {
         loadImages();
         // Connect the map position to a screen position
-        xScreenPos = TileManager.tileMapScreenXPos[xMapPos/Panel.UNIT_SIZE];
-        yScreenPos = TileManager.tileMapScreenYPos[yMapPos/Panel.UNIT_SIZE];
-        g.drawImage(imageCar, xScreenPos * Panel.UNIT_SIZE, yScreenPos * Panel.UNIT_SIZE, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        int xScreenPos = TileManager.tileMapScreenXPos[xMapPos];
+        int yScreenPos = TileManager.tileMapScreenYPos[yMapPos];
+//        System.out.println("Cop xPos = " + xMapPos);
+//        System.out.println("Cop xScreenPos = " + xScreenPos);
+        g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }
