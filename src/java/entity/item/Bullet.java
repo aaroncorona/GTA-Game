@@ -25,7 +25,7 @@ public class Bullet extends SuperItem {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        type = 0;
+        itemType = 0;
         dead = false;
         speed = 25;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,

@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 // This super class provides a foundation for creating item classes
 public abstract class SuperItem implements Entity {
     // Item settings
-    public static int type;
+    public static int itemType;
     public boolean dead;
     BufferedImage imageItem;
 

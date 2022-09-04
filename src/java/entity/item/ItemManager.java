@@ -1,7 +1,9 @@
 package entity.item;
 
 import entity.Entity;
+import main.CollisionChecker;
 import main.Panel;
+import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,6 +11,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 // The Item Manager runs the Entity methods for all objects and provides functions to add more Item objects
 public class ItemManager implements Entity {
@@ -23,6 +26,7 @@ public class ItemManager implements Entity {
 
     // Private Constructor - Singleton class
     private ItemManager() {
+        // Delete objects
         setDefaultValues();
     }
 
@@ -41,6 +45,8 @@ public class ItemManager implements Entity {
     public void setDefaultValues() {
         items = new ArrayList<>();
         moneyValueTotal = 0;
+        // Always have 1 heart
+        createHeart();
     }
 
     // Run update on all Items
@@ -55,15 +61,28 @@ public class ItemManager implements Entity {
     }
 
     // Method for other classes to create a Money Item object
-    public static void createMoney(int xPos, int yPos) {
-        Money money = new Money(xPos,yPos);
+    public static void createMoney(int xMapPos, int yMapPos) {
+        Money money = new Money(xMapPos, yMapPos);
         items.add(money);
     }
 
     // Method for other classes to create a Bullet Item object
-    public static void createBullet(int xPos, int yPos, char direction) {
-        Bullet bullet1 = new Bullet(xPos, yPos, direction);
+    public static void createBullet(int xMapPos, int yMapPos, char direction) {
+        Bullet bullet1 = new Bullet(xMapPos, yMapPos, direction);
         items.add(bullet1);
+    }
+
+    // Method for other classes to create a Heart Item object in a random location
+    public static void createHeart() {
+        int xMapPos = new Random().nextInt(TileManager.worldMapCols * Panel.UNIT_SIZE);
+        int yMapPos = new Random().nextInt(TileManager.worldMapRows * Panel.UNIT_SIZE);
+        Heart heart = new Heart(xMapPos, yMapPos);
+        // Reset if the Heart spawns on a tile that would cause an instant collision
+        if(CollisionChecker.checkTileCollision(heart) == true) {
+            heart.dead = true;
+            createHeart();
+        }
+        items.add(heart);
     }
 
     // Helper Method to remove unused ("dead") items from the list to improve item manager performance
@@ -89,19 +108,18 @@ public class ItemManager implements Entity {
     // Method to call the draw method for every Item as well as the bank account
     @Override
     public void draw(Graphics g) {
-        // Draw each Item object
-        for (int i = 0; i < items.size(); i++) {
-            items.get(i).draw(g);
-        }
-        // Draw the money total while the game is running
-        if(Panel.titleState == false) {
+        if(Panel.playState) {
             // Draw bank
             loadImages();
             g.drawImage(imageBank, 180, 1, main.Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
             // Draw the current bank account total
             g.setColor(Color.GREEN.darker());
             g.setFont(new Font("Serif", Font.ITALIC, 30));
-            g.drawString("$" + ItemManager.moneyValueTotal,235,38);
+            g.drawString("$" + ItemManager.moneyValueTotal, 235, 38);
+            // Draw each Item object
+            for (int i = 0; i < items.size(); i++) {
+                items.get(i).draw(g);
+            }
         }
     }
 }
