@@ -2,6 +2,7 @@ package entity.car;
 
 import entity.Entity;
 import main.Panel;
+import tile.TileManager;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -25,8 +26,8 @@ public abstract class SuperCar implements Entity {
     // Default method implementation for setting the reset position
     @Override
     public void setDefaultValues() {
-        xMapPos = 600;
-        yMapPos = 600;
+        xMapPos = TileManager.tileMapScreenXPos.length / 2; // middle of the world
+        yMapPos = TileManager.tileMapScreenYPos.length / 2;
         direction = 'R';
         speed = 5;
         nitro = false;

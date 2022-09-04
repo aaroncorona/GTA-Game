@@ -82,8 +82,8 @@ public class TileManager {
     // Helper method to load the tile map
     private void loadTileMap() {
         // Instantiate map arrays
-        int worldMapRows = 28;
-        int worldMapCols = 24;
+        int worldMapRows = 44;
+        int worldMapCols = 41;
         tileMap = new int[worldMapRows][worldMapCols];
         tileMapCollisionArea = new Rectangle[worldMapRows][worldMapCols];
         tileMapScreenXPos = new int[worldMapCols * Panel.UNIT_SIZE];

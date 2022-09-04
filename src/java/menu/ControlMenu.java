@@ -10,7 +10,7 @@ import java.io.IOException;
 public class ControlMenu implements Menu {
 
     public boolean open;
-    int xPos, yPos;
+    int xScreenPos, yScreenPos;
     int width, height;
     BufferedImage image;
 
@@ -22,8 +22,8 @@ public class ControlMenu implements Menu {
     @Override
     public void setDefaultValues() {
         // Placement vars
-        xPos = 380;
-        yPos = 300;
+        xScreenPos = 380;
+        yScreenPos = 300;
         width = 300;
         height = 320;
         open = false;
@@ -44,7 +44,7 @@ public class ControlMenu implements Menu {
         if(open) {
             // Draw the control image
             loadImages();
-            g.drawImage(image, xPos, yPos, width, height, null);
+            g.drawImage(image, xScreenPos, yScreenPos, width, height, null);
         }
     }
 }

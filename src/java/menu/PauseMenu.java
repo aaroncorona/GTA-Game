@@ -12,7 +12,7 @@ public class PauseMenu implements Menu {
     private JPopupMenu pauseMenu;
     public boolean open;
     // Position tracking
-    private int xPos, yPos;
+    private int xScreenPos, yScreenPos;
     private int width, height;
     // Sub Components
     private JLabel label;
@@ -68,14 +68,14 @@ public class PauseMenu implements Menu {
     @Override
     public void setDefaultValues() {
         // Placement vars
-        xPos = 640;
-        yPos = 240;
+        xScreenPos = 640;
+        yScreenPos = 240;
         width = 400;
         height = 170;
         open = false;
 
         // Menu UI
-        pauseMenu.setLocation(xPos, yPos);
+        pauseMenu.setLocation(xScreenPos, yScreenPos);
         pauseMenu.setPreferredSize(new Dimension(width, height));
         pauseMenu.setBackground(Color.CYAN);
         pauseMenu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));

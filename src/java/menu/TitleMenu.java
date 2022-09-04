@@ -10,7 +10,7 @@ import java.io.IOException;
 public class TitleMenu implements Menu {
 
     public boolean open;
-    int xPos, yPos;
+    int xScreenPos, yScreenPos;
     int width, height;
     BufferedImage image;
 
@@ -22,8 +22,8 @@ public class TitleMenu implements Menu {
     @Override
     public void setDefaultValues() {
         // Placement vars
-        xPos = 250;
-        yPos = 20;
+        xScreenPos = 250;
+        yScreenPos = 20;
         width = 550;
         height = 700;
         open = false;
@@ -44,16 +44,16 @@ public class TitleMenu implements Menu {
         if(open) {
             // Draw the title screen image
             loadImages();
-            g.drawImage(image, xPos, yPos, width, height, null);
+            g.drawImage(image, xScreenPos, yScreenPos, width, height, null);
             // Draw rect background for text
             int textBoxY = height-160;
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(xPos + 40, textBoxY, width - 70, 130);
+            g.fillRect(xScreenPos + 40, textBoxY, width - 70, 130);
             // Draw text
             g.setColor(Color.YELLOW);
             g.setFont(new Font("Serif", Font.ITALIC, 50));
-            g.drawString("Press ENTER to Begin",xPos + 50,textBoxY + 50);
-            g.drawString(" Press C for Controls",xPos + 50,textBoxY + 110);
+            g.drawString("Press ENTER to Begin",xScreenPos + 50,textBoxY + 50);
+            g.drawString(" Press C for Controls",xScreenPos + 50,textBoxY + 110);
         }
     }
 }

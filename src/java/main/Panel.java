@@ -131,7 +131,7 @@ public class Panel extends JPanel implements Runnable {
             key.cPress = false;
         }
         // C key to hide the Control menu
-        if (key.cPress == true&& controlMenu.open == true) {
+        if (key.cPress == true && controlMenu.open == true) {
             controlMenu.open = false;
             key.cPress = false;
         }
@@ -148,10 +148,10 @@ public class Panel extends JPanel implements Runnable {
         copCarManager.draw(g);
 
         // Draw menus
-        controlMenu.draw(g);
         gameOverMenu.draw(g);
         pauseMenu.draw(g);
         titleMenu.draw(g);
+        controlMenu.draw(g);
     }
 
     // Method to check for an event that ends the game and respond accordingly
