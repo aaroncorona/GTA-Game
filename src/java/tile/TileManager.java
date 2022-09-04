@@ -117,7 +117,6 @@ public class TileManager {
 
     // Method to draw the tiles
     public void draw(Graphics g) {
-
         // Draw the map to the screen according to the camera settings
         int xPosCurrent = Camera.translateXMapToScreenPos()[0];
         int yPosCurrent = Camera.translateYMapToScreenPos()[0];
@@ -127,14 +126,8 @@ public class TileManager {
                              Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
                 xPosCurrent += Panel.UNIT_SIZE;
             }
-            xPosCurrent = Camera.translateXMapToScreenPos()[0];
+            xPosCurrent = Camera.translateXMapToScreenPos()[0]; // next row
             yPosCurrent += Panel.UNIT_SIZE;
         }
-
-//        System.out.println("X pos");
-//        for (int i = 0; i < tileMapScreenXPos.length; i++) {
-//            System.out.print(tileMapScreenXPos[i] + " ");
-//        }
-//        System.out.println();
     }
 }

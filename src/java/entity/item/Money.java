@@ -2,7 +2,6 @@ package entity.item;
 
 import main.Panel;
 import tile.Camera;
-import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -42,12 +41,11 @@ public class Money extends SuperItem {
     }
 
     // Helper method to check if the given money object is contacted by the player, whereby
-    // a "collection" should occur and increment the overal money score
+    // a "collection" should occur and increment the overall money score
     private void handleMoneyCollection() {
         if(checkEntityCollision(Panel.playerCar, this) == true) {
             ItemManager.moneyValueTotal += value;
             dead = true;
-//            System.out.println("Money collected! New bank account balance: $" + ItemManager.moneyValueTotal);
         }
     }
 

@@ -4,7 +4,6 @@ import entity.car.CopCarManager;
 import main.CollisionChecker;
 import main.Panel;
 import tile.Camera;
-import tile.TileManager;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -86,15 +85,15 @@ public class Bullet extends SuperItem {
             // Bullet blows up
             dead = true;
             // Reduce player health
-            Panel.playerCar.health--;
+            Panel.playerCar.hitTaken = true;
         }
         // Check for a cop collision
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
             if(CollisionChecker.checkEntityCollision(CopCarManager.cops.get(i), this) == true) {
                 // Bullet blows up
                 dead = true;
-                // Car blows up
-                CopCarManager.cops.get(i).health = 0;
+                // Cop blows up
+                CopCarManager.cops.get(i).hitTaken = true;
             }
         }
         // Check for a collision with any other item

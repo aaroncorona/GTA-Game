@@ -25,9 +25,9 @@ public class CopCar extends SuperCar {
         xMapPos = new Random().nextInt(TileManager.worldMapCols * Panel.UNIT_SIZE);
         yMapPos = new Random().nextInt(TileManager.worldMapRows * Panel.UNIT_SIZE);
         direction = 'R';
-        speed = Panel.UNIT_SIZE; // default speed is moving 1 full position
-        health = 3;
-
+        speed = 0; // cops don't move
+        hitTaken = false;
+        health = 1;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
 
@@ -42,6 +42,7 @@ public class CopCar extends SuperCar {
         // Manage events
         handleShooting();
         handleCollision();
+        handleHealth();
         handleDeath();
     }
 
@@ -95,6 +96,14 @@ public class CopCar extends SuperCar {
         }
     }
 
+    // Helper method to update player health based on hits taken
+    private void handleHealth() {
+        // First, check for a collision with a tile
+        if(hitTaken == true) {
+            health--;
+        }
+    }
+
     // Helper method to respond to Cop death by creating money and then respawning
     private void handleDeath() {
         if(health == 0) {
@@ -106,7 +115,7 @@ public class CopCar extends SuperCar {
     @Override
     public void loadImages() {
         // Return the explosion image if the car has died
-        if(health == 0) {
+        if(hitTaken) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
                 imageCar = ImageIO.read(new File(filePath));

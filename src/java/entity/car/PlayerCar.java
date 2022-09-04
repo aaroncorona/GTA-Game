@@ -16,6 +16,8 @@ public class PlayerCar extends SuperCar {
     public final int X_SCREEN_POS = Panel.SCREEN_WIDTH/2 - Panel.UNIT_SIZE/2;
     public final int Y_SCREEN_POS = Panel.SCREEN_HEIGHT/2 - Panel.UNIT_SIZE/2;
 
+    public boolean hitTaken = false;
+
     // Constructor to create Player Car
     public PlayerCar() {
         setDefaultValues();
@@ -30,6 +32,7 @@ public class PlayerCar extends SuperCar {
         handleNitro();
         handleShooting();
         handleCollision();
+        handleHealth();
     }
 
     // Helper Method to update the Car's direction based on key input
@@ -119,29 +122,72 @@ public class PlayerCar extends SuperCar {
 
     // Helper method to respond to collision events that should end the game
     private void handleCollision() {
-        // First, check for a deadly collision with a tile
+        // First, check for a collision with a tile
         if(CollisionChecker.checkTileCollision(this) == true) {
-            health = 0;
+            // Reduce health
+            hitTaken = true;
+            // Move away from impact
+            switch(direction) {
+                case 'R':
+                    direction = 'L';
+                    break;
+                case 'L':
+                    direction = 'R';
+                    break;
+                case 'U':
+                    direction = 'D';
+                    break;
+                case 'D':
+                    direction = 'U';
+                    break;
+            }
+            updateLocation();
         }
-        // Second, check for a deadly collision with a cop car
+        // Second, check for a collision with a cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
             if(CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
-                health = 0;
-                CopCarManager.cops.get(i).health = 0;
+                // Reduce health
+                hitTaken = true;
+                CopCarManager.cops.get(i).hitTaken = true;
+                // Move away from impact
+                switch(direction) {
+                    case 'R':
+                        direction = 'L';
+                        break;
+                    case 'L':
+                        direction = 'R';
+                        break;
+                    case 'U':
+                        direction = 'D';
+                        break;
+                    case 'D':
+                        direction = 'U';
+                        break;
+                }
+                updateLocation();
             }
+        }
+    }
+
+    // Helper method to update player health based on hits taken
+    private void handleHealth() {
+        // First, check for a collision with a tile
+        if(hitTaken == true) {
+            health--;
         }
     }
 
     @Override
     public void loadImages() {
         // Get the explosion image if the car has died
-        if(health == 0) {
+        if(hitTaken) {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/collisions/explosion.png";
             try {
                 imageCar = ImageIO.read(new File(filePath));
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            hitTaken = false; // reset state
         } else {
             // Otherwise, return the correct sprite
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/player_car/player_car_";
