@@ -2,6 +2,7 @@ package entity.car;
 
 import entity.item.ItemManager;
 import main.CollisionChecker;
+import main.KeyHandler;
 import main.Panel;
 import tile.Camera;
 import tile.TileManager;
@@ -25,7 +26,7 @@ public class CopCar extends SuperCar {
         xMapPos = new Random().nextInt(TileManager.worldMapCols * Panel.UNIT_SIZE);
         yMapPos = new Random().nextInt(TileManager.worldMapRows * Panel.UNIT_SIZE);
         direction = 'R';
-        speed = 0; // cops don't move
+        speed = 3;
         hitTaken = false;
         health = 1;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
@@ -39,6 +40,9 @@ public class CopCar extends SuperCar {
 
     @Override
     public void update() {
+        // Update location
+        updateDir();
+        updateLocation();
         // Manage events
         handleShooting();
         handleCollision();
@@ -88,11 +92,98 @@ public class CopCar extends SuperCar {
         }
     }
 
-    // Helper method to respond to collision events that should end the game
+    // Helper Method to update the Cop's direction randomly
+    private void updateDir() {
+        // Update dir occasionally
+        int randomNum = new Random().nextInt(100);
+        if(randomNum == 1) {
+            // Get random direction to shoot
+            int randomDir = new Random().nextInt(4);
+            switch(randomDir) {
+                case 0:
+                    direction = 'R';
+                    break;
+                case 1:
+                    direction = 'L';
+                    break;
+                case 2:
+                    direction = 'U';
+                    break;
+                case 3:
+                    direction = 'D';
+                    break;
+            }
+        }
+    }
+
+    // Helper method to update the cop's coordinates and collision area based on the direction and speed
+    private void updateLocation() {
+        switch(direction) {
+            case 'R':
+                xMapPos = xMapPos + speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
+                        Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
+                break;
+            case 'L':
+                xMapPos = xMapPos - speed;
+                collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
+                        Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
+                break;
+            case 'U':
+                yMapPos = yMapPos - speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
+                        Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
+                break;
+            case 'D':
+                yMapPos = yMapPos + speed;
+                collisionArea = new Rectangle(xMapPos + Panel.UNIT_SIZE/4, yMapPos,
+                        Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
+                break;
+        }
+    }
+
+    // Helper method to respond to collision events that redirect the cop
     private void handleCollision() {
-        // Check for a deadly collision with the player
-        if(CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
-            health = 0;
+        // First, check for a collision with a tile
+        if(CollisionChecker.checkTileCollision(this) == true) {
+            // Move away from impact
+            switch(direction) {
+                case 'R':
+                    direction = 'L';
+                    break;
+                case 'L':
+                    direction = 'R';
+                    break;
+                case 'U':
+                    direction = 'D';
+                    break;
+                case 'D':
+                    direction = 'U';
+                    break;
+            }
+            updateLocation();
+        }
+        // Second, check for a collision with another cop car
+        for(int i = 0; i < CopCarManager.cops.size(); i++) {
+            if(!CopCarManager.cops.get(i).equals(this)
+                    && CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
+                // Move away from impact
+                switch(direction) {
+                    case 'R':
+                        direction = 'L';
+                        break;
+                    case 'L':
+                        direction = 'R';
+                        break;
+                    case 'U':
+                        direction = 'D';
+                        break;
+                    case 'D':
+                        direction = 'U';
+                        break;
+                }
+                updateLocation();
+            }
         }
     }
 
@@ -127,10 +218,6 @@ public class CopCar extends SuperCar {
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/cop_car/cop_car_";
             // Update the file path for the direction
             filePath += direction;
-            // Update the file path for the nitro status
-            if(nitro == true) {
-                filePath += "_nitro";
-            }
             filePath += ".png";
             try {
                 imageCar = ImageIO.read(new File(filePath));

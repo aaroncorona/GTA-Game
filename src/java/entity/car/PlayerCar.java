@@ -122,7 +122,7 @@ public class PlayerCar extends SuperCar {
         }
     }
 
-    // Helper method to respond to collision events that should end the game
+    // Helper method to respond to collision events that should reduce health
     private void handleCollision() {
         // First, check for a collision with a tile
         if(CollisionChecker.checkTileCollision(this) == true) {
