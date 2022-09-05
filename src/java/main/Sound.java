@@ -36,6 +36,10 @@ public class Sound {
         backgroundMusic.start();
     }
 
+    public static boolean isBackgroundMusicOn() {
+        return backgroundMusic.isActive();
+    }
+
     public static void playGameOver() {
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/sounds/game_over.wav";
         try {

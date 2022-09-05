@@ -135,6 +135,15 @@ public class Panel extends JPanel implements Runnable {
             controlMenu.open = false;
             key.cPress = false;
         }
+        // M key to turn on music
+        if (key.mPress == true) {
+            if(Sound.isBackgroundMusicOn()) {
+                Sound.pauseBackgroundMusic();
+            } else {
+                Sound.resumeBackgroundMusic();
+            }
+            key.mPress = false;
+        }
     }
 
     @ Override

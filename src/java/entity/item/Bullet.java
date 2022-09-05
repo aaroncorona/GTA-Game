@@ -64,13 +64,6 @@ public class Bullet extends SuperItem {
                                         Panel.UNIT_SIZE/2, Panel.UNIT_SIZE);
                 break;
         }
-
-        // Check for bullets offscreen
-        if(xMapPos < 0) {
-            xMapPos = 0;
-        } else if (yMapPos < 0) {
-            yMapPos = 0;
-        }
     }
 
     // Helper method to respond to the bullet hitting a tile
@@ -133,8 +126,10 @@ public class Bullet extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
-        int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
-        g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        try {
+            int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
+            int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
+            g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        } catch (ArrayIndexOutOfBoundsException e) {}
     }
 }
