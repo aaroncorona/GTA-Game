@@ -56,36 +56,19 @@ public class CopCar extends SuperCar {
         if(CopCarManager.wantedLevel >= 1) {
             int randomNum = new Random().nextInt(10);
             if(randomNum == 1) {
-                // Get random direction to shoot
-                int randomDir = new Random().nextInt(4);
-                char bulletDir = 'R';
-                switch(randomDir) {
-                    case 0:
-                        bulletDir = 'R';
-                        break;
-                    case 1:
-                        bulletDir = 'L';
-                        break;
-                    case 2:
-                        bulletDir = 'U';
-                        break;
-                    case 3:
-                        bulletDir = 'D';
-                        break;
-                }
-                // Spawn the bullet a safe distance from the cop to avoid instant death
-                switch(bulletDir) {
+                // Spawn the bullet a safe distance from the player to avoid instant death
+                switch(direction) {
                     case 'R':
-                        ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, bulletDir);
+                        ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
                         break;
                     case 'L':
-                        ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, bulletDir);
+                        ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
                         break;
                     case 'U':
-                        ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, bulletDir);
+                        ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
                         break;
                     case 'D':
-                        ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, bulletDir);
+                        ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
                         break;
                 }
             }
@@ -97,7 +80,7 @@ public class CopCar extends SuperCar {
         // Update dir occasionally
         int randomNum = new Random().nextInt(100);
         if(randomNum == 1) {
-            // Get random direction to shoot
+            // Get random direction to travel
             int randomDir = new Random().nextInt(4);
             switch(randomDir) {
                 case 0:
@@ -150,15 +133,19 @@ public class CopCar extends SuperCar {
             switch(direction) {
                 case 'R':
                     direction = 'L';
+                    yMapPos = yMapPos - speed; // avoid getting stuck on a tile
                     break;
                 case 'L':
                     direction = 'R';
+                    yMapPos = yMapPos + speed; // avoid getting stuck on a tile
                     break;
                 case 'U':
-                    direction = 'D';
+                    direction = 'L';
+                    xMapPos = xMapPos - speed;
                     break;
                 case 'D':
                     direction = 'U';
+                    xMapPos = xMapPos + speed;
                     break;
             }
             updateLocation();
@@ -231,8 +218,14 @@ public class CopCar extends SuperCar {
     public void draw(Graphics g) {
         loadImages();
         // Connect the map position to a screen position
-        int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
-        int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
-        g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        try{
+            int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
+            int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
+            g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            if(CopCarManager.cops.size() == 0) {
+                CopCarManager.createCop();
+            }
+        }
     }
 }

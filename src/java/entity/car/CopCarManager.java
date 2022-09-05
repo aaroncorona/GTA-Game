@@ -81,8 +81,8 @@ public class CopCarManager implements Entity {
         }
     }
 
-    // Helper Method to create a Cop obj
-    private static void createCop() {
+    // Method to create a Cop obj
+    public static void createCop() {
         CopCar cop = new CopCar();
         cops.add(cop);
     }

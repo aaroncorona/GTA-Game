@@ -155,15 +155,19 @@ public class PlayerCar extends SuperCar {
                 switch(direction) {
                     case 'R':
                         direction = 'L';
+                        yMapPos = yMapPos - speed; // avoid getting stuck on a tile
                         break;
                     case 'L':
                         direction = 'R';
+                        yMapPos = yMapPos + speed;
                         break;
                     case 'U':
                         direction = 'D';
+                        xMapPos = xMapPos - speed;
                         break;
                     case 'D':
                         direction = 'U';
+                        xMapPos = xMapPos + speed;
                         break;
                 }
                 updateLocation();
