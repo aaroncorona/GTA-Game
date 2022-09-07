@@ -2,18 +2,20 @@ package entity.car;
 
 import entity.item.ItemManager;
 import main.CollisionChecker;
-import main.KeyHandler;
 import main.Panel;
 import tile.Camera;
-import tile.TileManager;
+import tile.PathFinder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.Random;
 
 public class CopCar extends SuperCar {
+
+    LinkedList<PathFinder.Node> currentPath;
 
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
@@ -23,10 +25,10 @@ public class CopCar extends SuperCar {
     // Cop should spawn in a random location
     @Override
     public void setDefaultValues() {
-        xMapPos = new Random().nextInt(TileManager.worldMapCols * Panel.UNIT_SIZE);
-        yMapPos = new Random().nextInt(TileManager.worldMapRows * Panel.UNIT_SIZE);
+        xMapPos = new Random().nextInt(1000);
+        yMapPos = new Random().nextInt(1000);
         direction = 'R';
-        speed = 3;
+        speed = 5;
         hitTaken = false;
         health = 1;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
@@ -35,6 +37,8 @@ public class CopCar extends SuperCar {
         // Reset if the Cop spawn on a tile that would cause an instant collision
         if(CollisionChecker.checkTileCollision(this) == true) {
             setDefaultValues();
+        } else {
+            currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
         }
     }
 
@@ -75,11 +79,12 @@ public class CopCar extends SuperCar {
         }
     }
 
-    // Helper Method to update the Cop's direction randomly
+    // Helper Method to update the Cop's direction based on the defined path
     private void updateDir() {
-        // Update dir occasionally
+        currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+        // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
         int randomNum = new Random().nextInt(100);
-        if(randomNum == 1) {
+        if(CopCarManager.wantedLevel == 0 && randomNum == 1) {
             // Get random direction to travel
             int randomDir = new Random().nextInt(4);
             switch(randomDir) {
@@ -96,6 +101,11 @@ public class CopCar extends SuperCar {
                     direction = 'D';
                     break;
             }
+        }
+        // If there is a wanted level, the cop should chase the player
+        else if(CopCarManager.wantedLevel >= 1) {
+            // Get the next best direction
+            direction = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos).get(0);
         }
     }
 
@@ -148,7 +158,6 @@ public class CopCar extends SuperCar {
                     xMapPos = xMapPos + speed;
                     break;
             }
-            updateLocation();
         }
         // Second, check for a collision with another cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
@@ -177,14 +186,14 @@ public class CopCar extends SuperCar {
     // Helper method to update player health based on hits taken
     private void handleHealth() {
         // First, check for a collision with a tile
-        if(hitTaken == true) {
+        if(hitTaken) {
             health--;
         }
     }
 
     // Helper method to respond to Cop death by creating money and then respawning
     private void handleDeath() {
-        if(health == 0) {
+        if(hitTaken && health == 0) {
             ItemManager.createMoney(xMapPos, yMapPos);
             setDefaultValues();
         }
@@ -200,6 +209,7 @@ public class CopCar extends SuperCar {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            hitTaken = false; // reset
         } else {
             // Otherwise, return the correct sprite
             String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/entities/cop_car/cop_car_";
@@ -226,6 +236,13 @@ public class CopCar extends SuperCar {
             if(CopCarManager.cops.size() == 0) {
                 CopCarManager.createCop();
             }
+        }
+        // draw path (test)
+        for(int i = 0; i < currentPath.size(); i++) {
+            PathFinder.Node currentNode = currentPath.get(i);
+            int xScreenPos = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
+            int yScreenPos = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
+            g.fillRect(xScreenPos, yScreenPos, speed, speed);
         }
     }
 }

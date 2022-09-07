@@ -93,7 +93,7 @@ public class Bullet extends SuperItem {
         for (int i = 0; i < ItemManager.items.size(); i++) {
             SuperItem item = ItemManager.items.get(i);
             if(!item.equals(this)
-               && CollisionChecker.checkEntityCollision(item, this) == true) {
+               && CollisionChecker.checkItemCollision(item, this) == true) {
                 // Bullet blows up another bullet, but does not blow up money
                 dead = true;
             }

@@ -2,6 +2,7 @@ package main;
 
 import entity.car.SuperCar;
 import entity.item.SuperItem;
+import tile.Tile;
 import tile.TileManager;
 
 import java.awt.geom.Rectangle2D;
@@ -40,6 +41,12 @@ public class CollisionChecker {
         return collision;
     }
 
+    // Method to check for overlap between any location and tile collision area (for path checking)
+    public static boolean checkTileCollision(int xMapPos, int yMapPos) {
+        Tile tileOn = TileManager.tiles[TileManager.tileMap[xMapPos / Panel.UNIT_SIZE][yMapPos / Panel.UNIT_SIZE]];
+        return tileOn.causeCollision;
+    }
+
     // Method to check for a car colliding with another car
     public static boolean checkEntityCollision(SuperCar car1, SuperCar car2) {
         Rectangle2D overlapArea = car1.collisionArea.createIntersection(car2.collisionArea);
@@ -61,7 +68,7 @@ public class CollisionChecker {
     }
 
     // Method to check for an item colliding with an item
-    public static boolean checkEntityCollision(SuperItem item1, SuperItem item2) {
+    public static boolean checkItemCollision(SuperItem item1, SuperItem item2) {
         Rectangle2D overlapArea = item1.collisionArea.createIntersection(item2.collisionArea);
         if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
             return true;

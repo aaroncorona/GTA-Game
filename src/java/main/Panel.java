@@ -4,6 +4,7 @@ import entity.car.CopCarManager;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import menu.*;
+import tile.PathFinder;
 import tile.TileManager;
 
 import javax.swing.*;
