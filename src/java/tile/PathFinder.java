@@ -2,10 +2,10 @@ package tile;
 
 import main.Panel;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.io.*;
+import java.util.*;
 
-// TODO add path memory/cache to save some BFS runs?
+import java.util.LinkedList;
 
 // The PathFinder finds the shortest path between 2 points on the map
 public class PathFinder {
@@ -14,12 +14,12 @@ public class PathFinder {
     private PathFinder() {}
 
     // Inner class to represent a map point as a place on a graph
-    public static class Node { // TODO make private after testing is complete
-        // Node vars
-        public int xMapPos, yMapPos;
-        public Node pathParentNode; // for the BFS traversal
-        public boolean collision;
-        public int travelCost = 1; // TODO not yet implemented
+    public static class Node { // TODO make protected after testing is complete
+        // Node vars - should be immutable for hashmap
+        public final int xMapPos, yMapPos;
+        public final Node pathParentNode;
+        public final boolean collision;
+        public final int travelCost = 1; // TODO not yet implemented
 
         // Constructor
         public Node(int xMapPos, int yMapPos, Node pathParentNode) {
@@ -27,22 +27,17 @@ public class PathFinder {
             this.yMapPos = yMapPos;
             this.pathParentNode = pathParentNode;
 
-            try{ // TODO check if needed
-                collision = CollisionChecker.checkTileCollision(this);
-            } catch (ArrayIndexOutOfBoundsException e) {
-                collision = true;
-            }
-
+            collision = CollisionChecker.checkTileCollision(this);
         }
 
         // Override toString() for easier debugging
         @Override
         public String toString() {
-            String descr = "Node Pos: " + xMapPos + ", " + yMapPos + ". Collision: " + collision;
+            String descr = "Node Pos: " + xMapPos + ", " + yMapPos;
             return descr;
         }
 
-        // Overriding equals() to be able to compare two Node objects
+        // Overriding equals() to be able to compare two Node objects (like using contains())
         @Override
         public boolean equals(Object otherObj) {
             // If the object is compared with itself then return true
@@ -60,6 +55,16 @@ public class PathFinder {
             } else {
                 return false;
             }
+        }
+
+        // Overriding hashcode() to be able to use a Node as a Key in a HashMap
+        @Override
+        public int hashCode() {
+            // Use the Node coordinates as a Key
+            int hash = 17;
+            hash = hash * 31 + xMapPos;
+            hash = hash * 31 + yMapPos;
+            return hash;
         }
     }
 

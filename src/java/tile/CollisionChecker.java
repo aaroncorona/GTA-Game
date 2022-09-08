@@ -47,14 +47,15 @@ public class CollisionChecker {
 
     // Method to see if a node lands on any tile that may cause a collision (for the pathfinder)
     public static boolean checkTileCollision(PathFinder.Node node) {
-        // First, check if we have already processed this node. Otherwise, loop through the map and check for a collision
-        if(nodeCollisionResults.containsKey(node)) {
-            return nodeCollisionResults.get(node);
-        }
-        // Create a collision area for the Node that spans an entire tile
-        Rectangle2D nodeCollisionArea = new Rectangle(node.xMapPos, node.yMapPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
         boolean collision = false;
-        // Check if the Node's collision area intersects with any tile collision area
+        // First, check if we have already processed this node.
+        if(nodeCollisionResults.containsKey(node)) {
+            collision = nodeCollisionResults.get(node);
+            return collision;
+        }
+        // Otherwise, Check if the Node's collision area intersects with any tile collision area
+        // Create a collision area for the Node that spans an entire tile, then loop through the map
+        Rectangle2D nodeCollisionArea = new Rectangle(node.xMapPos, node.yMapPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
         for (int i = 0; i < TileManager.tileMapCollisionArea.length; i++) {
             for (int j = 0; j < TileManager.tileMapCollisionArea[i].length; j++) {
                 Rectangle2D overlapArea = nodeCollisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
