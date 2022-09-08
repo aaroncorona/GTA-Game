@@ -119,8 +119,8 @@ public class PathFinder {
         // Node for the starting point
         Node startNode = new Node(xStartPoint, yStartPoint, null);
         Node targetNode = new Node(xTargetPoint, yTargetPoint, null);
-        // Increase speed for better efficiency for the BFS
-        int speedAdjuster = 10;
+        // Increase speed to traverse less nodes for better efficiency for the BFS
+        int speedAdjuster = 5;
         int bfsSpeed = speed * speedAdjuster;
         // Fill the visited path and parent mappings for a source to target BFS
         LinkedList<Node> visited = performBFS(startNode, targetNode, bfsSpeed);
@@ -132,50 +132,10 @@ public class PathFinder {
             Node nextNode = currentNode.pathParentNode;
             shortestPath.addFirst(nextNode); // use addFirst() to reverse order so the source appears first
         }
-        // If the resultilng path is only 1 node, add a dummy node so a real path can be formed with at least 2 nodes
+        // If the resulting path is only 1 node, add a dummy node so a real path can be formed with at least 2 nodes
         if(shortestPath.size() == 1) {
             Node dummyNode = new Node(shortestPath.get(0).xMapPos, shortestPath.get(0).yMapPos + bfsSpeed, shortestPath.get(0));
             shortestPath.add(dummyNode);
-        }
-//        System.out.println(shortestPath);
-        // Last, create "between nodes" to form an exact path that can be followed.
-        // This fills in missing jumps that were skipped for better BFS efficiency
-        int index = 0;
-        boolean allBetweenNodesFilled = false;
-        while(!allBetweenNodesFilled) {
-            // Find the next 2 nodes that need more nodes added between them
-            Node currentNode = shortestPath.get(index);
-            Node nextNode = shortestPath.get(index + 1);
-//            System.out.println("fill the gap between " + currentNode + " and " + nextNode);
-            // Fill all the 9 missing nodes for the current 2 nodes
-            for(int j=0; j < speedAdjuster; j++) {
-                int xBetweenNode = currentNode.xMapPos;
-                int yBetweenNode = nextNode.yMapPos;
-                // Determine the next x or y movement needed for the next between node
-                if(currentNode.xMapPos < nextNode.xMapPos) {
-                    xBetweenNode = currentNode.xMapPos + speed;
-                } else if(currentNode.xMapPos > nextNode.xMapPos) {
-                    xBetweenNode = currentNode.xMapPos - speed;
-                } else if(currentNode.yMapPos > nextNode.yMapPos) {
-                    yBetweenNode = currentNode.yMapPos - speed;
-                } else if(currentNode.yMapPos < nextNode.yMapPos) {
-                    yBetweenNode = currentNode.yMapPos + speed;
-                }
-                // Create new node to decide set where we jump to next
-                Node nextBetweenNode = new Node(xBetweenNode, yBetweenNode, currentNode);
-                // Jump to next node
-                currentNode = nextBetweenNode;
-                // Add the node in between
-                if(!shortestPath.contains(currentNode)) { // TODO find out root issue for why this safeguard is needed
-                    shortestPath.add(index + 1 + j, currentNode);
-                }
-                // Check if the traversal is complete to the final node
-                if(currentNode.equals(shortestPath.get(shortestPath.size()-1))) {
-                    allBetweenNodesFilled = true;
-                    break;
-                }
-            }
-            index = index + speedAdjuster;
         }
         return shortestPath;
     }
