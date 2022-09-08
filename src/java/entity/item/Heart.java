@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import static main.CollisionChecker.checkEntityCollision;
+import static tile.CollisionChecker.checkEntityCollision;
 
 public class Heart extends SuperItem {
 

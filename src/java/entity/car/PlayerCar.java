@@ -1,6 +1,6 @@
 package entity.car;
 
-import main.CollisionChecker;
+import tile.CollisionChecker;
 import main.KeyHandler;
 import main.Panel;
 import entity.item.ItemManager;

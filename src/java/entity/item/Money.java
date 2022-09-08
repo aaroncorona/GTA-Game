@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
-import static main.CollisionChecker.checkEntityCollision;
+import static tile.CollisionChecker.checkEntityCollision;
 
 public class Money extends SuperItem {
 

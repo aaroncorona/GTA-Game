@@ -1,8 +1,8 @@
 package tile;
 
-import main.CollisionChecker;
 import main.Panel;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 
 // TODO add path memory/cache to save some BFS runs?
@@ -17,9 +17,9 @@ public class PathFinder {
     public static class Node { // TODO make private after testing is complete
         // Node vars
         public int xMapPos, yMapPos;
-        private Node pathParentNode; // for the BFS traversal
-        private boolean collision;
-        private int travelCost = 1; // TODO not yet implemented
+        public Node pathParentNode; // for the BFS traversal
+        public boolean collision;
+        public int travelCost = 1; // TODO not yet implemented
 
         // Constructor
         public Node(int xMapPos, int yMapPos, Node pathParentNode) {
@@ -27,13 +27,18 @@ public class PathFinder {
             this.yMapPos = yMapPos;
             this.pathParentNode = pathParentNode;
 
-            collision = CollisionChecker.checkTileCollision(xMapPos, yMapPos);
+            try{ // TODO check if needed
+                collision = CollisionChecker.checkTileCollision(this);
+            } catch (ArrayIndexOutOfBoundsException e) {
+                collision = true;
+            }
+
         }
 
         // Override toString() for easier debugging
         @Override
         public String toString() {
-            String descr = "Node Pos: " + xMapPos + ", " + yMapPos;
+            String descr = "Node Pos: " + xMapPos + ", " + yMapPos + ". Collision: " + collision;
             return descr;
         }
 
@@ -75,11 +80,9 @@ public class PathFinder {
         for(int i=0; i < movementPermutations.length; i++) {
             int xChildPos = startNode.xMapPos + movementPermutations[i][0];
             int yChildPos = startNode.yMapPos + movementPermutations[i][1];
-            if(xChildPos >= 0 && yChildPos >= 0) { // OOB check
-                Node child = new Node(xChildPos, yChildPos, startNode);
-                if(!child.collision) {
-                    queue.add(child);
-                }
+            Node child = new Node(xChildPos, yChildPos, startNode);
+            if(!child.collision) {
+                queue.add(child);
             }
         }
         // Visit all descendents
@@ -90,23 +93,20 @@ public class PathFinder {
             Node currentNode = queue.poll();
             visited.add(currentNode);
             // First, check if the target is reached
-            if(targetNode.xMapPos - currentNode.xMapPos < Panel.UNIT_SIZE
-               && targetNode.yMapPos - currentNode.yMapPos < Panel.UNIT_SIZE) {
+            if(Math.abs(targetNode.xMapPos - currentNode.xMapPos) < Panel.UNIT_SIZE
+               && Math.abs(targetNode.yMapPos - currentNode.yMapPos) < Panel.UNIT_SIZE) {
                 targetReached = true;
-//                System.out.println("BFS Target reached");
                 break;
             }
             // Loop through every possible child and add visitable children to the queue
             for(int i=0; i < movementPermutations.length; i++) {
                 int xChildPos = currentNode.xMapPos + movementPermutations[i][0];
                 int yChildPos = currentNode.yMapPos + movementPermutations[i][1];
-                if(xChildPos >= 0 && yChildPos >= 0) { // OOB check
-                    Node child = new Node(xChildPos, yChildPos, currentNode);
-                    if(!child.collision
-                            && !queue.contains(child)
-                            && !visited.contains(child)) {
-                        queue.add(child);
-                    }
+                Node child = new Node(xChildPos, yChildPos, currentNode);
+                if(!child.collision
+                        && !queue.contains(child)
+                        && !visited.contains(child)) {
+                    queue.add(child);
                 }
             }
         }
@@ -137,6 +137,8 @@ public class PathFinder {
             Node dummyNode = new Node(shortestPath.get(0).xMapPos, shortestPath.get(0).yMapPos + bfsSpeed, shortestPath.get(0));
             shortestPath.add(dummyNode);
         }
+//        return visited;
+//        System.out.println(shortestPath);
         return shortestPath;
     }
 
@@ -162,6 +164,10 @@ public class PathFinder {
                 direction = 'D';
             }
             shortestPathDir.add(direction);
+        }
+        // OOB fix for an empty lists
+        if(shortestPath.size() == 0) {
+            shortestPathDir.add('R');
         }
 //        System.out.println(shortestPath);
 //        System.out.println(shortestPathDir);

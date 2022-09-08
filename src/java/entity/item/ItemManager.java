@@ -1,7 +1,7 @@
 package entity.item;
 
 import entity.Entity;
-import main.CollisionChecker;
+import tile.CollisionChecker;
 import main.Panel;
 import tile.TileManager;
 

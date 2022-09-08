@@ -1,14 +1,18 @@
-package main;
+package tile;
 
 import entity.car.SuperCar;
 import entity.item.SuperItem;
-import tile.Tile;
-import tile.TileManager;
+import main.Panel;
 
+import java.awt.*;
 import java.awt.geom.Rectangle2D;
+import java.util.HashMap;
 
 // The Contact Checker checks for overlap in collision area between objects
 public class CollisionChecker {
+
+    // Create a cache of Node collision results given each Node will not change positions
+    private static HashMap<PathFinder.Node, Boolean> nodeCollisionResults = new HashMap<>();
 
     // Private constructor - Noninstantiable class
     private CollisionChecker() {}
@@ -41,10 +45,26 @@ public class CollisionChecker {
         return collision;
     }
 
-    // Method to check for overlap between any location and tile collision area (for path checking)
-    public static boolean checkTileCollision(int xMapPos, int yMapPos) {
-        Tile tileOn = TileManager.tiles[TileManager.tileMap[xMapPos / Panel.UNIT_SIZE][yMapPos / Panel.UNIT_SIZE]];
-        return tileOn.causeCollision;
+    // Method to see if a node lands on any tile that may cause a collision (for the pathfinder)
+    public static boolean checkTileCollision(PathFinder.Node node) {
+        // First, check if we have already processed this node. Otherwise, loop through the map and check for a collision
+        if(nodeCollisionResults.containsKey(node)) {
+            return nodeCollisionResults.get(node);
+        }
+        // Create a collision area for the Node that spans an entire tile
+        Rectangle2D nodeCollisionArea = new Rectangle(node.xMapPos, node.yMapPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
+        boolean collision = false;
+        // Check if the Node's collision area intersects with any tile collision area
+        for (int i = 0; i < TileManager.tileMapCollisionArea.length; i++) {
+            for (int j = 0; j < TileManager.tileMapCollisionArea[i].length; j++) {
+                Rectangle2D overlapArea = nodeCollisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
+                if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
+                    collision = true;
+                }
+            }
+        }
+        nodeCollisionResults.put(node, collision);
+        return collision;
     }
 
     // Method to check for a car colliding with another car

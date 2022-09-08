@@ -1,7 +1,7 @@
 package entity.car;
 
 import entity.item.ItemManager;
-import main.CollisionChecker;
+import tile.CollisionChecker;
 import main.Panel;
 import tile.Camera;
 import tile.PathFinder;
@@ -37,8 +37,27 @@ public class CopCar extends SuperCar {
         // Reset if the Cop spawn on a tile that would cause an instant collision
         if(CollisionChecker.checkTileCollision(this) == true) {
             setDefaultValues();
+        }
+    }
+
+    // Overriding equals() to be able to compare two Cop objects for collision checking
+    @Override
+    public boolean equals(Object otherObj) {
+        // If the object is compared with itself then return true
+        if (otherObj == this) {
+            return true;
+        }
+        // Check if different class object
+        if (!(otherObj instanceof CopCar)) {
+            return false;
+        }
+        // Check Object member variable equality as an additional check
+        if(this.xMapPos == ((CopCar) otherObj).xMapPos
+                && this.yMapPos == ((CopCar) otherObj).yMapPos
+                && this.health == ((CopCar) otherObj).health) {
+            return true;
         } else {
-            currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+            return false;
         }
     }
 
@@ -48,65 +67,47 @@ public class CopCar extends SuperCar {
         updateDir();
         updateLocation();
         // Manage events
-        handleShooting();
         handleCollision();
+        handleShooting();
         handleHealth();
         handleDeath();
     }
 
-    // Helper Method to create a bullet from the Cop randomly
-    private void handleShooting() {
-        // Get random decision to shoot a bullet in the current frame or not if there is a Wanted level
-        if(CopCarManager.wantedLevel >= 1) {
-            int randomNum = new Random().nextInt(10);
-            if(randomNum == 1) {
-                // Spawn the bullet a safe distance from the player to avoid instant death
-                switch(direction) {
-                    case 'R':
-                        ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
-                        break;
-                    case 'L':
-                        ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
-                        break;
-                    case 'U':
-                        ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
-                        break;
-                    case 'D':
-                        ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
-                        break;
-                }
-            }
+    // Helper Method to update the Cop's direction based on the defined path
+    private void updateDir() {
+        // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
+        if(CopCarManager.wantedLevel == 0) {
+            direction = getRandomDir(direction);
+        }
+        // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
+        else if(CopCarManager.wantedLevel >= 1) {
+            direction = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos).get(0);
         }
     }
 
-    // Helper Method to update the Cop's direction based on the defined path
-    private void updateDir() {
-        currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
-        // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
-        int randomNum = new Random().nextInt(100);
-        if(CopCarManager.wantedLevel == 0 && randomNum == 1) {
-            // Get random direction to travel
-            int randomDir = new Random().nextInt(4);
-            switch(randomDir) {
+    // Helper method to get a random direction for NPC movement
+    private char getRandomDir(char currentDir) {
+        // Only update the dir 1/100 tries
+        char newDir = currentDir;
+        int randomNumForUpdate = new Random().nextInt(100);
+        if(randomNumForUpdate == 0) {
+            int randomNumForDir = new Random().nextInt(4);
+            switch(randomNumForDir) {
                 case 0:
-                    direction = 'R';
+                    newDir = 'R';
                     break;
                 case 1:
-                    direction = 'L';
+                    newDir = 'L';
                     break;
                 case 2:
-                    direction = 'U';
+                    newDir = 'U';
                     break;
                 case 3:
-                    direction = 'D';
+                    newDir = 'D';
                     break;
             }
         }
-        // If there is a wanted level, the cop should chase the player
-        else if(CopCarManager.wantedLevel >= 1) {
-            // Get the next best direction
-            direction = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos).get(0);
-        }
+        return newDir;
     }
 
     // Helper method to update the cop's coordinates and collision area based on the direction and speed
@@ -143,21 +144,23 @@ public class CopCar extends SuperCar {
             switch(direction) {
                 case 'R':
                     direction = 'L';
-                    yMapPos = yMapPos - speed; // avoid getting stuck on a tile
+                    xMapPos = xMapPos - Panel.UNIT_SIZE/2; // avoid getting stuck on a tile
+//                    direction = getRandomDir(direction); // avoid getting stuck on a tile
                     break;
                 case 'L':
                     direction = 'R';
-                    yMapPos = yMapPos + speed; // avoid getting stuck on a tile
+                    xMapPos = xMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'U':
-                    direction = 'L';
-                    xMapPos = xMapPos - speed;
+                    direction = 'D';
+                    yMapPos = yMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'D':
                     direction = 'U';
-                    xMapPos = xMapPos + speed;
+                    yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                     break;
             }
+            System.out.println("Cop on Tile Collision");
         }
         // Second, check for a collision with another cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
@@ -167,18 +170,47 @@ public class CopCar extends SuperCar {
                 switch(direction) {
                     case 'R':
                         direction = 'L';
+                        xMapPos = xMapPos - Panel.UNIT_SIZE/2; // avoid getting stuck on a tile
                         break;
                     case 'L':
                         direction = 'R';
+                        xMapPos = xMapPos + Panel.UNIT_SIZE/2;
                         break;
                     case 'U':
-                        direction = 'D';
+                        direction = 'L';
+                        yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                     case 'D':
-                        direction = 'U';
+                        direction = 'R';
+                        yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                 }
-                updateLocation();
+                System.out.println("Cop on Cop Collision");
+            }
+        }
+    }
+
+    // Helper Method to create a bullet from the Cop randomly
+    private void handleShooting() {
+        // Get random decision to shoot a bullet in the current frame or not if there is a Wanted level
+        if(CopCarManager.wantedLevel >= 1) {
+            int randomNum = new Random().nextInt(10);
+            if(randomNum == 1) {
+                // Spawn the bullet a safe distance from the player to avoid instant death
+                switch(direction) {
+                    case 'R':
+                        ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
+                        break;
+                    case 'L':
+                        ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
+                        break;
+                    case 'U':
+                        ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
+                        break;
+                    case 'D':
+                        ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
+                        break;
+                }
             }
         }
     }
@@ -238,11 +270,14 @@ public class CopCar extends SuperCar {
             }
         }
         // draw path (test)
-        for(int i = 0; i < currentPath.size(); i++) {
-            PathFinder.Node currentNode = currentPath.get(i);
-            int xScreenPos = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
-            int yScreenPos = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
-            g.fillRect(xScreenPos, yScreenPos, speed, speed);
-        }
+        try {
+            currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+            for (int i = 0; i < currentPath.size(); i++) {
+                PathFinder.Node currentNode = currentPath.get(i);
+                int xScreenPos = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
+                int yScreenPos = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
+                g.fillRect(xScreenPos, yScreenPos, speed, speed);
+            }
+        } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
     }
 }
