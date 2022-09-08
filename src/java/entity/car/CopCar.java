@@ -15,7 +15,8 @@ import java.util.Random;
 
 public class CopCar extends SuperCar {
 
-    LinkedList<PathFinder.Node> currentPath;
+    LinkedList<PathFinder.Node> currentPathDraw = new LinkedList<>();
+    LinkedList<Character> currentPath = new LinkedList<>();
 
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
@@ -73,7 +74,7 @@ public class CopCar extends SuperCar {
         handleDeath();
     }
 
-    // Helper Method to update the Cop's direction based on the defined path
+    // Helper Method to update the Cop's direction based on the wanted level & defined path
     private void updateDir() {
         // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
         if(CopCarManager.wantedLevel == 0) {
@@ -81,7 +82,16 @@ public class CopCar extends SuperCar {
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
         else if(CopCarManager.wantedLevel >= 1) {
-            direction = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos).get(0);
+            // Only update the path 1/10 tries or when the path runs out. Otherwise, continue on the same path
+            int randomNumForUpdate = new Random().nextInt(10);
+            if(randomNumForUpdate == 0
+                    || currentPath.size() == 0) {
+                currentPath = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+                currentPathDraw = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);// TODO remove after test
+            }
+            direction = currentPath.get(0);
+            currentPath.remove(0);
+            currentPathDraw.remove(0); // TODO remove after test
         }
     }
 
@@ -160,7 +170,7 @@ public class CopCar extends SuperCar {
                     yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                     break;
             }
-            System.out.println("Cop on Tile Collision");
+            System.out.println("Cop on Tile Collision"); // TODO remove after test
         }
         // Second, check for a collision with another cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
@@ -185,7 +195,7 @@ public class CopCar extends SuperCar {
                         yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                 }
-                System.out.println("Cop on Cop Collision");
+                System.out.println("Cop on Cop Collision"); // TODO remove after test
             }
         }
     }
@@ -271,13 +281,12 @@ public class CopCar extends SuperCar {
         }
         // draw path (test)
         try {
-            currentPath = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
             for (int i = 0; i < currentPath.size(); i++) {
-                PathFinder.Node currentNode = currentPath.get(i);
+                PathFinder.Node currentNode = currentPathDraw.get(i);
                 int xScreenPos = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
                 int yScreenPos = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
                 g.fillRect(xScreenPos, yScreenPos, speed, speed);
             }
-        } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
+        } catch (Exception e) {}
     }
 }

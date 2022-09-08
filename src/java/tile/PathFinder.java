@@ -98,8 +98,8 @@ public class PathFinder {
             Node currentNode = queue.poll();
             visited.add(currentNode);
             // First, check if the target is reached
-            if(Math.abs(targetNode.xMapPos - currentNode.xMapPos) < Panel.UNIT_SIZE
-               && Math.abs(targetNode.yMapPos - currentNode.yMapPos) < Panel.UNIT_SIZE) {
+            if(Math.abs(targetNode.xMapPos - currentNode.xMapPos) < Panel.UNIT_SIZE/2
+               && Math.abs(targetNode.yMapPos - currentNode.yMapPos) < Panel.UNIT_SIZE/2) {
                 targetReached = true;
                 break;
             }
