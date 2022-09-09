@@ -15,9 +15,6 @@ import java.util.Random;
 
 public class CopCar extends SuperCar {
 
-    LinkedList<PathFinder.Node> currentPathDraw = new LinkedList<>();
-    LinkedList<Character> currentPath = new LinkedList<>();
-
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
         setDefaultValues();
@@ -82,16 +79,12 @@ public class CopCar extends SuperCar {
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
         else if(CopCarManager.wantedLevel >= 1) {
-            // Only update the path 1/10 tries or when the path runs out. Otherwise, continue on the same path
+            // Only update the path 1/5 tries or when the path runs out. Otherwise, continue the same direction
             int randomNumForUpdate = new Random().nextInt(10);
-            if(randomNumForUpdate == 0
-                    || currentPath.size() == 0) {
-                currentPath = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
-                currentPathDraw = PathFinder.getShortestPath(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);// TODO remove after test
+            if(randomNumForUpdate == 0) {
+                LinkedList<Character> currentPath = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+                direction = currentPath.get(0);
             }
-            direction = currentPath.get(0);
-            currentPath.remove(0);
-            currentPathDraw.remove(0); // TODO remove after test
         }
     }
 
@@ -153,24 +146,22 @@ public class CopCar extends SuperCar {
             // Move away from impact
             switch(direction) {
                 case 'R':
-                    direction = 'L';
+                    direction = 'D';
                     xMapPos = xMapPos - Panel.UNIT_SIZE/2; // avoid getting stuck on a tile
-//                    direction = getRandomDir(direction); // avoid getting stuck on a tile
                     break;
                 case 'L':
-                    direction = 'R';
+                    direction = 'D';
                     xMapPos = xMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'U':
-                    direction = 'D';
+                    direction = 'L';
                     yMapPos = yMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'D':
-                    direction = 'U';
+                    direction = 'L';
                     yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                     break;
             }
-            System.out.println("Cop on Tile Collision"); // TODO remove after test
         }
         // Second, check for a collision with another cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
@@ -195,7 +186,6 @@ public class CopCar extends SuperCar {
                         yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                 }
-                System.out.println("Cop on Cop Collision"); // TODO remove after test
             }
         }
     }
@@ -269,24 +259,16 @@ public class CopCar extends SuperCar {
     @Override
     public void draw(Graphics g) {
         loadImages();
-        // Connect the map position to a screen position
-        try{
-            int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
-            int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
-            g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            if(CopCarManager.cops.size() == 0) {
-                CopCarManager.createCop();
-            }
+        // OOB check
+        if(xMapPos < 0 ) {
+            xMapPos = 0;
         }
-        // draw path (test)
-        try {
-            for (int i = 0; i < currentPath.size(); i++) {
-                PathFinder.Node currentNode = currentPathDraw.get(i);
-                int xScreenPos = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
-                int yScreenPos = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
-                g.fillRect(xScreenPos, yScreenPos, speed, speed);
-            }
-        } catch (Exception e) {}
+        if(yMapPos < 0 ) {
+            yMapPos = 0;
+        }
+        // Translate the map pos to a screen position
+        int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
+        int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
+        g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
     }
 }

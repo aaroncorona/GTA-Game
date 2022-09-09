@@ -14,12 +14,12 @@ public class PathFinder {
     private PathFinder() {}
 
     // Inner class to represent a map point as a place on a graph
-    public static class Node { // TODO make protected after testing is complete
+    protected static class Node {
         // Node vars - should be immutable for hashmap
         public final int xMapPos, yMapPos;
         public final Node pathParentNode;
         public final boolean collision;
-        public final int travelCost = 1; // TODO not yet implemented
+        public final int travelCost = 1;
 
         // Constructor
         public Node(int xMapPos, int yMapPos, Node pathParentNode) {
@@ -142,8 +142,6 @@ public class PathFinder {
             Node dummyNode = new Node(shortestPath.get(0).xMapPos, shortestPath.get(0).yMapPos + bfsSpeed, shortestPath.get(0));
             shortestPath.add(dummyNode);
         }
-//        return visited;
-//        System.out.println(shortestPath);
         return shortestPath;
     }
 
@@ -172,10 +170,8 @@ public class PathFinder {
         }
         // OOB fix for an empty lists
         if(shortestPath.size() == 0) {
-            shortestPathDir.add('R');
+            shortestPathDir.add('L');
         }
-//        System.out.println(shortestPath);
-//        System.out.println(shortestPathDir);
         return shortestPathDir;
     }
 }
