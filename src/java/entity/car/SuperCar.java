@@ -11,6 +11,7 @@ public abstract class SuperCar implements Entity {
     // Position tracking vars
     public int xMapPos, yMapPos;
     public char direction;
+    public final int defaultSpeed = 5;
     public int speed;  // pixels to move per frame
     public boolean nitro;
 
@@ -29,7 +30,7 @@ public abstract class SuperCar implements Entity {
         xMapPos = 900;
         yMapPos = 950;
         direction = 'R';
-        speed = 5;
+        speed = defaultSpeed;
         nitro = false;
         hitTaken = false;
         health = 3;

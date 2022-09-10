@@ -1,10 +1,9 @@
 package entity.car;
 
 import entity.item.ItemManager;
-import tile.CollisionChecker;
+import main.KeyHandler;
+import tile.*;
 import main.Panel;
-import tile.Camera;
-import tile.PathFinder;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -26,7 +25,7 @@ public class CopCar extends SuperCar {
         xMapPos = new Random().nextInt(1000);
         yMapPos = new Random().nextInt(1000);
         direction = 'R';
-        speed = 5;
+        speed = defaultSpeed;
         hitTaken = false;
         health = 1;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
@@ -65,6 +64,7 @@ public class CopCar extends SuperCar {
         updateDir();
         updateLocation();
         // Manage events
+        handleSpeed();
         handleCollision();
         handleShooting();
         handleHealth();
@@ -139,6 +139,19 @@ public class CopCar extends SuperCar {
         }
     }
 
+    // Helper Method to update the speed based on Nitro and Tile traversal cost
+    private void handleSpeed() {
+        // Check if the car is on a Tile with a traversal cost
+        Tile currentTile = TileManager.tiles[TileManager.tileMap[yMapPos / Panel.UNIT_SIZE][xMapPos / Panel.UNIT_SIZE]];
+        // Update speed based on the tile traversal cost
+        if(currentTile.movementCost == 0) { // reset
+            speed = defaultSpeed;
+        } else if(currentTile.movementCost >= 1 // initial slowdown
+                    && speed == defaultSpeed) {
+            speed = speed - currentTile.movementCost;
+        }
+    }
+
     // Helper method to respond to collision events that redirect the cop
     private void handleCollision() {
         // First, check for a collision with a tile
@@ -159,7 +172,7 @@ public class CopCar extends SuperCar {
                     break;
                 case 'D':
                     direction = 'U';
-                    yMapPos = yMapPos - Panel.UNIT_SIZE/2;
+                    yMapPos = yMapPos - Panel.UNIT_SIZE;
                     break;
             }
         }
