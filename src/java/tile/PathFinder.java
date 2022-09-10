@@ -2,9 +2,6 @@ package tile;
 
 import main.Panel;
 
-import java.io.*;
-import java.util.*;
-
 import java.util.LinkedList;
 
 // The PathFinder finds the shortest path between 2 points on the map
@@ -92,8 +89,10 @@ public class PathFinder {
         }
         // Visit all descendents
         boolean targetReached = false;
+        int loops = 0; // safeguard against infinite loops
         while(!targetReached
-                && !queue.isEmpty()) {
+                && !queue.isEmpty()
+                && loops < 200) {
             // Jump to the next child in the queue
             Node currentNode = queue.poll();
             visited.add(currentNode);
@@ -114,18 +113,19 @@ public class PathFinder {
                     queue.add(child);
                 }
             }
+            loops++;
         }
         return visited;
     }
 
-    // Find the shortest path out of the visited nodes
+    // Find the shortest path to target out of the nodes the entity can possibly visit
     public static LinkedList<Node> getShortestPath(int xStartPoint, int yStartPoint, int speed,
                                                    int xTargetPoint, int yTargetPoint) {
         // Node for the starting point
         Node startNode = new Node(xStartPoint, yStartPoint, null);
         Node targetNode = new Node(xTargetPoint, yTargetPoint, null);
         // Increase speed to traverse less nodes for better efficiency for the BFS
-        int speedAdjuster = 5;
+        int speedAdjuster = 10;
         int bfsSpeed = speed * speedAdjuster;
         // Fill the visited path and parent mappings for a source to target BFS
         LinkedList<Node> visited = performBFS(startNode, targetNode, bfsSpeed);

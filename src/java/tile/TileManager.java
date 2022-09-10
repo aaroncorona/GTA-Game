@@ -73,6 +73,30 @@ public class TileManager {
             Tile hut = new Tile("Hut", hutImage, true);
             tiles[5] = hut;
 
+            // Sand for each direction (4 tiles)
+            for(int i=0; i<4; i++) {
+                char direction = 'R';
+                switch(i) {
+                    case 0:
+                        direction = 'R';
+                        break;
+                    case 1:
+                        direction = 'L';
+                        break;
+                    case 2:
+                        direction = 'U';
+                        break;
+                    case 3:
+                        direction = 'D';
+                        break;
+                }
+                String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/sand_";
+                filePath += direction + ".png";
+                BufferedImage sandImage = ImageIO.read(new File(filePath));
+                Tile sand = new Tile("Sand_" + direction, sandImage, false);
+                tiles[6+i] = sand;
+            }
+
 
         } catch (IOException e) {
             e.printStackTrace();

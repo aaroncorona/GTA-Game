@@ -146,19 +146,19 @@ public class CopCar extends SuperCar {
             // Move away from impact
             switch(direction) {
                 case 'R':
-                    direction = 'D';
+                    direction = 'L';
                     xMapPos = xMapPos - Panel.UNIT_SIZE/2; // avoid getting stuck on a tile
                     break;
                 case 'L':
-                    direction = 'D';
+                    direction = 'R';
                     xMapPos = xMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'U':
-                    direction = 'L';
+                    direction = 'D';
                     yMapPos = yMapPos + Panel.UNIT_SIZE/2;
                     break;
                 case 'D':
-                    direction = 'L';
+                    direction = 'U';
                     yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                     break;
             }
@@ -178,11 +178,11 @@ public class CopCar extends SuperCar {
                         xMapPos = xMapPos + Panel.UNIT_SIZE/2;
                         break;
                     case 'U':
-                        direction = 'L';
+                        direction = 'D';
                         yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                     case 'D':
-                        direction = 'R';
+                        direction = 'U';
                         yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                         break;
                 }

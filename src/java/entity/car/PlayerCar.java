@@ -31,8 +31,8 @@ public class PlayerCar extends SuperCar {
         updateLocation();
         // Manage event
         handleNitro();
-        handleShooting();
         handleCollision();
+        handleShooting();
         handleHealth();
     }
 
@@ -98,30 +98,6 @@ public class PlayerCar extends SuperCar {
         }
     }
 
-    // Helper Method to create a bullet based on key input
-    private void handleShooting() {
-        // E key to shoot bullet
-        if(KeyHandler.ePress == true) {
-            // Spawn the bullet a safe distance from the player to avoid instant death
-            switch(direction) {
-                case 'R':
-                    ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
-                    break;
-                case 'L':
-                    ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
-                    break;
-                case 'U':
-                    ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
-                    break;
-                case 'D':
-                    ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
-                    break;
-            }
-            KeyHandler.ePress = false;
-            Sound.playShot();
-        }
-    }
-
     // Helper method to respond to collision events that should reduce health
     private void handleCollision() {
         // First, check for a collision with a tile
@@ -172,6 +148,30 @@ public class PlayerCar extends SuperCar {
                 }
                 updateLocation();
             }
+        }
+    }
+
+    // Helper Method to create a bullet based on key input
+    private void handleShooting() {
+        // E key to shoot bullet
+        if(KeyHandler.ePress == true) {
+            // Spawn the bullet a safe distance from the player to avoid instant death
+            switch(direction) {
+                case 'R':
+                    ItemManager.createBullet(xMapPos + Panel.UNIT_SIZE, yMapPos, direction);
+                    break;
+                case 'L':
+                    ItemManager.createBullet(xMapPos - Panel.UNIT_SIZE, yMapPos, direction);
+                    break;
+                case 'U':
+                    ItemManager.createBullet(xMapPos, yMapPos - Panel.UNIT_SIZE, direction);
+                    break;
+                case 'D':
+                    ItemManager.createBullet(xMapPos, yMapPos + Panel.UNIT_SIZE, direction);
+                    break;
+            }
+            KeyHandler.ePress = false;
+            Sound.playShot();
         }
     }
 
