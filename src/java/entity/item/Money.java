@@ -64,6 +64,14 @@ public class Money extends SuperItem {
     @Override
     public void draw(Graphics g) {
         loadImages();
+        // OOB check
+        if(xMapPos < 0 ) {
+            xMapPos = 0;
+        }
+        if(yMapPos < 0 ) {
+            yMapPos = 0;
+        }
+        // Translate the map pos to a screen position
         int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
         int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
         g.drawImage(imageItem, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);

@@ -6,6 +6,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 // The Tile Manager creates all Tile objects based on the World Map text file
@@ -14,16 +15,19 @@ public class TileManager {
     // Singleton instance tracking
     private static TileManager instance = null;
 
-    // Global vars
+    // Tile creation
+    public static final int numTiles = 13;
     public static Tile[] tiles;
-    public static int worldMapRows = 44; // manually added
-    public static int worldMapCols = 41; // manually added
+
+    // Tile Map
+    public static final int worldMapRows = 44; // manually added
+    public static final int worldMapCols = 41; // manually added
     public static int[][] tileMap;
     public static Rectangle[][] tileMapCollisionArea;
 
     // Private Constructor - Singleton class
     private TileManager() {
-        tiles = new Tile[10];
+        tiles = new Tile[numTiles];
 
         // Establish tile data
         createTiles();
@@ -48,31 +52,6 @@ public class TileManager {
             Tile water = new Tile("Water", waterImage, true, 0);
             tiles[0] = water;
 
-            // Sidewalk
-            BufferedImage sidewalkImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/sidewalk.png"));
-            Tile sidewalk = new Tile("Sidewalk", sidewalkImage, false, 3);
-            tiles[1] = sidewalk;
-
-            // Road
-            BufferedImage roadImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/road.png"));
-            Tile road = new Tile("Road", roadImage, false, 0);
-            tiles[2] = road;
-
-            // Grass
-            BufferedImage grassImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/grass.png"));
-            Tile grass = new Tile("Grass", grassImage, false, 3);
-            tiles[3] = grass;
-
-            // Tree
-            BufferedImage treeImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/tree.png"));
-            Tile tree = new Tile("Tree", treeImage, true, 0);
-            tiles[4] = tree;
-
-            // Hut
-            BufferedImage hutImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/hut.png"));
-            Tile hut = new Tile("Hut", hutImage, true, 0);
-            tiles[5] = hut;
-
             // Sand for each direction (4 new tiles)
             for(int i=0; i<4; i++) {
                 char direction = 'R';
@@ -94,9 +73,52 @@ public class TileManager {
                 filePath += direction + ".png";
                 BufferedImage sandImage = ImageIO.read(new File(filePath));
                 Tile sand = new Tile("Sand_" + direction, sandImage, false, 3);
-                tiles[6+i] = sand;
+                tiles[1+i] = sand;
             }
 
+            // Sidewalk
+            BufferedImage sidewalkImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/sidewalk.png"));
+            Tile sidewalk = new Tile("Sidewalk", sidewalkImage, false, 3);
+            tiles[5] = sidewalk;
+
+            // Road for each direction (4 new tiles)
+            for(int i=0; i<4; i++) {
+                char direction = 'R';
+                switch(i) {
+                    case 0:
+                        direction = 'R';
+                        break;
+                    case 1:
+                        direction = 'L';
+                        break;
+                    case 2:
+                        direction = 'U';
+                        break;
+                    case 3:
+                        direction = 'D';
+                        break;
+                }
+                String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/road_";
+                filePath += direction + ".png";
+                BufferedImage sandImage = ImageIO.read(new File(filePath));
+                Tile road2 = new Tile("Road_" + direction, sandImage, false, 0);
+                tiles[6+i] = road2;
+            }
+
+            // Grass
+            BufferedImage grassImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/grass.png"));
+            Tile grass = new Tile("Grass", grassImage, false, 3);
+            tiles[10] = grass;
+
+            // Tree
+            BufferedImage treeImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/tree.png"));
+            Tile tree = new Tile("Tree", treeImage, true, 0);
+            tiles[11] = tree;
+
+            // Hut
+            BufferedImage hutImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/hut.png"));
+            Tile hut = new Tile("Hut", hutImage, true, 0);
+            tiles[12] = hut;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -118,7 +140,7 @@ public class TileManager {
                     int next;
                     try {
                         next = Integer.parseInt(scan.next());
-                    } catch (NumberFormatException e) {
+                    } catch (NumberFormatException | NoSuchElementException e) {
                         next = 0; // can't parse 00
                     }
                     tileMap[i][j] = next;

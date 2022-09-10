@@ -22,8 +22,8 @@ public class CopCar extends SuperCar {
     // Cop should spawn in a random location
     @Override
     public void setDefaultValues() {
-        xMapPos = new Random().nextInt(1000);
-        yMapPos = new Random().nextInt(1000);
+        xMapPos = new Random().nextInt(1200);
+        yMapPos = new Random().nextInt(1400);
         direction = 'R';
         speed = defaultSpeed;
         hitTaken = false;
