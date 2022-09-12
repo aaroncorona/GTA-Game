@@ -15,7 +15,7 @@ import java.util.Random;
 public class CopCar extends SuperCar {
 
     // Test
-    LinkedList<PathFinder.Node> currentPath;
+    private LinkedList<PathFinder.Node> currentPath;
 
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
@@ -85,11 +85,11 @@ public class CopCar extends SuperCar {
     // Helper Method to update the Cop's direction based on the wanted level & defined path
     private void updateDir() {
         // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
-        if(CopCarManager.wantedLevel == 0) {
+        if(CopCarManager.wantedLevel == 10) {
             direction = PathFinder.getRandomDir(direction);
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
-        else if(CopCarManager.wantedLevel >= 1) {
+        else if(CopCarManager.wantedLevel >= 0) {
             // Only update the path 1/5 tries or when the path runs out. Otherwise, continue the same direction
             int randomNumForUpdate = new Random().nextInt(5);
             if(randomNumForUpdate == 0) {
@@ -275,7 +275,7 @@ public class CopCar extends SuperCar {
         g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // draw path (test) // todo delete after testing
-        if(CopCarManager.wantedLevel >= 1) {
+        if(CopCarManager.wantedLevel >= 0) {
             g.setColor(Color.BLUE);
             try {
                 // Nodes for the start and end point
