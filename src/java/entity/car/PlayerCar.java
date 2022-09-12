@@ -101,7 +101,7 @@ public class PlayerCar extends SuperCar {
             KeyHandler.rPress = false;
         }
         // Check if the car is on a Tile with a traversal cost
-        Tile currentTile = TileManager.tiles[TileManager.tileMap[(yMapPos+10) / Panel.UNIT_SIZE][(xMapPos+10) / Panel.UNIT_SIZE]];
+        Tile currentTile = TileManager.getClosestTile(xMapPos, yMapPos);
         // Update speed based on the tile traversal cost
         if(nitro) {
             if(currentTile.movementCost == 0) { // reset

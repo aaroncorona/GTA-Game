@@ -14,6 +14,9 @@ import java.util.Random;
 
 public class CopCar extends SuperCar {
 
+    // Test
+    LinkedList<PathFinder.Node> currentPath;
+
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
         setDefaultValues();
@@ -35,6 +38,14 @@ public class CopCar extends SuperCar {
         if(CollisionChecker.checkTileCollision(this) == true) {
             setDefaultValues();
         }
+//        // todo delete after testing
+//        else {
+//            PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
+//            PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
+//            currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
+//        }
+
+
     }
 
     // Overriding equals() to be able to compare two Cop objects for collision checking
@@ -75,42 +86,17 @@ public class CopCar extends SuperCar {
     private void updateDir() {
         // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
         if(CopCarManager.wantedLevel == 0) {
-            direction = getRandomDir(direction);
+            direction = PathFinder.getRandomDir(direction);
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
         else if(CopCarManager.wantedLevel >= 1) {
             // Only update the path 1/5 tries or when the path runs out. Otherwise, continue the same direction
-            int randomNumForUpdate = new Random().nextInt(10);
+            int randomNumForUpdate = new Random().nextInt(5);
             if(randomNumForUpdate == 0) {
-                LinkedList<Character> currentPath = PathFinder.getShortestPathDir(xMapPos, yMapPos, speed, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
-                direction = currentPath.get(0);
+                LinkedList<Character> currentPathDirs = PathFinder.getShortestPathDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+                direction = currentPathDirs.get(0);
             }
         }
-    }
-
-    // Helper method to get a random direction for NPC movement
-    private char getRandomDir(char currentDir) {
-        // Only update the dir 1/100 tries
-        char newDir = currentDir;
-        int randomNumForUpdate = new Random().nextInt(100);
-        if(randomNumForUpdate == 0) {
-            int randomNumForDir = new Random().nextInt(4);
-            switch(randomNumForDir) {
-                case 0:
-                    newDir = 'R';
-                    break;
-                case 1:
-                    newDir = 'L';
-                    break;
-                case 2:
-                    newDir = 'U';
-                    break;
-                case 3:
-                    newDir = 'D';
-                    break;
-            }
-        }
-        return newDir;
     }
 
     // Helper method to update the cop's coordinates and collision area based on the direction and speed
@@ -142,7 +128,7 @@ public class CopCar extends SuperCar {
     // Helper Method to update the speed based on Nitro and Tile traversal cost
     private void handleSpeed() {
         // Check if the car is on a Tile with a traversal cost
-        Tile currentTile = TileManager.tiles[TileManager.tileMap[yMapPos / Panel.UNIT_SIZE][xMapPos / Panel.UNIT_SIZE]];
+        Tile currentTile = TileManager.getClosestTile(xMapPos, yMapPos);
         // Update speed based on the tile traversal cost
         if(currentTile.movementCost == 0) { // reset
             speed = defaultSpeed;
@@ -154,7 +140,11 @@ public class CopCar extends SuperCar {
 
     // Helper method to respond to collision events that redirect the cop
     private void handleCollision() {
-        // First, check for a collision with a tile
+        // First, check if the cop is offscreen (caused by a previous collision reaction)
+        if(xMapPos < 0 || yMapPos < 0) { // OOB check
+            hitTaken = true;
+        }
+        // Second, check for a collision with a tile
         if(CollisionChecker.checkTileCollision(this) == true) {
             // Move away from impact
             switch(direction) {
@@ -176,7 +166,7 @@ public class CopCar extends SuperCar {
                     break;
             }
         }
-        // Second, check for a collision with another cop car
+        // Last, check for a collision with another cop car
         for(int i = 0; i < CopCarManager.cops.size(); i++) {
             if(!CopCarManager.cops.get(i).equals(this)
                     && CollisionChecker.checkEntityCollision(this, CopCarManager.cops.get(i)) == true) {
@@ -279,9 +269,26 @@ public class CopCar extends SuperCar {
         if(yMapPos < 0 ) {
             yMapPos = 0;
         }
-        // Translate the map pos to a screen position
+        // Translate the map pos to a screen position and draw
         int xScreenPos = Camera.translateXMapToScreenPos()[xMapPos];
         int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
         g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
+
+        // draw path (test) // todo delete after testing
+        if(CopCarManager.wantedLevel >= 1) {
+            g.setColor(Color.BLUE);
+            try {
+                // Nodes for the start and end point
+                PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
+                PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
+                currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
+                for (int i = 0; i < currentPath.size(); i++) {
+                    PathFinder.Node currentNode = currentPath.get(i);
+                    int xScreenPosPath = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
+                    int yScreenPosPath = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
+                    g.fillOval(xScreenPosPath, yScreenPosPath, 5, 5);
+                }
+            } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
+        }
     }
 }

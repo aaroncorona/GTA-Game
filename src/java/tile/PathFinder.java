@@ -1,177 +1,1 @@
-package tile;
-
-import main.Panel;
-
-import java.util.LinkedList;
-
-// The PathFinder finds the shortest path between 2 points on the map
-public class PathFinder {
-
-    // Private constructor - Noninstantiable class
-    private PathFinder() {}
-
-    // Inner class to represent a map point as a place on a graph
-    protected static class Node {
-        // Node vars - should be immutable for hashmap
-        public final int xMapPos, yMapPos;
-        public final Node pathParentNode;
-        public final boolean collision;
-        public final int travelCost = 1;
-
-        // Constructor
-        public Node(int xMapPos, int yMapPos, Node pathParentNode) {
-            this.xMapPos = xMapPos;
-            this.yMapPos = yMapPos;
-            this.pathParentNode = pathParentNode;
-
-            collision = CollisionChecker.checkTileCollision(this);
-        }
-
-        // Override toString() for easier debugging
-        @Override
-        public String toString() {
-            String descr = "Node Pos: " + xMapPos + ", " + yMapPos;
-            return descr;
-        }
-
-        // Overriding equals() to be able to compare two Node objects (like using contains())
-        @Override
-        public boolean equals(Object otherObj) {
-            // If the object is compared with itself then return true
-            if (otherObj == this) {
-                return true;
-            }
-            // Check if different class object
-            if (!(otherObj instanceof Node)) {
-                return false;
-            }
-            // Check Node position equality
-            if(this.xMapPos == ((Node) otherObj).xMapPos
-               && this.yMapPos == ((Node) otherObj).yMapPos) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        // Overriding hashcode() to be able to use a Node as a Key in a HashMap
-        @Override
-        public int hashCode() {
-            // Use the Node coordinates as a Key
-            int hash = 17;
-            hash = hash * 31 + xMapPos;
-            hash = hash * 31 + yMapPos;
-            return hash;
-        }
-    }
-
-    // Helper method to perform BFS and find all Map Nodes the NPC can possibly land on between the start and target
-    private static LinkedList<Node> performBFS(Node startNode, Node targetNode, int bfsSpeed) {
-        // Lists to track BFS status
-        LinkedList<Node> queue = new LinkedList<>(); // FIFO for BFS
-        LinkedList<Node> visited = new LinkedList<>();
-        // Check every possible movement (right, left, up, down)
-        int[][] movementPermutations = {
-                {bfsSpeed,0},
-                {0-bfsSpeed,0},
-                {0,bfsSpeed},
-                {0,0-bfsSpeed},
-        };
-        // Add all children of the starting node
-        visited.add(startNode);
-        for(int i=0; i < movementPermutations.length; i++) {
-            int xChildPos = startNode.xMapPos + movementPermutations[i][0];
-            int yChildPos = startNode.yMapPos + movementPermutations[i][1];
-            Node child = new Node(xChildPos, yChildPos, startNode);
-            if(!child.collision) {
-                queue.add(child);
-            }
-        }
-        // Visit all descendents
-        boolean targetReached = false;
-        int loops = 0; // safeguard against infinite loops
-        while(!targetReached
-                && !queue.isEmpty()
-                && loops < 200) {
-            // Jump to the next child in the queue
-            Node currentNode = queue.poll();
-            visited.add(currentNode);
-            // First, check if the target is reached
-            if(Math.abs(targetNode.xMapPos - currentNode.xMapPos) < Panel.UNIT_SIZE/2
-               && Math.abs(targetNode.yMapPos - currentNode.yMapPos) < Panel.UNIT_SIZE/2) {
-                targetReached = true;
-                break;
-            }
-            // Loop through every possible child and add visitable children to the queue
-            for(int i=0; i < movementPermutations.length; i++) {
-                int xChildPos = currentNode.xMapPos + movementPermutations[i][0];
-                int yChildPos = currentNode.yMapPos + movementPermutations[i][1];
-                Node child = new Node(xChildPos, yChildPos, currentNode);
-                if(!child.collision
-                        && !queue.contains(child)
-                        && !visited.contains(child)) {
-                    queue.add(child);
-                }
-            }
-            loops++;
-        }
-        return visited;
-    }
-
-    // Find the shortest path to target out of the nodes the entity can possibly visit
-    public static LinkedList<Node> getShortestPath(int xStartPoint, int yStartPoint, int speed,
-                                                   int xTargetPoint, int yTargetPoint) {
-        // Node for the starting point
-        Node startNode = new Node(xStartPoint, yStartPoint, null);
-        Node targetNode = new Node(xTargetPoint, yTargetPoint, null);
-        // Increase speed to traverse less nodes for better efficiency for the BFS
-        int speedAdjuster = 10;
-        int bfsSpeed = speed * speedAdjuster;
-        // Fill the visited path and parent mappings for a source to target BFS
-        LinkedList<Node> visited = performBFS(startNode, targetNode, bfsSpeed);
-        // Find the shortest path by only jumping 1 node per level from target to source through the parents
-        LinkedList<Node> shortestPath = new LinkedList<>();
-        shortestPath.add(visited.get(visited.size()-1)); // start at the target
-        while(!shortestPath.contains(startNode)) {
-            Node currentNode = shortestPath.get(0);
-            Node nextNode = currentNode.pathParentNode;
-            shortestPath.addFirst(nextNode); // use addFirst() to reverse order so the source appears first
-        }
-        // If the resulting path is only 1 node, add a dummy node so a real path can be formed with at least 2 nodes
-        if(shortestPath.size() == 1) {
-            Node dummyNode = new Node(shortestPath.get(0).xMapPos, shortestPath.get(0).yMapPos + bfsSpeed, shortestPath.get(0));
-            shortestPath.add(dummyNode);
-        }
-        return shortestPath;
-    }
-
-    // Translate the shortest path into direction instructions that an entity can follow
-    public static LinkedList<Character> getShortestPathDir(int xStartPoint, int yStartPoint, int speed,
-                                                           int xTargetPoint, int yTargetPoint) {
-        // First, get the shortest path Nodes
-        LinkedList<Node> shortestPath = getShortestPath(xStartPoint, yStartPoint, speed, xTargetPoint, yTargetPoint);
-        LinkedList<Character> shortestPathDir = new LinkedList<>();
-        // Next, fill a direction for each Node that shows how to get to the next best Node
-        for(int i=0; i < shortestPath.size()-1; i++) {
-            // Determine the next direction the entity must travel to reach the next node
-            Node currentNode = shortestPath.get(i);
-            Node nextNode = shortestPath.get(i+1);
-            char direction = 'R';
-            if(currentNode.xMapPos < nextNode.xMapPos) {
-                direction = 'R';
-            } else if(currentNode.xMapPos > nextNode.xMapPos) {
-                direction = 'L';
-            } else if(currentNode.yMapPos > nextNode.yMapPos) {
-                direction = 'U';
-            } else if(currentNode.yMapPos < nextNode.yMapPos) {
-                direction = 'D';
-            }
-            shortestPathDir.add(direction);
-        }
-        // OOB fix for an empty lists
-        if(shortestPath.size() == 0) {
-            shortestPathDir.add('L');
-        }
-        return shortestPathDir;
-    }
-}
+package tile;import main.Panel;import java.util.HashMap;import java.util.LinkedList;import java.util.Random;// The PathFinder finds the shortest path between 2 points on the mappublic class PathFinder {    // Private constructor - Noninstantiable class    private PathFinder() {}    // TODO add cache    // TODO make every node align with a Tile pos to limit the num of Nodes for efficiency so the cache will find more results    // Inner class to represent a map point as a place on a graph    public static class Node {        // Node vars - should be immutable for hashmap        public final int xMapPos, yMapPos;        public final boolean collision;        public final String name;        // Path tracking vars        public Node pathParentNode;        public int travelCost;        // Constructor        public Node(int xMapPos, int yMapPos, Node pathParentNode) {            this.xMapPos = xMapPos;            this.yMapPos = yMapPos;            this.pathParentNode = pathParentNode;            // Fill collision and travel cost from the closest Tile            collision = CollisionChecker.checkTileCollision(this);            travelCost = TileManager.getClosestTile(xMapPos, yMapPos).movementCost;            name = TileManager.getClosestTile(xMapPos, yMapPos).name;        }        // Override toString() for easier debugging        @Override        public String toString() {            String descr = name + " at " + xMapPos + ", " + yMapPos;            return descr;        }        // Overriding equals() to be able to compare two Node objects (like using contains())        @Override        public boolean equals(Object otherObj) {            // If the object is compared with itself then return true            if (otherObj == this) {                return true;            }            // Check if different class object            if (!(otherObj instanceof Node)) {                return false;            }            // Check Node position equality            if(this.xMapPos == ((Node) otherObj).xMapPos               && this.yMapPos == ((Node) otherObj).yMapPos) {                return true;            } else {                return false;            }        }        // Overriding hashcode() to be able to use a Node as a Key in a HashMap        @Override        public int hashCode() {            // Use the Node coordinates as a Key            int hash = 17;            hash = hash * 31 + xMapPos;            hash = hash * 31 + yMapPos;            return hash;        }    }    // Helper method to perform a source to target BFS to find the shortest path (best parents) for every visitable node    public static LinkedList<Node> performBFS(Node startNode, Node destinationNode) {        // Set how many pixels each BFS traversal will jump on the map. Higher speed = faster BFS, less precise path        int bfsSpeed = 50;        // Lists to track the BFS status and shortest path found        LinkedList<Node> queue = new LinkedList<>(); // FIFO for BFS        LinkedList<Node> visited = new LinkedList<>();        HashMap<Node, Integer> nodeShortestPathWeight = new HashMap<>(); // best result for each Node        // Check every possible movement (right, left, up, down)        int[][] movementPermutations = {                {bfsSpeed,0},                {0-bfsSpeed,0},                {0,bfsSpeed},                {0,0-bfsSpeed},        };        // Start the BFS through the graph from the start node        visited.add(startNode);        nodeShortestPathWeight.put(startNode, startNode.travelCost);        // Add all children of the starting node to continue the traversal        for(int i=0; i < movementPermutations.length; i++) {            int xChildPos = startNode.xMapPos + movementPermutations[i][0];            int yChildPos = startNode.yMapPos + movementPermutations[i][1];            Node child = new Node(xChildPos, yChildPos, startNode);            if(!child.collision) {                queue.add(child);                child.pathParentNode = startNode;            }        }        // Visit all descendents from the start until in range of the target. Simultaneously track the best path        while(!queue.isEmpty()) {            // Jump to the next child in the queue            Node currentNode = queue.poll();            visited.add(currentNode);            // Update path cost for the node (parent weight + current weight)            int currentNodePathCost = nodeShortestPathWeight.get(currentNode.pathParentNode) + currentNode.travelCost;            nodeShortestPathWeight.put(currentNode, currentNodePathCost);            // First, check if the current Node is near the Target so no further traversal is needed            if(Math.abs(destinationNode.xMapPos - currentNode.xMapPos) < Panel.UNIT_SIZE/2                    && Math.abs(destinationNode.yMapPos - currentNode.yMapPos) < Panel.UNIT_SIZE/2) {                break;            }            // Loop through every possible child of the current Node            for(int i=0; i < movementPermutations.length; i++) {                // Get next child                int xChildPos = currentNode.xMapPos + movementPermutations[i][0];                int yChildPos = currentNode.yMapPos + movementPermutations[i][1];                Node child = new Node(xChildPos, yChildPos, currentNode);                // Get the existing travel cost to the child if it's already been visited                int currentChildPathCost = 1000; // triggers a visit if no value is found                if(nodeShortestPathWeight.containsKey(child))                    currentChildPathCost = nodeShortestPathWeight.get(child);                // TODO implement heuristics, don't visit at all if longer?                // Decide if we should visit the child. Traverse to the Child if all are true (accomplished above)                // (1) We are not already at the target, its children are not needed                // (2) The child won't cause a collision                // (3) It has never been visited OR it's been visited, but we discovered a shorter path to that Node                if(!child.collision                        && !queue.contains(child)                        && currentNodePathCost < currentChildPathCost) {                    queue.add(child);                    child.pathParentNode = currentNode; // upsert parent (set or replace)                }            }        }        return visited;    }    // Extracts the direct (shortest) path by leveraging the best parents established in the BFS    public static LinkedList<Node> getShortestPathNodes(Node startNode, Node destinationNode) {        // Perform BFS to get the best parents (shortest path) for every single node        LinkedList<Node> visited = performBFS(startNode, destinationNode);        // Find the shortest path by only jumping 1 node per level from target to source through the parents        LinkedList<Node> shortestPath = new LinkedList<>();        shortestPath.add(visited.get(visited.size()-1)); // start at the target        while(!shortestPath.contains(startNode)) {            Node currentNode = shortestPath.get(0);            Node nextNode = currentNode.pathParentNode;            shortestPath.addFirst(nextNode); // use addFirst() to reverse order so the source appears first        }        return shortestPath;    }    // Gets the set of directions for the shortest path to a given target    public static LinkedList<Character> getShortestPathDir(int xStartPoint, int yStartPoint,                                                           int xTargetPoint, int yTargetPoint) {        // Nodes for the start and end point        Node startNode = new Node(xStartPoint, yStartPoint, null);        Node destinationNode = new Node(xTargetPoint, yTargetPoint, null);        // First, get the shortest path Nodes        LinkedList<Node> shortestPathNodes = getShortestPathNodes(startNode, destinationNode);        LinkedList<Character> shortestPathDir = new LinkedList<>();        // Next, fill a direction for each Node that shows how to get to the next best Node        for(int i=0; i < shortestPathNodes.size()-1; i++) {            // Determine the next direction the entity must travel to reach the next node            Node currentNode = shortestPathNodes.get(i);            Node nextNode = shortestPathNodes.get(i+1);            char direction = 'U';            // If diagonal movement is needed, pick vertical or horizontal movement randomly            if(currentNode.xMapPos < nextNode.xMapPos                && currentNode.yMapPos < nextNode.yMapPos) {                direction = getRandomDir(direction);                while (direction != 'R'                       && direction != 'D') {                    direction = getRandomDir(direction);                }            }            // Diagonal Right Up            else if(currentNode.xMapPos < nextNode.xMapPos                    && currentNode.yMapPos > nextNode.yMapPos) {                direction = getRandomDir(direction);                while (direction != 'R'                        && direction != 'U') {                    direction = getRandomDir(direction);                }            }            // Diagonal Left Down            else if(currentNode.xMapPos > nextNode.xMapPos                    && currentNode.yMapPos < nextNode.yMapPos) {                direction = getRandomDir(direction);                while (direction != 'L'                        && direction != 'D') {                    direction = getRandomDir(direction);                }            }            // Diagonal Left Up            else if(currentNode.xMapPos > nextNode.xMapPos                    && currentNode.yMapPos > nextNode.yMapPos) {                direction = getRandomDir(direction);                while (direction != 'L'                        && direction != 'U') {                    direction = getRandomDir(direction);                }            }            // Only horizontal movement is needed            else if(currentNode.xMapPos < nextNode.xMapPos) {                direction = 'R';            }            else if(currentNode.xMapPos > nextNode.xMapPos) {                direction = 'L';            }            // Only vertical movement is needed            else if(currentNode.yMapPos > nextNode.yMapPos) {                direction = 'U';            }            else if(currentNode.yMapPos < nextNode.yMapPos) {                direction = 'D';            }            shortestPathDir.add(direction);        }        // OOB fix for an empty lists        if(shortestPathDir.size() == 0) {            shortestPathDir.add('L');        }        return shortestPathDir;    }    // Method to get a random direction for NPC movement    public static char getRandomDir(char currentDir) {        // Only update the dir 1/10 tries        char newDir = currentDir;        int randomNumForUpdate = new Random().nextInt(10);        if(randomNumForUpdate == 0) {            int randomNumForDir = new Random().nextInt(4);            switch(randomNumForDir) {                case 0:                    newDir = 'R';                    break;                case 1:                    newDir = 'L';                    break;                case 2:                    newDir = 'U';                    break;                case 3:                    newDir = 'D';                    break;            }        }        return newDir;    }}

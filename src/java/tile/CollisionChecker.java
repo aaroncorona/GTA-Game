@@ -2,17 +2,11 @@ package tile;
 
 import entity.car.SuperCar;
 import entity.item.SuperItem;
-import main.Panel;
 
-import java.awt.*;
 import java.awt.geom.Rectangle2D;
-import java.util.HashMap;
 
 // The Contact Checker checks for overlap in collision area between objects
 public class CollisionChecker {
-
-    // Create a cache of Node collision results given each Node will not change positions
-    private static HashMap<PathFinder.Node, Boolean> nodeCollisionResults = new HashMap<>();
 
     // Private constructor - Noninstantiable class
     private CollisionChecker() {}
@@ -45,27 +39,10 @@ public class CollisionChecker {
         return collision;
     }
 
-    // Method to see if a node lands on any tile that may cause a collision (for the pathfinder)
+    // Method to see if a Node's closest tile causes a collision. This is more conservative than above for the pathfinder
     public static boolean checkTileCollision(PathFinder.Node node) {
-        boolean collision = false;
-        // First, check if we have already processed this node.
-        if(nodeCollisionResults.containsKey(node)) {
-            collision = nodeCollisionResults.get(node);
-            return collision;
-        }
-        // Otherwise, Check if the Node's collision area intersects with any tile collision area
-        // Create a collision area for the Node that spans an entire tile, then loop through the map
-        Rectangle2D nodeCollisionArea = new Rectangle(node.xMapPos, node.yMapPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE);
-        for (int i = 0; i < TileManager.tileMapCollisionArea.length; i++) {
-            for (int j = 0; j < TileManager.tileMapCollisionArea[i].length; j++) {
-                Rectangle2D overlapArea = nodeCollisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
-                if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
-                    collision = true;
-                }
-            }
-        }
-        nodeCollisionResults.put(node, collision);
-        return collision;
+        Tile currentTile = TileManager.getClosestTile(node.xMapPos, node.yMapPos);
+        return currentTile.causeCollision;
     }
 
     // Method to check for a car colliding with another car

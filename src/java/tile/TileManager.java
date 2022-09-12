@@ -49,7 +49,7 @@ public class TileManager {
         try {
             // Water
             BufferedImage waterImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/water.png"));
-            Tile water = new Tile("Water", waterImage, true, 0);
+            Tile water = new Tile("Water", waterImage, true, 5);
             tiles[0] = water;
 
             // Sand for each direction (4 new tiles)
@@ -101,7 +101,7 @@ public class TileManager {
                 String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/road_";
                 filePath += direction + ".png";
                 BufferedImage sandImage = ImageIO.read(new File(filePath));
-                Tile road2 = new Tile("Road_" + direction, sandImage, false, 0);
+                Tile road2 = new Tile("Road_" + direction, sandImage, false, 1);
                 tiles[6+i] = road2;
             }
 
@@ -112,12 +112,12 @@ public class TileManager {
 
             // Tree
             BufferedImage treeImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/tree.png"));
-            Tile tree = new Tile("Tree", treeImage, true, 0);
+            Tile tree = new Tile("Tree", treeImage, true, 5);
             tiles[11] = tree;
 
             // Hut
             BufferedImage hutImage = ImageIO.read(new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/images/tiles/hut.png"));
-            Tile hut = new Tile("Hut", hutImage, true, 0);
+            Tile hut = new Tile("Hut", hutImage, true, 5);
             tiles[12] = hut;
 
         } catch (IOException e) {
@@ -160,6 +160,11 @@ public class TileManager {
             e.printStackTrace();
         }
      }
+
+     // Method to return the tile the x and y coordinate are on
+    public static Tile getClosestTile(int xMapPos, int yMapPos) {
+        return TileManager.tiles[TileManager.tileMap[(yMapPos) / Panel.UNIT_SIZE][(xMapPos) / Panel.UNIT_SIZE]];
+    }
 
     // Method to draw the tiles
     public void draw(Graphics g) {
