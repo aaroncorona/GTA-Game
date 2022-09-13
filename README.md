@@ -11,7 +11,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 ## 🕹️ Game Features
 1. 🏎️ **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
 2. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
-3. 🚨 **Gun Fight**: You will be in a constant "wanted" state where you have a shootout with a cop
+3. 🚨 **Wanted Levels**: Shooting cops and collecting money raises your wanted level. More and more cops will chase you.
 4. 💰 **Earn Money**: Collect money and increase your score by winnnig gun fights
 5. 🥇 **High Scores**: Save and display high scores to see where you rank all time
 
@@ -19,7 +19,7 @@ This is a 2D game written in Java. It is inspired by the original GTA game relea
 *Gameplay Screenshot:*
 <br>
 <br>
-<img width="600" alt="SS" src="https://user-images.githubusercontent.com/31792170/182765478-c408127a-c761-4ef2-b13b-91fae0cbf2f1.png">
+<img width="600" alt="GTA_SS" src="https://user-images.githubusercontent.com/31792170/189801013-2fa93873-29ff-437d-a05d-16403d16ed30.png">
 <br>
 <br>
 *Gameplay Videos:*
