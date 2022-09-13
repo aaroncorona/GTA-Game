@@ -43,7 +43,7 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 * **entity** - Includes all possible game constituents besides the background. There is an Interface and Super class for creating cars. There is also  a Super class for creating items like bullets and money.
 * **main** - Core game mechanics and UI like the screen settings, key inputs, and sound.
 * **menu** - All logic for when to open and close menus, what to display, and backend logic when needed (e.g. pulling high scores for the game over menu).
-* **tile** - Everything related to drawing background, navigating through tiles with an A* algorithm, and collisions.
+* **tile** - Everything related to drawing background, navigating through tiles with an A* algorithm, and detecting collisions.
 
 ## 🗂️ Source Code - Asset Descriptions
 * **images** - Directory for PNG files used by the Java Graphics and BufferedImage classes to draw illustrations. I mainly used a tool called Piskel to draw the sprites to ensure they have the right background (usually transparent) and the correct pixel size (same as UNIT_SIZE).
