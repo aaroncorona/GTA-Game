@@ -15,6 +15,7 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 5. 🌎 **World Map**: Explore the Island as you evade the police
 6. 💰 **Earn Money**: Collect money and increase your score by winning gun fights
 7. 🥇 **High Scores**: Save and display high scores to see where you rank all time
+8. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
 
 *Gameplay Screenshots:*
