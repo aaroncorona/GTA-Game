@@ -8,13 +8,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class CopCar extends SuperCar {
-
-    // Test
-    private LinkedList<PathFinder.Node> currentPath;
 
     // Protected Constructor to create a single Cop obj. Only the CopManager should use this method
     protected CopCar() {
@@ -87,7 +83,7 @@ public class CopCar extends SuperCar {
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
         else if(CopCarManager.wantedLevel >= 1) {
             // Only update the path 1/10 tries. Otherwise, continue the same direction
-            int randomNumForUpdate = new Random().nextInt(10);
+            int randomNumForUpdate = new Random().nextInt(2);
             if(randomNumForUpdate == 0) {
                 direction = PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
             }
@@ -131,6 +127,11 @@ public class CopCar extends SuperCar {
                     && speed == defaultSpeed) {
             speed = speed - currentTile.movementCost;
         }
+        // Raise speed when there's a wanted level
+        if(CopCarManager.wantedLevel >=1
+              && speed <= defaultSpeed) {
+            speed += 5;
+        }
     }
 
     // Helper method to respond to collision events that redirect the cop
@@ -157,7 +158,7 @@ public class CopCar extends SuperCar {
                     break;
                 case 'D':
                     direction = 'U';
-                    yMapPos = yMapPos - Panel.UNIT_SIZE;
+                    yMapPos = yMapPos - Panel.UNIT_SIZE/2;
                     break;
             }
         }
@@ -277,9 +278,10 @@ public class CopCar extends SuperCar {
 //                PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
 //                PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
 //                if(!startNode.collision && !Panel.pauseState) {
-//                    currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
+//                    LinkedList<PathFinder.Node> currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
 //                    System.out.println();
 //                    System.out.println(xMapPos + " " + yMapPos);
+//                    System.out.println("speed " + speed);
 //                    System.out.println(PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos));
 //                    System.out.println(currentPath);
 //                    for (int i = 0; i < currentPath.size(); i++) {
