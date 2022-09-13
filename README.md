@@ -57,8 +57,8 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 2. Navigate to the directory where the source Java files are stored
 3. Run the main.Main file:
 ```
-$ javac main.Main.java
-$ java main.Main
+$ javac Main.java
+$ java Main
 ```
 4. *(Optional)* Erase the high scores to track your own personal high scores.
 
