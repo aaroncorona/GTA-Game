@@ -9,13 +9,13 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 
 
 ## 🕹️ Game Features
-1. 🏎️ **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
-3. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
-4. 🚨 **Wanted Levels**: Shooting cops and collecting money raises your wanted level. More and more cops (NPCs with pathfinding ability!) will chase you.
-5. 🌎 **World Map**: Explore the Island as you evade the police
-6. 💰 **Earn Money**: Collect money and increase your score by winning gun fights
-7. 🥇 **High Scores**: Save and display high scores to see where you rank all time
-8. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
+1. 🌎 **World Map**: Drive around and explore the island
+2. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
+3. 🚨 **Wanted Levels**: Shooting cops and collecting money raises your wanted level
+4. 🧠 **Intelligent NPCs** The A* algorithm gives Cops pathfinding ability to your location
+5. 💰 **Earn Money**: Collect money and increase your score by winning gun fights
+6. 🥇 **High Scores**: Save and display high scores to see where you rank all time
+7. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
 
 *Gameplay Screenshots:*
