@@ -1,31 +1,35 @@
 # GTA Game
-<img width="450" alt="intro" src="https://user-images.githubusercontent.com/31792170/181679196-c5b68d0f-0cf5-4039-873d-6f4d92e104ac.jpg">
+<img width="600" alt="GTA_SS" src="https://user-images.githubusercontent.com/31792170/189803612-b4cafcb6-f92b-48d2-bdde-041f7f20bad4.png">
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
 
 ## 🚔 Overview
-This is a 2D game written in Java. It is inspired by the original GTA game released in 1997.
+This is a 2D game built purely with Java. It is inspired by the original GTA game released in 1997.
 
 
 ## 🕹️ Game Features
 1. 🏎️ **City Driving**: Simulates driving on an island with buildings. Don't crash or drown! 
-2. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
-3. 🚨 **Gun Fight**: You will be in a constant "wanted" state where you have a shootout with a cop
-4. 💰 **Earn Money**: Collect money and increase your score by winnnig gun fights
-5. 🥇 **High Scores**: Save and display high scores to see where you rank all time
+3. 🔥 **Nitro**: Click R to get a nitro boost, which doubles the car's speed 
+4. 🚨 **Wanted Levels**: Shooting cops and collecting money raises your wanted level. More and more cops (NPCs with pathfinding ability!) will chase you.
+5. 🌎 **World Map**: Explore the Island as you evade the police
+6. 💰 **Earn Money**: Collect money and increase your score by winning gun fights
+7. 🥇 **High Scores**: Save and display high scores to see where you rank all time
+8. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
 
-*Gameplay Screenshot:*
+*Gameplay Screenshots:*
 <br>
 <br>
-<img width="600" alt="SS" src="https://user-images.githubusercontent.com/31792170/182765478-c408127a-c761-4ef2-b13b-91fae0cbf2f1.png">
+<img width="500" alt="Screen Shot 2022-09-12 at 8 56 27 PM" src="https://user-images.githubusercontent.com/31792170/189804128-78285f81-6533-4e4d-96ce-6385b01cdc3f.png">
+<br>
+<br>
+<img width="500" alt="GTA_SS_GameOver" src="https://user-images.githubusercontent.com/31792170/189803672-992e5aa7-ef17-4b02-87a4-774d99542032.png">
 <br>
 <br>
 *Gameplay Videos:*
 <br>
-* https://user-images.githubusercontent.com/31792170/182527366-04c2c83a-fd80-4a76-aeb5-f78b85685f6d.mov
-* https://user-images.githubusercontent.com/31792170/182527684-f01e2c99-8eed-427a-8798-03a5550cc195.mov
+* 
 <br>
 
 
