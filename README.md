@@ -27,7 +27,7 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 <img width="500" alt="Screen Shot 2022-09-12 at 9 32 06 PM" src="https://user-images.githubusercontent.com/31792170/189809283-3e5c0a0a-055b-44c2-bdd2-24ac7fdadea5.png">
 <br>
 <br>
-<img width="500" alt="GTA_SS_GameOver" src="https://user-images.githubusercontent.com/31792170/189809626-bb7acf68-6e1c-4598-b16b-e7bebf0a9486.png">
+<img width="500" alt="Screen Shot 2022-09-12 at 9 35 00 PM" src="https://user-images.githubusercontent.com/31792170/189809726-b2f94c87-9509-46db-9515-8cc962d1fe23.png">
 
 <br>
 <br>
