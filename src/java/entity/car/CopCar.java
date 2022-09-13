@@ -77,16 +77,20 @@ public class CopCar extends SuperCar {
     // Helper Method to update the Cop's direction based on the wanted level & defined path
     private void updateDir() {
         // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
-        if(CopCarManager.wantedLevel == 10) { // todo revert
-            direction = PathFinder.getRandomDir(direction);
+        if(CopCarManager.wantedLevel == 0) {
+            // Only update the path 1/10 tries. Otherwise, continue the same direction
+            int randomNumForUpdate = new Random().nextInt(10);
+            if(randomNumForUpdate == 0) {
+                direction = PathFinder.getRandomDir();
+            }
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
-        else if(CopCarManager.wantedLevel >= 0) { // todo revert
-            // Only update the path 1/5 tries or when the path runs out. Otherwise, continue the same direction
-//            int randomNumForUpdate = new Random().nextInt(5);
-//            if(randomNumForUpdate == 0) {
+        else if(CopCarManager.wantedLevel >= 1) {
+            // Only update the path 1/10 tries. Otherwise, continue the same direction
+            int randomNumForUpdate = new Random().nextInt(10);
+            if(randomNumForUpdate == 0) {
                 direction = PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
-//            }
+            }
         }
     }
 
@@ -266,26 +270,26 @@ public class CopCar extends SuperCar {
         g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
         // Draw Cop path (for testing)
-        if(CopCarManager.wantedLevel >= 0) {
-            g.setColor(Color.BLUE);
-            try {
-                // Nodes for the start and end point
-                PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
-                PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
-                if(!startNode.collision && !Panel.pauseState) {
-                    currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
+//        if(CopCarManager.wantedLevel >= 1) {
+//            g.setColor(Color.BLUE);
+//            try {
+//                // Nodes for the start and end point
+//                PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
+//                PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
+//                if(!startNode.collision && !Panel.pauseState) {
+//                    currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
 //                    System.out.println();
 //                    System.out.println(xMapPos + " " + yMapPos);
 //                    System.out.println(PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos));
 //                    System.out.println(currentPath);
-                    for (int i = 0; i < currentPath.size(); i++) {
-                        PathFinder.Node currentNode = currentPath.get(i);
-                        int xScreenPosPath = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
-                        int yScreenPosPath = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
-                        g.fillOval(xScreenPosPath, yScreenPosPath, 5, 5);
-                    }
-                }
-            } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
-        }
+//                    for (int i = 0; i < currentPath.size(); i++) {
+//                        PathFinder.Node currentNode = currentPath.get(i);
+//                        int xScreenPosPath = Camera.translateXMapToScreenPos()[currentNode.xMapPos] + 25;
+//                        int yScreenPosPath = Camera.translateYMapToScreenPos()[currentNode.yMapPos] + 25;
+//                        g.fillOval(xScreenPosPath, yScreenPosPath, 5, 5);
+//                    }
+//                }
+//            } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
+//        }
     }
 }
