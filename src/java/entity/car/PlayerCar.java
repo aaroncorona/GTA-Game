@@ -201,8 +201,9 @@ public class PlayerCar extends SuperCar {
     // Helper method to update player health based on hits taken
     private void handleHealth() {
         // First, check for a collision with a tile
-        if(hitTaken)
+        if(hitTaken) {
             health--;
+        }
     }
 
     @Override

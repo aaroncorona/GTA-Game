@@ -1,7 +1,6 @@
 package entity.car;
 
 import entity.item.ItemManager;
-import main.KeyHandler;
 import tile.*;
 import main.Panel;
 
@@ -35,17 +34,10 @@ public class CopCar extends SuperCar {
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
 
         // Reset if the Cop spawn on a tile that would cause an instant collision
-        if(CollisionChecker.checkTileCollision(this) == true) {
+        if(CollisionChecker.checkTileCollision(this) == true
+           || TileManager.getClosestTile(xMapPos, yMapPos).causeCollision) {
             setDefaultValues();
         }
-//        // todo delete after testing
-//        else {
-//            PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
-//            PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
-//            currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
-//        }
-
-
     }
 
     // Overriding equals() to be able to compare two Cop objects for collision checking
@@ -85,17 +77,16 @@ public class CopCar extends SuperCar {
     // Helper Method to update the Cop's direction based on the wanted level & defined path
     private void updateDir() {
         // Update dir occasionally at random if there's no wanted level (illustrates cruising around and patrolling)
-        if(CopCarManager.wantedLevel == 10) {
+        if(CopCarManager.wantedLevel == 10) { // todo revert
             direction = PathFinder.getRandomDir(direction);
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
-        else if(CopCarManager.wantedLevel >= 0) {
+        else if(CopCarManager.wantedLevel >= 0) { // todo revert
             // Only update the path 1/5 tries or when the path runs out. Otherwise, continue the same direction
-            int randomNumForUpdate = new Random().nextInt(5);
-            if(randomNumForUpdate == 0) {
-                LinkedList<Character> currentPathDirs = PathFinder.getShortestPathDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
-                direction = currentPathDirs.get(0);
-            }
+//            int randomNumForUpdate = new Random().nextInt(5);
+//            if(randomNumForUpdate == 0) {
+                direction = PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
+//            }
         }
     }
 
@@ -274,19 +265,25 @@ public class CopCar extends SuperCar {
         int yScreenPos = Camera.translateYMapToScreenPos()[yMapPos];
         g.drawImage(imageCar, xScreenPos, yScreenPos, Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
 
-        // draw path (test) // todo delete after testing
+        // Draw Cop path (for testing)
         if(CopCarManager.wantedLevel >= 0) {
             g.setColor(Color.BLUE);
             try {
                 // Nodes for the start and end point
                 PathFinder.Node startNode = new PathFinder.Node(xMapPos, yMapPos, null);
                 PathFinder.Node destinationNode = new PathFinder.Node(Panel.playerCar.xMapPos, Panel.playerCar.yMapPos, null);
-                currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
-                for (int i = 0; i < currentPath.size(); i++) {
-                    PathFinder.Node currentNode = currentPath.get(i);
-                    int xScreenPosPath = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
-                    int yScreenPosPath = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
-                    g.fillOval(xScreenPosPath, yScreenPosPath, 5, 5);
+                if(!startNode.collision && !Panel.pauseState) {
+                    currentPath = PathFinder.getShortestPathNodes(startNode, destinationNode);
+//                    System.out.println();
+//                    System.out.println(xMapPos + " " + yMapPos);
+//                    System.out.println(PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos));
+//                    System.out.println(currentPath);
+                    for (int i = 0; i < currentPath.size(); i++) {
+                        PathFinder.Node currentNode = currentPath.get(i);
+                        int xScreenPosPath = Camera.translateXMapToScreenPos()[currentNode.xMapPos];
+                        int yScreenPosPath = Camera.translateYMapToScreenPos()[currentNode.yMapPos];
+                        g.fillOval(xScreenPosPath, yScreenPosPath, 5, 5);
+                    }
                 }
             } catch (NullPointerException | ArrayIndexOutOfBoundsException e) {}
         }

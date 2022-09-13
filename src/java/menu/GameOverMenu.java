@@ -72,7 +72,7 @@ public class GameOverMenu implements Menu {
     // Method to Log the score in the local CSV
     public void logScore() {
         // Log final score in the CSV file if it's past a certain minimum
-        if (ItemManager.moneyValueTotal >= 20) {
+        if (ItemManager.moneyValueTotal >= 200) {
             try {
                 // Create or append file
                 FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)

@@ -163,7 +163,11 @@ public class TileManager {
 
      // Method to return the tile the x and y coordinate are on
     public static Tile getClosestTile(int xMapPos, int yMapPos) {
-        return TileManager.tiles[TileManager.tileMap[(yMapPos) / Panel.UNIT_SIZE][(xMapPos) / Panel.UNIT_SIZE]];
+        Tile tile = TileManager.tiles[0]; // initialize w dummy tile (water)
+        try {
+            tile = TileManager.tiles[TileManager.tileMap[(yMapPos) / Panel.UNIT_SIZE][(xMapPos) / Panel.UNIT_SIZE]];
+        } catch (IndexOutOfBoundsException e){}
+        return tile;
     }
 
     // Method to draw the tiles
