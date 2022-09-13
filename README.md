@@ -28,13 +28,15 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 <br>
 <br>
 <img width="500" alt="Screen Shot 2022-09-12 at 9 35 00 PM" src="https://user-images.githubusercontent.com/31792170/189809726-b2f94c87-9509-46db-9515-8cc962d1fe23.png">
+<br>
+<br>
 
+*Gameplay Short Clips:*
 <br>
-<br>
-*Gameplay Videos:*
-<br>
-* 
-<br>
+* [Getting the first Wanted star](https://user-images.githubusercontent.com/31792170/189811171-1263d92d-38de-4731-87f8-4369e1a4be0e.mp4)
+* [Getting chased and shot](https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-9ed7-0955a86255b9.mp4)
+* [5 star craziness](https://user-images.githubusercontent.com/31792170/189811357-578e8ff7-b70d-451f-a822-90e70c5510f9.mp4)
+
 
 
 ## 🗂️ Source Code - Java Package Descriptions
