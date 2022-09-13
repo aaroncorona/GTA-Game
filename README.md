@@ -20,10 +20,10 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 *Gameplay Screenshots:*
 <br>
 <br>
-<img width="598" alt="Screen Shot 2022-09-12 at 8 55 51 PM" src="https://user-images.githubusercontent.com/31792170/189804055-f156c0db-64cc-46dc-aab7-0d1b41526928.png">
+<img width="500" alt="Screen Shot 2022-09-12 at 8 56 27 PM" src="https://user-images.githubusercontent.com/31792170/189804128-78285f81-6533-4e4d-96ce-6385b01cdc3f.png">
 <br>
 <br>
-<img width="610" alt="GTA_SS_GameOver" src="https://user-images.githubusercontent.com/31792170/189803672-992e5aa7-ef17-4b02-87a4-774d99542032.png">
+<img width="500" alt="GTA_SS_GameOver" src="https://user-images.githubusercontent.com/31792170/189803672-992e5aa7-ef17-4b02-87a4-774d99542032.png">
 <br>
 <br>
 *Gameplay Videos:*
