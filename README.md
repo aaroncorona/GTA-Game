@@ -1,5 +1,5 @@
 # GTA Game
-<img width="450" alt="intro" src="https://user-images.githubusercontent.com/31792170/181679196-c5b68d0f-0cf5-4039-873d-6f4d92e104ac.jpg">
+<img width="600" alt="GTA_SS" src="https://user-images.githubusercontent.com/31792170/189801013-2fa93873-29ff-437d-a05d-16403d16ed30.png">
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
