@@ -1,5 +1,5 @@
 # GTA Game
-<img width="600" alt="Screen Shot 2022-09-12 at 9 33 29 PM" src="https://user-images.githubusercontent.com/31792170/189809441-d0935322-bb8a-40ad-b445-13f440e872e9.png">
+<img width="700" alt="Screen Shot 2022-09-12 at 9 33 29 PM" src="https://user-images.githubusercontent.com/31792170/189809441-d0935322-bb8a-40ad-b445-13f440e872e9.png">
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
@@ -22,7 +22,6 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 <br>
 <br>
 <img width="500" alt="Screen Shot 2022-09-12 at 9 37 11 PM" src="https://user-images.githubusercontent.com/31792170/189809929-6667754b-6e24-41bf-bd75-51a881c95cfc.png">
-
 <br>
 <br>
 <img width="500" alt="Screen Shot 2022-09-12 at 9 32 06 PM" src="https://user-images.githubusercontent.com/31792170/189809283-3e5c0a0a-055b-44c2-bdd2-24ac7fdadea5.png">
