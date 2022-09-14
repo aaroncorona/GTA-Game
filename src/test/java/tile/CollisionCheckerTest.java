@@ -58,4 +58,17 @@ class CollisionCheckerTest {
         boolean collisionResultActual = CollisionChecker.checkTileCollision(car);
         assertEquals(collisionResultExpected, collisionResultActual);
     }
+
+    // Check that a bullet on a hut returns true from the Collision Checker
+    @Test
+    void whenItemOnWater_ReturnTrue() {
+        new Panel();
+        // Bullet
+        ItemManager.createBullet(100, 100, 'R');
+        SuperItem item = ItemManager.items.get(ItemManager.items.size()-1);
+        // Assert
+        boolean collisionResultExpected = true;
+        boolean collisionResultActual = CollisionChecker.checkTileCollision(item);
+        assertEquals(collisionResultExpected, collisionResultActual);
+    }
 }
