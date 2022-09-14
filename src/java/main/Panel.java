@@ -58,7 +58,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to launch the game loop
-    public void startGameThread(Panel panel) {
+    private void startGameThread(Panel panel) {
         // Start thread
         Thread gameThread = new Thread(panel);
         gameThread.start();
@@ -91,14 +91,14 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to update positions of all entities and objects as well as and checking for collisions
-    public void update() {
+    private void update() {
         handleKeyInput();
         if(playState) {
             // Update all game components
             itemManager.update();
             playerCar.update();
             copCarManager.update();
-            // Check for game over
+            // Check for a game over state
             handleGameOver();
         }
     }
@@ -164,7 +164,7 @@ public class Panel extends JPanel implements Runnable {
     }
 
     // Method to check for an event that ends the game and respond accordingly
-    public void handleGameOver() {
+    private void handleGameOver() {
         // Check for the player dying, this is currently the only way to lose
         if(playerCar.health == 0) {
             // Draw the player explosion first
