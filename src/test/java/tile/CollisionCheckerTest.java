@@ -1,7 +1,6 @@
 package tile;
 
 import entity.car.PlayerCar;
-import entity.item.Bullet;
 import entity.item.ItemManager;
 import entity.item.SuperItem;
 import main.Panel;
@@ -11,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CollisionCheckerTest {
 
-    // Check that 2 cars colliding correctly returns true from the Collision Checker
+    // Check that 2 cars colliding returns true from the Collision Checker
     @Test
     void whenCarCollision_ReturnTrue() {
         new Panel();
@@ -29,7 +28,7 @@ class CollisionCheckerTest {
         assertEquals(collisionResultExpected, collisionResultActual);
     }
 
-    // Check that a bullet on a bullet correctly returns true from the Collision Checker
+    // Check that a bullet on a bullet returns true from the Collision Checker
     @Test
     void whenItemCollision_ReturnTrue() {
         new Panel();
@@ -42,6 +41,21 @@ class CollisionCheckerTest {
         // Assert
         boolean collisionResultExpected = true;
         boolean collisionResultActual = CollisionChecker.checkItemCollision(item1, item2);
+        assertEquals(collisionResultExpected, collisionResultActual);
+    }
+
+    // Check that a car on a tree returns true from the Collision Checker
+    @Test
+    void whenCarOnTree_ReturnTrue() {
+        new Panel();
+        // Car
+        PlayerCar car = new PlayerCar();
+        car.xMapPos = 900;
+        car.yMapPos = 900;
+        car.update();
+        // Assert
+        boolean collisionResultExpected = true;
+        boolean collisionResultActual = CollisionChecker.checkTileCollision(car);
         assertEquals(collisionResultExpected, collisionResultActual);
     }
 }
