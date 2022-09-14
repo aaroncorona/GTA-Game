@@ -5,7 +5,7 @@
 
 
 ## 🚔 Overview
-This is a 2D game built purely with Java. It is inspired by the original GTA game released in 1997.
+This is a 2D game built purely with Java. It is inspired by the original GTA game from 1997.
 
 
 ## 🕹️ Game Features
