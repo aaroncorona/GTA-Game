@@ -45,7 +45,7 @@ class TileManagerTest {
     @Test
     public void whenOnRoad_ClosestTileReturnsRoad() {
         new Panel();
-        String tileNameExpected = "Road_U";
+        String tileNameExpected = "Road_U"; // NOTE: Update this if the world map file is changed
         String tileNameActual = TileManager.getClosestTile(901, 951).NAME;
         assertEquals(tileNameExpected, tileNameActual);
     }
