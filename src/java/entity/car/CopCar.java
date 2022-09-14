@@ -29,9 +29,10 @@ public class CopCar extends SuperCar {
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
                                       Panel.UNIT_SIZE, Panel.UNIT_SIZE/2);
 
-        // Reset if the Cop spawn on a tile that would cause an instant collision
+        // Reset if the Cop spawn on a tile or car that would cause an instant collision
         if(CollisionChecker.checkTileCollision(this) == true
-           || TileManager.getClosestTile(xMapPos, yMapPos).COLLISION) {
+           || TileManager.getClosestTile(xMapPos, yMapPos).COLLISION
+           || CollisionChecker.checkEntityCollision(this, Panel.playerCar) == true) {
             setDefaultValues();
         }
     }
