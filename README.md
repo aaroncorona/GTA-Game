@@ -40,22 +40,22 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 
 
 ## 🗂️ Source Code - Java Package Descriptions
-* **entity** - Includes all possible game constituents besides the background. There is an Interface and Super class for creating cars. There is also  a Super class for creating items like bullets and money.
-* **main** - Core game mechanics and UI like the screen settings, key inputs, and sound.
-* **menu** - All logic for when to open and close menus, what to display, and backend logic when needed (e.g. pulling high scores for the game over menu).
+* **entity** - Includes all possible game constituents besides the background. This package includes an Interface and Super class for creating cars. There is also a Super class for creating game items like bullets and money.
+* **main** - Handles core game mechanics and UI like the screen settings, key inputs, and sound.
+* **menu** -  Logic for when the menu displays and file reading for pulling high scores for the game over menu.
 * **tile** - Everything related to drawing background, navigating through tiles with an A* algorithm, and detecting collisions.
 
 ## 🗂️ Source Code - Asset Descriptions
 * **images** - Directory for PNG files used by the Java Graphics and BufferedImage classes to draw illustrations. I mainly used a tool called Piskel to draw the sprites to ensure they have the right background (usually transparent) and the correct pixel size (same as UNIT_SIZE).
 * **maps** - Directory for world maps. Maps are text files that stores data about aa map, specifically describing which belongs to which location.  The tile/TileManager class translates the map data into graphics.
-* **scores** - Directory for CSV files where high scores are stored and read by the menu/GameOverMenu class.
-* **sounds** - Directory for wav files that are loaded to game sound clips by the main/Sound class
+* **scores** - Directory for CSV files where high scores are stored and read by the menu/GameOverMenu class
+* **sounds** - Directory for WAV files that are loaded to game sound clips by the main/Sound class
 
 
 ## 🚀 Installation
 1. Clone this repo locally 
 2. Navigate to the directory where the source Java files are stored
-3. Run the main.Main file:
+3. Run the Main file:
 ```
 $ javac Main.java
 $ java Main
