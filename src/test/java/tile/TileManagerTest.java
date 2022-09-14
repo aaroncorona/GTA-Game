@@ -45,7 +45,7 @@ class TileManagerTest {
     public void whenOnRoad_ClosestTileReturnsRoad() {
         TileManager tileManager = TileManager.getInstance();
         String tileNameExpected = "Road_U";
-        String tileNameActual = tileManager.getClosestTile(900, 900).name;
-        assertNotEquals(tileNameExpected, tileNameActual);
+        String tileNameActual = tileManager.getClosestTile(901, 951).name;
+        assertEquals(tileNameExpected, tileNameActual);
     }
 }
