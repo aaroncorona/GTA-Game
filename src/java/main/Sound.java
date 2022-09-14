@@ -9,8 +9,6 @@ import java.io.IOException;
 public class Sound {
 
     private static Clip backgroundMusic;
-    private static Clip shotSound;
-    private static Clip sirenSound;
 
     // Private constructor - Noninstantiable class
     private Sound() {}

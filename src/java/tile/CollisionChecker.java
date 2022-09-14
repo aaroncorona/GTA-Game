@@ -41,8 +41,8 @@ public class CollisionChecker {
 
     // Method to see if a Node's closest tile causes a collision. This is more conservative than above for the pathfinder
     public static boolean checkTileCollision(PathFinder.Node node) {
-        Tile currentTile = TileManager.getClosestTile(node.xMapPos, node.yMapPos);
-        return currentTile.causeCollision;
+        Tile currentTile = TileManager.getClosestTile(node.X_MAP_POS, node.Y_MAP_POS);
+        return currentTile.COLLISION;
     }
 
     // Method to check for a car colliding with another car

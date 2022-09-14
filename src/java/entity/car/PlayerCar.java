@@ -104,19 +104,19 @@ public class PlayerCar extends SuperCar {
         Tile currentTile = TileManager.getClosestTile(xMapPos, yMapPos);
         // Update speed based on the tile traversal cost
         if(nitro) {
-            if(currentTile.movementCost == 0) { // reset
-                speed = defaultSpeed + nitroBoost;
-            } else if(currentTile.movementCost >= 1 // initial slowdown
-                    && speed == defaultSpeed + nitroBoost) {
-                speed = speed - currentTile.movementCost;
+            if(currentTile.TRAVEL_COST == 0) { // reset
+                speed = DEFAULT_SPEED + nitroBoost;
+            } else if(currentTile.TRAVEL_COST >= 1 // initial slowdown
+                    && speed == DEFAULT_SPEED + nitroBoost) {
+                speed = speed - currentTile.TRAVEL_COST;
             }
         }
         if(!nitro) {
-            if(currentTile.movementCost == 0) { // reset
-                speed = defaultSpeed;
-            } else if(currentTile.movementCost >= 1 // initial slowdown
-                    && speed == defaultSpeed) {
-                speed = speed - currentTile.movementCost;
+            if(currentTile.TRAVEL_COST == 0) { // reset
+                speed = DEFAULT_SPEED;
+            } else if(currentTile.TRAVEL_COST >= 1 // initial slowdown
+                    && speed == DEFAULT_SPEED) {
+                speed = speed - currentTile.TRAVEL_COST;
             }
         }
     }

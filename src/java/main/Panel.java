@@ -4,7 +4,6 @@ import entity.car.CopCarManager;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import menu.*;
-import tile.PathFinder;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -65,7 +64,7 @@ public class Panel extends JPanel implements Runnable {
         gameThread.start();
     }
 
-    // Game loop logic that the game thread runs
+    // Game loop logic that the game thread will run
     @Override
     public void run() {
         // Set rendering frequency

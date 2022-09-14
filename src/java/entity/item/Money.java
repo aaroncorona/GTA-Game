@@ -14,7 +14,7 @@ import static tile.CollisionChecker.checkEntityCollision;
 
 public class Money extends SuperItem {
 
-    public int value;
+    protected int value;
 
     // Protected Constructor to create a single Money item. Only the TileManager should use this method
     protected Money(int xPos, int yPos) {

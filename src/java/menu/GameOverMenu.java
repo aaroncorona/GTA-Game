@@ -16,9 +16,11 @@ public class GameOverMenu implements Menu {
 
     private JPopupMenu gameOverMenu;
     public boolean open;
-    private int xScreenPos, yScreenPos;
-    private int width, height;
-    JLabel label1, label2;
+    private static final int X_SCREEN_POS = 450;
+    private static final int Y_SCREEN_POS = 240;
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 340;
+    private JLabel label1, label2;
 
     // Constructor
     public GameOverMenu() {
@@ -38,16 +40,11 @@ public class GameOverMenu implements Menu {
 
     @Override
     public void setDefaultValues() {
-        // Placement vars
-        xScreenPos = 450;
-        yScreenPos = 240;
-        width = 800;
-        height = 340;
         open = false;
 
         // Menu UI
-        gameOverMenu.setLocation(xScreenPos, yScreenPos);
-        gameOverMenu.setPreferredSize(new Dimension(width, height));
+        gameOverMenu.setLocation(X_SCREEN_POS, Y_SCREEN_POS);
+        gameOverMenu.setPreferredSize(new Dimension(WIDTH, HEIGHT));
         gameOverMenu.setBackground(Color.PINK);
         gameOverMenu.setBorder(BorderFactory.createLineBorder(Color.WHITE, 2));
         gameOverMenu.setFocusable(false);

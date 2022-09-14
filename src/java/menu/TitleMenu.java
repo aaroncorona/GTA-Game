@@ -10,9 +10,11 @@ import java.io.IOException;
 public class TitleMenu implements Menu {
 
     public boolean open;
-    int xScreenPos, yScreenPos;
-    int width, height;
-    BufferedImage image;
+    private static final int X_SCREEN_POS = 250;
+    private static final int Y_SCREEN_POS = 20;
+    private static final int WIDTH = 550;
+    private static final int HEIGHT = 700;
+    private BufferedImage image;
 
     // Constructor
     public TitleMenu() {
@@ -21,11 +23,6 @@ public class TitleMenu implements Menu {
 
     @Override
     public void setDefaultValues() {
-        // Placement vars
-        xScreenPos = 250;
-        yScreenPos = 20;
-        width = 550;
-        height = 700;
         open = false;
     }
 
@@ -44,16 +41,16 @@ public class TitleMenu implements Menu {
         if(open) {
             // Draw the title screen image
             loadImages();
-            g.drawImage(image, xScreenPos, yScreenPos, width, height, null);
+            g.drawImage(image, X_SCREEN_POS, Y_SCREEN_POS, WIDTH, HEIGHT, null);
             // Draw rect background for text
-            int textBoxY = height-160;
+            int textBoxY = HEIGHT - 160;
             g.setColor(Color.LIGHT_GRAY);
-            g.fillRect(xScreenPos + 40, textBoxY, width - 70, 130);
+            g.fillRect(X_SCREEN_POS + 40, textBoxY, WIDTH - 70, 130);
             // Draw text
             g.setColor(Color.YELLOW);
             g.setFont(new Font("Serif", Font.ITALIC, 50));
-            g.drawString("Press ENTER to Begin",xScreenPos + 50,textBoxY + 50);
-            g.drawString(" Press C for Controls",xScreenPos + 50,textBoxY + 110);
+            g.drawString("Press ENTER to Begin",X_SCREEN_POS + 50,textBoxY + 50);
+            g.drawString(" Press C for Controls",X_SCREEN_POS + 50,textBoxY + 110);
         }
     }
 }

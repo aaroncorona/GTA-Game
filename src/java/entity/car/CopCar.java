@@ -23,7 +23,7 @@ public class CopCar extends SuperCar {
         xMapPos = new Random().nextInt(1200);
         yMapPos = new Random().nextInt(1400);
         direction = 'R';
-        speed = defaultSpeed;
+        speed = DEFAULT_SPEED;
         hitTaken = false;
         health = 1;
         collisionArea = new Rectangle(xMapPos, yMapPos + Panel.UNIT_SIZE/4,
@@ -31,7 +31,7 @@ public class CopCar extends SuperCar {
 
         // Reset if the Cop spawn on a tile that would cause an instant collision
         if(CollisionChecker.checkTileCollision(this) == true
-           || TileManager.getClosestTile(xMapPos, yMapPos).causeCollision) {
+           || TileManager.getClosestTile(xMapPos, yMapPos).COLLISION) {
             setDefaultValues();
         }
     }
@@ -121,15 +121,15 @@ public class CopCar extends SuperCar {
         // Check if the car is on a Tile with a traversal cost
         Tile currentTile = TileManager.getClosestTile(xMapPos, yMapPos);
         // Update speed based on the tile traversal cost
-        if(currentTile.movementCost == 0) { // reset
-            speed = defaultSpeed;
-        } else if(currentTile.movementCost >= 1 // initial slowdown
-                    && speed == defaultSpeed) {
-            speed = speed - currentTile.movementCost;
+        if(currentTile.TRAVEL_COST == 0) { // reset
+            speed = DEFAULT_SPEED;
+        } else if(currentTile.TRAVEL_COST >= 1 // initial slowdown
+                    && speed == DEFAULT_SPEED) {
+            speed = speed - currentTile.TRAVEL_COST;
         }
         // Raise speed when there's a wanted level
         if(CopCarManager.wantedLevel >=1
-              && speed <= defaultSpeed) {
+              && speed <= DEFAULT_SPEED) {
             speed += 5;
         }
     }

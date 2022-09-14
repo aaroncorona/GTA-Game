@@ -1,8 +1,5 @@
 package main;
 
-import tile.Tile;
-import tile.TileManager;
-
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 

@@ -9,23 +9,20 @@ import java.io.IOException;
 // Class for a Menu that shows controls, which is just a Graphic and not a component
 public class ControlMenu implements Menu {
 
-    public boolean open;
-    int xScreenPos, yScreenPos;
-    int width, height;
-    BufferedImage image;
+    public static boolean open;
+    private static final int X_SCREEN_POS = 380;
+    private static final int Y_SCREEN_POS = 300;
+    private static final int WIDTH = 300;
+    private static final int HEIGHT = 320;
+    private static BufferedImage image;
 
-    // Constructor
+    // Constructor - obj required for drawing
     public ControlMenu() {
         setDefaultValues();
     }
 
     @Override
     public void setDefaultValues() {
-        // Placement vars
-        xScreenPos = 380;
-        yScreenPos = 300;
-        width = 300;
-        height = 320;
         open = false;
     }
 
@@ -44,7 +41,7 @@ public class ControlMenu implements Menu {
         if(open) {
             // Draw the control image
             loadImages();
-            g.drawImage(image, xScreenPos, yScreenPos, width, height, null);
+            g.drawImage(image, X_SCREEN_POS, Y_SCREEN_POS, WIDTH, HEIGHT, null);
         }
     }
 }

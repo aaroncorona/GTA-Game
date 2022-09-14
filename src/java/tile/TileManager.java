@@ -147,7 +147,7 @@ public class TileManager {
 
                     // Fill the collision tile map (rects to represent the collision area)
                     int collisionSize;
-                    if(TileManager.tiles[TileManager.tileMap[i][j]].causeCollision == true) {
+                    if(TileManager.tiles[TileManager.tileMap[i][j]].COLLISION == true) {
                         collisionSize = 30; // assume the same collision size
                     } else {
                         collisionSize = 0; // no collision
@@ -177,7 +177,7 @@ public class TileManager {
         int yPosCurrent = Camera.translateYMapToScreenPos()[0];
         for (int i = 0; i < tileMap.length; i++) {
             for (int j = 0; j < tileMap[i].length; j++) {
-                 g.drawImage(tiles[tileMap[i][j]].image, xPosCurrent, yPosCurrent,
+                 g.drawImage(tiles[tileMap[i][j]].IMAGE, xPosCurrent, yPosCurrent,
                              Panel.UNIT_SIZE, Panel.UNIT_SIZE, null);
                 xPosCurrent += Panel.UNIT_SIZE;
             }
