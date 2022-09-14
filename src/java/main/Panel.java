@@ -42,7 +42,7 @@ public class Panel extends JPanel implements Runnable {
     public static TitleMenu titleMenu = new TitleMenu();
 
     // Constructor to create the game panel within a Frame
-    Panel() {
+    public Panel() {
         // Panel UI settings
         this.setBackground(Color.LIGHT_GRAY);
         this.setPreferredSize(new Dimension(SCREEN_WIDTH,SCREEN_HEIGHT));

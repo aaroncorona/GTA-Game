@@ -5,7 +5,7 @@ import javax.swing.JFrame;
 public class Frame extends JFrame {
 
     // Constructor
-    Frame() {
+    public Frame() {
         // Create panel
         Panel panel = new Panel();
         // Frame UI settings

@@ -1,6 +1,7 @@
 package tile;
 
 import entity.car.PlayerCar;
+import main.Panel;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,6 +11,7 @@ class CollisionCheckerTest {
     // Check that 2 cars colliding correctly returns true from the Collision Checker
     @Test
     void whenCarCollision_ReturnTrue() {
+        new Panel();
         // Car 1
         PlayerCar car1 = new PlayerCar();
         car1.xMapPos = 900;
