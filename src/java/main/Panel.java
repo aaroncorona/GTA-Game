@@ -12,17 +12,21 @@ import java.awt.*;
 public class Panel extends JPanel implements Runnable {
 
     // Constants for screen size
-    public static final int UNIT_SIZE = 50; // the most granular measurement
-    public static final int SCREEN_COLS = 21;
+    public static final int UNIT_SIZE = 50; // the default tile and entity size in pixels
     public static final int SCREEN_ROWS = 15;
-    public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
-    public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;;
+    public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;
+
+    // Default Config settings
+    public static int SCREEN_COLS = 21; // screen width can be changed by the player
+    public static int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
+    public static int difficultyLevel = 1;
+    public static boolean backgroundMusicAllowed = false;
+    public static boolean soundEffectAllowed = false;
 
     // Game state
     public static boolean titleState;
     public static boolean playState;
     public static boolean pauseState;
-    public static int difficultyLevel;
 
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
@@ -56,6 +60,8 @@ public class Panel extends JPanel implements Runnable {
         playState = false;
         pauseState = false;
         titleMenu.open = true;
+
+        // Configs // todo add config load here
     }
 
     // Method to launch the game loop
@@ -141,6 +147,7 @@ public class Panel extends JPanel implements Runnable {
             if(Sound.isBackgroundMusicOn()) {
                 Sound.pauseBackgroundMusic();
             } else {
+                backgroundMusicAllowed = true;
                 Sound.resumeBackgroundMusic();
             }
             key.mPress = false;
@@ -205,7 +212,6 @@ public class Panel extends JPanel implements Runnable {
         titleState = false;
         playState = true;
         pauseState = false;
-        difficultyLevel = 1;
 
         // Reset keys
         KeyHandler.setDefaultValues();

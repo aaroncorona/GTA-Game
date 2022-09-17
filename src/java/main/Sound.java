@@ -15,12 +15,16 @@ public class Sound {
 
     // Method to continually play background music
     public static void playBackgroundMusic() {
+        // Create sound clip
         String filePath = "/Users/aaroncorona/eclipse-workspace/GTA/src/assets/sounds/all_downhill.wav";
         try {
+            // Convert WAV file to clip
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filePath));
             backgroundMusic = AudioSystem.getClip();
             backgroundMusic.open(audioIn);
-            backgroundMusic.start();
+            if(Panel.backgroundMusicAllowed) {
+                backgroundMusic.start();
+            }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -31,7 +35,9 @@ public class Sound {
     }
 
     public static void resumeBackgroundMusic() {
-        backgroundMusic.start();
+        if(Panel.backgroundMusicAllowed) {
+            backgroundMusic.start();
+        }
     }
 
     public static boolean isBackgroundMusicOn() {
@@ -44,7 +50,9 @@ public class Sound {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start();
+            if(Panel.soundEffectAllowed) {
+                clip.start();
+            }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -56,7 +64,9 @@ public class Sound {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start();
+            if(Panel.soundEffectAllowed) {
+                clip.start();
+            }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -68,7 +78,9 @@ public class Sound {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start();
+            if(Panel.soundEffectAllowed) {
+                clip.start();
+            }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -80,7 +92,9 @@ public class Sound {
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(new File(filePath));
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            clip.start();
+            if(Panel.soundEffectAllowed) {
+                clip.start();
+            }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
