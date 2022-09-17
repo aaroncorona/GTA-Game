@@ -31,7 +31,7 @@ public class PlayerCar extends SuperCar {
         // Update location
         updateDir();
         updateLocation();
-        // Manage event
+        // Manage game events
         handleSpeed();
         handleCollision();
         handleShooting();
