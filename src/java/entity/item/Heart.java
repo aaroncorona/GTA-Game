@@ -8,7 +8,7 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 
-import static entity.physics.CollisionChecker.checkEntityCollision;
+import static physics.CollisionChecker.checkEntityCollision;
 
 public class Heart extends SuperItem {
 

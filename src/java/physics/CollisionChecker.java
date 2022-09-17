@@ -1,4 +1,4 @@
-package entity.physics;
+package physics;
 
 import entity.car.SuperCar;
 import entity.item.SuperItem;
