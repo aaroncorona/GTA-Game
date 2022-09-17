@@ -22,6 +22,7 @@ public class Panel extends JPanel implements Runnable {
     public static boolean titleState;
     public static boolean playState;
     public static boolean pauseState;
+    public static int difficultyLevel;
 
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
@@ -204,6 +205,7 @@ public class Panel extends JPanel implements Runnable {
         titleState = false;
         playState = true;
         pauseState = false;
+        difficultyLevel = 1;
 
         // Reset keys
         KeyHandler.setDefaultValues();

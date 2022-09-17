@@ -184,10 +184,5 @@ public class TileManager {
             xPosCurrent = Camera.translateXMapToScreenPos()[0]; // next row
             yPosCurrent += Panel.UNIT_SIZE;
         }
-
-        // Test
-//        int xTest = Camera.translateXMapToScreenPos()[900];
-//        int yTest = Camera.translateYMapToScreenPos()[950];
-//        g.drawOval(xTest,yTest,Panel.UNIT_SIZE, Panel.UNIT_SIZE);
     }
 }

@@ -74,8 +74,8 @@ public class CopCarManager implements Entity {
             wantedLevel = 1;
         }
 
-        // Set the num of cops based on the Wanted level
-        if(cops.size()-1 < wantedLevel) {
+        // Set the num of cops active based on the Wanted level and difficulty
+        if(cops.size()-1 < wantedLevel * Panel.difficultyLevel) {
             createCop();
             Sound.playSiren();
         }

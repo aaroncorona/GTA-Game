@@ -85,8 +85,8 @@ public class CopCar extends SuperCar {
         }
         // If there is a wanted level, the cop should chase the player. Get the next best Dir to reach the player
         else if(CopCarManager.wantedLevel >= 1) {
-            // Only update the path 1/10 tries. Otherwise, continue the same direction
-            int randomNumForUpdate = new Random().nextInt(2);
+            // Only update the path 1/3 tries. Otherwise, continue the same direction
+            int randomNumForUpdate = new Random().nextInt(3);
             if(randomNumForUpdate == 0) {
                 direction = PathFinder.getNextBestDir(xMapPos, yMapPos, Panel.playerCar.xMapPos, Panel.playerCar.yMapPos);
             }
