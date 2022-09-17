@@ -1,5 +1,7 @@
 package menu;
 
+import main.Panel;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -10,7 +12,7 @@ import java.io.IOException;
 public class TitleMenu implements Menu {
 
     public boolean open;
-    private static final int X_SCREEN_POS = 250;
+    private static final int X_SCREEN_POS = Panel.SCREEN_WIDTH/3;
     private static final int Y_SCREEN_POS = 20;
     private static final int WIDTH = 550;
     private static final int HEIGHT = 700;

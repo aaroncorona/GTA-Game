@@ -1,0 +1,4 @@
+screen_width_adjuster 1
+background_music_allowed 1
+sound_effects_allowed 1
+difficulty 1

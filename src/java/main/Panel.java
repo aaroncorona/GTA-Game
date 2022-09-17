@@ -15,18 +15,18 @@ public class Panel extends JPanel implements Runnable {
     public static final int UNIT_SIZE = 50; // the default tile and entity size in pixels
     public static final int SCREEN_ROWS = 15;
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;
+    public static final int SCREEN_COLS = Config.getScreenWidthConfig(); // todo update config method
+    public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
 
-    // Default Config settings
-    public static int SCREEN_COLS = 21; // screen width can be changed by the player
-    public static int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
-    public static int difficultyLevel = 1;
-    public static boolean backgroundMusicAllowed = false;
-    public static boolean soundEffectAllowed = false;
+    // Load Config settings // todo add menu UI for configs
+    public static boolean backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo update config method
+    public static boolean soundEffectAllowed = Config.getSoundEffectConfig(); // todo add handleConfigUpdate()
+    public static int difficultyLevel = Config.getDifficultyConfig();
 
-    // Game state
-    public static boolean titleState;
-    public static boolean playState;
-    public static boolean pauseState;
+    // Game state - default is the title menu
+    public static boolean titleState = true;
+    public static boolean playState = false;
+    public static boolean pauseState = false;
 
     // Key handler
     public static KeyHandler key = KeyHandler.getInstance();
@@ -55,12 +55,8 @@ public class Panel extends JPanel implements Runnable {
         this.addKeyListener(key);
         // Start the game loop
         startGameThread(this);
-        // Initial game state
-        titleState = true;
-        playState = false;
-        pauseState = false;
+        // Open title menu
         titleMenu.open = true;
-
         // Configs // todo add config load here
     }
 

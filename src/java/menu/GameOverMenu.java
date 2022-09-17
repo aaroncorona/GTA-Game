@@ -14,6 +14,8 @@ import java.util.TreeMap;
 // Class for an ending Menu that displays the high scores
 public class GameOverMenu implements Menu {
 
+    private static final File HIGH_SCORE_FILE = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv");
+
     private JPopupMenu gameOverMenu;
     public boolean open;
     private static final int X_SCREEN_POS = 450;
@@ -72,7 +74,7 @@ public class GameOverMenu implements Menu {
         if (ItemManager.moneyValueTotal >= 200) {
             try {
                 // Create or append file
-                FileWriter fw = new FileWriter("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv", true); // FileWriter append mode is triggered with true (also creates new file if none exists)
+                FileWriter fw = new FileWriter(HIGH_SCORE_FILE, true); // FileWriter append mode is triggered with true (also creates new file if none exists)
                 PrintWriter write = new PrintWriter(fw);
                 // Print the score to the csv file and the time on the column next to it
                 write.println(); // Skip to new row
@@ -91,10 +93,9 @@ public class GameOverMenu implements Menu {
     private TreeMap getHighScores() {
         // Create TreeMap to hold the scores for deduping and ordering
         TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
-        File fileObj = new File("/Users/aaroncorona/eclipse-workspace/GTA/src/assets/scores/high_scores.csv");
         // Read the local CSV file
         try {
-            Scanner myScanner = new Scanner(fileObj);
+            Scanner myScanner = new Scanner(HIGH_SCORE_FILE);
             myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
             // Fill the tree map using the CSV
             for(int i = 0; myScanner.hasNext(); i++) {
