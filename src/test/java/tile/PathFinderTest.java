@@ -1,5 +1,6 @@
 package tile;
 
+import entity.physics.PathFinder;
 import main.Panel;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package entity.item;
 
 import entity.car.CopCarManager;
-import tile.CollisionChecker;
+import entity.physics.CollisionChecker;
 import main.Panel;
 import tile.Camera;
 

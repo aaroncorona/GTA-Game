@@ -1,7 +1,9 @@
-package tile;
+package entity.physics;
 
 import entity.car.SuperCar;
 import entity.item.SuperItem;
+import tile.Tile;
+import tile.TileManager;
 
 import java.awt.geom.Rectangle2D;
 

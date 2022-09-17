@@ -1,5 +1,6 @@
 package tile;
 
+import entity.physics.CollisionChecker;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import entity.item.SuperItem;

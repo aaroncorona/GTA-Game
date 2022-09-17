@@ -1,5 +1,7 @@
 package entity.car;
 
+import entity.physics.CollisionChecker;
+import entity.physics.PathFinder;
 import entity.item.ItemManager;
 import tile.*;
 import main.Panel;
