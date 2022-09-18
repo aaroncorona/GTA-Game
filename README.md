@@ -19,13 +19,15 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 6. 🥇 **High Scores**: Save and display high scores to see where you rank all time
 7. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
-*Gameplay Short Clips:*
+## Gameplay Short Clips:
+
+*Getting the 1st Wanted star*
 
 https://user-images.githubusercontent.com/31792170/190885397-a8100232-67bb-4fa1-8384-040d8218ca59.mov
 
-https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-9ed7-0955a86255b9.mp4
+*NPC Cops chasing player*
 
-https://user-images.githubusercontent.com/31792170/189811357-578e8ff7-b70d-451f-a822-90e70c5510f9.mp4
+https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-9ed7-0955a86255b9.mp4
 
 
 ## 🗂️ Source Code - Java Package Descriptions
