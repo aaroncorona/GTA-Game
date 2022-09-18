@@ -1,5 +1,7 @@
 package menu;
 
+import main.Panel;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -9,11 +11,13 @@ import java.io.IOException;
 // Class for a Menu that shows controls, which is just a Graphic and not a component
 public class ControlMenu implements Menu {
 
-    public static boolean open;
-    private static final int X_SCREEN_POS = 380;
+    // Position tracking constant
+    private static final int X_SCREEN_POS = TitleMenu.X_SCREEN_POS + 100; // align with TitleMenu
     private static final int Y_SCREEN_POS = 300;
     private static final int WIDTH = 300;
     private static final int HEIGHT = 320;
+
+    public static boolean open;
     private static BufferedImage image;
 
     // Constructor - obj required for drawing

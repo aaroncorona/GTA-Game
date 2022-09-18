@@ -15,12 +15,13 @@ public class Panel extends JPanel implements Runnable {
     public static final int UNIT_SIZE = 50; // the default tile and entity size in pixels
     public static final int SCREEN_ROWS = 15;
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;
-    public static final int SCREEN_COLS = Config.getScreenWidthConfig(); // todo update config method
+    public static final int MAX_SCREEN_COLS = 26;
+    public static final int SCREEN_COLS = Config.getScreenWidthConfig();
     public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
 
     // Load Config settings // todo add menu UI for configs
-    public static boolean backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo update config method
-    public static boolean soundEffectAllowed = Config.getSoundEffectConfig(); // todo add handleConfigUpdate()
+    public static boolean backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo add Panel handleConfigUpdate()
+    public static boolean soundEffectAllowed = Config.getSoundEffectConfig();
     public static int difficultyLevel = Config.getDifficultyConfig();
 
     // Game state - default is the title menu
@@ -43,6 +44,7 @@ public class Panel extends JPanel implements Runnable {
     public static ControlMenu controlMenu = new ControlMenu();
     public static GameOverMenu gameOverMenu = new GameOverMenu();
     public static PauseMenu pauseMenu = new PauseMenu();
+    public static SettingsMenu settingsMenu = new SettingsMenu();
     public static TitleMenu titleMenu = new TitleMenu();
 
     // Constructor to create the game panel within a Frame
@@ -163,8 +165,9 @@ public class Panel extends JPanel implements Runnable {
         // Draw menus
         gameOverMenu.draw(g);
         pauseMenu.draw(g);
+        settingsMenu.draw(g);
         titleMenu.draw(g);
-        controlMenu.draw(g);
+        controlMenu.draw(g); // put last so it can display over the Title screen
     }
 
     // Method to check for an event that ends the game and respond accordingly
@@ -199,6 +202,7 @@ public class Panel extends JPanel implements Runnable {
         pauseState = false;
         pauseMenu.open = false;
         controlMenu.open = false;
+        settingsMenu.open = false;
         Sound.resumeBackgroundMusic();
     }
 
@@ -221,6 +225,7 @@ public class Panel extends JPanel implements Runnable {
         controlMenu.setDefaultValues();
         gameOverMenu.setDefaultValues();
         pauseMenu.setDefaultValues();
+        settingsMenu.setDefaultValues();
         titleMenu.setDefaultValues();
 
         // Reset sound

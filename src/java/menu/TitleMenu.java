@@ -12,8 +12,8 @@ import java.io.IOException;
 public class TitleMenu implements Menu {
 
     public boolean open;
-    private static final int X_SCREEN_POS = Panel.SCREEN_WIDTH/3;
-    private static final int Y_SCREEN_POS = 20;
+    protected static final int X_SCREEN_POS = Panel.SCREEN_WIDTH/3 - 50; // manually center
+    protected static final int Y_SCREEN_POS = 20;
     private static final int WIDTH = 550;
     private static final int HEIGHT = 700;
     private BufferedImage image;

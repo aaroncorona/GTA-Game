@@ -9,16 +9,19 @@ import java.awt.event.MouseEvent;
 // Class for a Pause Menu, which is Popup Menu with buttons and no graphics
 public class PauseMenu implements Menu {
 
+    // Position tracking constants
+    protected static final int X_SCREEN_POS = 620; // manually center
+    protected static final int Y_SCREEN_POS = 240;
+    protected static final int WIDTH = 400;
+    protected static final int HEIGHT = 220;
+
+    // Menu component
     private JPopupMenu pauseMenu;
     public boolean open;
-    // Position tracking
-    private static final int X_SCREEN_POS = 640;
-    private static final int Y_SCREEN_POS = 240;
-    private static final int WIDTH = 400;
-    private static final int HEIGHT = 170;
+
     // Sub Components
-    private JLabel label;
-    private JButton button1, button2, button3, button4;
+    private JLabel labelPause, labelSpace;
+    private JButton buttonResume, buttonControls, buttonSettings, buttonRestart, buttonQuit;
 
     // Constructor
     public PauseMenu() {
@@ -27,19 +30,21 @@ public class PauseMenu implements Menu {
         pauseMenu = new JPopupMenu();
 
         // Menu label
-        label = new JLabel("PAUSED");
-        pauseMenu.add(label);
+        labelPause = new JLabel("PAUSED");
+        pauseMenu.add(labelPause);
+        labelSpace = new JLabel(" "); // add space
+        pauseMenu.add(labelSpace);
 
         // Menu Buttons and their corresponding click events
-        button1 = new JButton("Resume");
-        button1.addMouseListener(new MouseAdapter() {
+        buttonResume = new JButton("Resume");
+        buttonResume.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 Panel.resumeGame();
             }
         });
-        pauseMenu.add(button1);
-        button2 = new JButton("Controls");
-        button2.addMouseListener(new MouseAdapter() {
+        pauseMenu.add(buttonResume);
+        buttonControls = new JButton("Controls");
+        buttonControls.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 if(Panel.controlMenu.open == false) {
                     Panel.controlMenu.open = true;
@@ -48,21 +53,32 @@ public class PauseMenu implements Menu {
                 }
             }
         });
-        pauseMenu.add(button2);
-        button3 = new JButton("Restart");
-        button3.addMouseListener(new MouseAdapter() {
+        pauseMenu.add(buttonControls);
+        buttonSettings = new JButton("Settings");
+        buttonSettings.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent e) {
+                if(Panel.settingsMenu.open == false) {
+                    Panel.settingsMenu.open = true;
+                } else {
+                    Panel.settingsMenu.open = false;
+                }
+            }
+        });
+        pauseMenu.add(buttonSettings);
+        buttonRestart = new JButton("Restart");
+        buttonRestart.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 Panel.resetGame();
             }
         });
-        pauseMenu.add(button3);
-        button4 = new JButton("Quit");
-        button4.addMouseListener(new MouseAdapter() {
+        pauseMenu.add(buttonRestart);
+        buttonQuit = new JButton("Quit");
+        buttonQuit.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
                 System.exit(0);
             }
         });
-        pauseMenu.add(button4);
+        pauseMenu.add(buttonQuit);
 
         setDefaultValues();
     }
@@ -80,15 +96,18 @@ public class PauseMenu implements Menu {
         pauseMenu.setVisible(false);
 
         // Label UI
-        label.setFont(new Font("Verdana", Font.PLAIN, 30));
-        label.setAlignmentX(Panel.CENTER_ALIGNMENT);
-        label.setAlignmentY(Panel.CENTER_ALIGNMENT);
+        labelPause.setFont(new Font("Verdana", Font.PLAIN, 30));
+        labelPause.setForeground(Color.GRAY);
+        labelPause.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        labelPause.setAlignmentY(Panel.CENTER_ALIGNMENT);
+        labelSpace.setFont(new Font("Verdana", Font.PLAIN, 8));
 
         // Button UI
-        button1.setAlignmentX(Panel.CENTER_ALIGNMENT);
-        button2.setAlignmentX(Panel.CENTER_ALIGNMENT);
-        button3.setAlignmentX(Panel.CENTER_ALIGNMENT);
-        button4.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        buttonResume.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        buttonControls.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        buttonSettings.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        buttonRestart.setAlignmentX(Panel.CENTER_ALIGNMENT);
+        buttonQuit.setAlignmentX(Panel.CENTER_ALIGNMENT);
     }
 
     @Override

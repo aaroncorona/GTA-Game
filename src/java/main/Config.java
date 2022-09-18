@@ -21,6 +21,7 @@ public class Config {
             // Find the setting
             for(int i = 0; myScanner.hasNext(); i++) {
                 if(myScanner.next().equals("screen_width_adjuster")) {
+                    myScanner.next(); // skip the "="
                     screenWidthAdjuster = Double.parseDouble(myScanner.next());
                 }
             }
@@ -29,8 +30,7 @@ public class Config {
             System.out.println(e);
         }
         // Convert adjuster setting to screen columns
-        int maxScreenCols = 30;
-        int ScreenCols = (int) (screenWidthAdjuster * maxScreenCols);
+        int ScreenCols = (int) (screenWidthAdjuster * Panel.MAX_SCREEN_COLS);
         return ScreenCols;
     }
 
@@ -43,6 +43,7 @@ public class Config {
             // Find the setting
             for(int i = 0; myScanner.hasNext(); i++) {
                 if(myScanner.next().equals("background_music_allowed")) {
+                    myScanner.next();
                     backgroundMusicAllowed = Integer.parseInt(myScanner.next());
                 }
             }
@@ -66,6 +67,7 @@ public class Config {
             // Find the setting
             for(int i = 0; myScanner.hasNext(); i++) {
                 if(myScanner.next().equals("sound_effects_allowed")) {
+                    myScanner.next();
                     soundEffectsAllowed = Integer.parseInt(myScanner.next());
                 }
             }
@@ -89,6 +91,7 @@ public class Config {
             // Find the setting
             for(int i = 0; myScanner.hasNext(); i++) {
                 if(myScanner.next().equals("difficulty")) {
+                    myScanner.next();
                     difficulty = Integer.parseInt(myScanner.next());
                 }
             }
@@ -104,11 +107,11 @@ public class Config {
     }
 
     // Method to set the Background music setting in the file
-    public static void setBackgroundMusicConfig(int backgroundMusicAllowed) {
+    public static void setBackgroundMusicConfig(boolean backgroundMusicAllowed) {
     }
 
     // Method to set the Sound effect setting in the file
-    public static void setSoundEffectConfig(int soundEffectsAllowed) {
+    public static void setSoundEffectConfig(boolean soundEffectsAllowed) {
     }
 
     // Method to set the difficulty level setting in the file
