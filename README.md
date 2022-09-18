@@ -7,6 +7,8 @@
 ## 🚔 Overview
 This is a 2D game built purely with Java. It is inspired by the original GTA game from 1997.
 
+<img width="400" alt="title_screen" src="https://user-images.githubusercontent.com/31792170/190886043-8ebd8a45-20d9-4ded-b653-f04b9ab379ce.png">
+
 
 ## 🕹️ Game Features
 1. 🌎 **World Map**: Drive around and explore the island
@@ -17,26 +19,15 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 6. 🥇 **High Scores**: Save and display high scores to see where you rank all time
 7. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
+## Gameplay Short Clips:
 
-*Gameplay Screenshots:*
-<br>
-<br>
-<img width="500" alt="Screen Shot 2022-09-12 at 9 37 11 PM" src="https://user-images.githubusercontent.com/31792170/189809929-6667754b-6e24-41bf-bd75-51a881c95cfc.png">
-<br>
-<br>
-<img width="500" alt="Screen Shot 2022-09-12 at 9 32 06 PM" src="https://user-images.githubusercontent.com/31792170/189809283-3e5c0a0a-055b-44c2-bdd2-24ac7fdadea5.png">
-<br>
-<br>
-<img width="500" alt="Screen Shot 2022-09-12 at 9 35 00 PM" src="https://user-images.githubusercontent.com/31792170/189809726-b2f94c87-9509-46db-9515-8cc962d1fe23.png">
-<br>
-<br>
+*Getting the 1st Wanted star*
 
-*Gameplay Short Clips:*
-<br>
-* [Getting the first Wanted star](https://user-images.githubusercontent.com/31792170/189811171-1263d92d-38de-4731-87f8-4369e1a4be0e.mp4)
-* [Getting chased and shot](https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-9ed7-0955a86255b9.mp4)
-* [5 star craziness](https://user-images.githubusercontent.com/31792170/189811357-578e8ff7-b70d-451f-a822-90e70c5510f9.mp4)
+https://user-images.githubusercontent.com/31792170/190885397-a8100232-67bb-4fa1-8384-040d8218ca59.mov
 
+*NPC Cops chasing player*
+
+https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-9ed7-0955a86255b9.mp4
 
 
 ## 🗂️ Source Code - Java Package Descriptions
