@@ -7,6 +7,8 @@
 ## 🚔 Overview
 This is a 2D game built purely with Java. It is inspired by the original GTA game from 1997.
 
+<img width="400" alt="title_screen" src="https://user-images.githubusercontent.com/31792170/190886043-8ebd8a45-20d9-4ded-b653-f04b9ab379ce.png">
+
 
 ## 🕹️ Game Features
 1. 🌎 **World Map**: Drive around and explore the island
