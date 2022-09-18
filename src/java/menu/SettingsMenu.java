@@ -52,20 +52,20 @@ public class SettingsMenu implements Menu {
         buttonScreenOption1.addMouseListener(new MouseAdapter() {
             // Update setting if needed and change color to reflect the current setting
             public void mousePressed(MouseEvent e) {
-                if(Config.getScreenWidthConfig() < Panel.MAX_SCREEN_COLS) {
-                    Config.setScreenWidthConfig(1);
+                if(Config.getScreenWidthConfig() == 0.7) {
+                    Config.setScreenWidthConfig(1.0);
                     buttonScreenOption1.setForeground(Color.BLACK);
                     buttonScreenOption2.setForeground(Color.GRAY);
                 }
             }
         });
         settingsMenu.add(buttonScreenOption1);
-        buttonScreenOption2 = new JButton("75% Width");
+        buttonScreenOption2 = new JButton("70% Width");
         buttonScreenOption2.addMouseListener(new MouseAdapter() {
             // Update setting if needed and change color to reflect the current setting
             public void mousePressed(MouseEvent e) {
-                if(Config.getScreenWidthConfig() == Panel.MAX_SCREEN_COLS) {
-                    Config.setScreenWidthConfig(0.75);
+                if(Config.getScreenWidthConfig() == 1.0) {
+                    Config.setScreenWidthConfig(0.7);
                     buttonScreenOption1.setForeground(Color.GRAY);
                     buttonScreenOption2.setForeground(Color.BLACK);
                 }

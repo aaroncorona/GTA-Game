@@ -95,18 +95,18 @@ public class GameOverMenu implements Menu {
         TreeMap<Integer, String> scoreMap = new TreeMap<Integer, String>();
         // Read the local CSV file
         try {
-            Scanner myScanner = new Scanner(HIGH_SCORE_FILE);
-            myScanner.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
+            Scanner scan = new Scanner(HIGH_SCORE_FILE);
+            scan.useDelimiter("\\n|,|\\s*\\$"); // Treats commas and whitespace as delimiters to read the CSV
             // Fill the tree map using the CSV
-            for(int i = 0; myScanner.hasNext(); i++) {
+            while(scan.hasNext()) {
                 for(int j = 0; j < 1; j++) {
-                    int score = (int) Integer.parseInt(myScanner.next().trim());
-                    String date = new Date(new Timestamp((long) Long.parseLong(myScanner.next().trim())).getTime())
+                    int score = (int) Integer.parseInt(scan.next().trim());
+                    String date = new Date(new Timestamp((long) Long.parseLong(scan.next().trim())).getTime())
                             .toString().substring(4, 10);
                     scoreMap.put(score, date);
                 }
             }
-            myScanner.close();
+            scan.close();
         } catch (FileNotFoundException e) {
             System.out.println(e);
         }

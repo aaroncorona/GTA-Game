@@ -16,13 +16,13 @@ public class Panel extends JPanel implements Runnable {
     public static final int SCREEN_ROWS = 15;
     public static final int SCREEN_HEIGHT = SCREEN_ROWS * UNIT_SIZE;
     public static final int MAX_SCREEN_COLS = 26;
-    public static final int SCREEN_COLS = Config.getScreenWidthConfig();
+    public static final int SCREEN_COLS = (int) (MAX_SCREEN_COLS * Config.getScreenWidthConfig());
     public static final int SCREEN_WIDTH = SCREEN_COLS * UNIT_SIZE;
 
-    // Load Config settings // todo add menu UI for configs
-    public static boolean backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo add Panel handleConfigUpdate()
-    public static boolean soundEffectAllowed = Config.getSoundEffectConfig();
-    public static int difficultyLevel = Config.getDifficultyConfig();
+    // Load Config settings
+    public static boolean backgroundMusicAllowed;
+    public static boolean soundEffectAllowed;
+    public static int difficultyLevel;
 
     // Game state - default is the title menu
     public static boolean titleState = true;
@@ -59,7 +59,10 @@ public class Panel extends JPanel implements Runnable {
         startGameThread(this);
         // Open title menu
         titleMenu.open = true;
-        // Configs // todo add config load here
+        // Default Config setting
+        backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo move to new Panel method handleConfigUpdate()
+        soundEffectAllowed = Config.getSoundEffectConfig();
+        difficultyLevel = Config.getDifficultyConfig();
     }
 
     // Method to launch the game loop
