@@ -18,6 +18,9 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 
 ## 📀 Gameplay Short Clips:
 
+*Menus*
+
+
 *Getting the 1st Wanted star*
 
 https://user-images.githubusercontent.com/31792170/190885397-a8100232-67bb-4fa1-8384-040d8218ca59.mov
