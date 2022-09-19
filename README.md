@@ -16,7 +16,7 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 6. 🥇 **High Scores**: Save and display high scores to see where you rank all time
 7. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
-## Gameplay Short Clips:
+## 📀 Gameplay Short Clips:
 
 *Getting the 1st Wanted star*
 
