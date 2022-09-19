@@ -1,4 +1,4 @@
-screen_width_adjuster = 1
+screen_width_adjuster = 1.0
 background_music_allowed = 1
 sound_effects_allowed = 1
 difficulty = 1

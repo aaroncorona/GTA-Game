@@ -226,7 +226,7 @@ public class SettingsMenu implements Menu {
         difficultyOption3.setAlignmentX(Panel.CENTER_ALIGNMENT);
 
         // Set Button colors to reflect the current config settings
-        if(Config.getScreenWidthConfig() == Panel.MAX_SCREEN_COLS) {
+        if(Config.getScreenWidthConfig() == 1.0) {
             buttonScreenOption1.setForeground(Color.BLACK);
             buttonScreenOption2.setForeground(Color.GRAY);
         } else {

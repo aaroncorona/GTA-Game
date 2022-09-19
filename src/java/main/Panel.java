@@ -60,7 +60,7 @@ public class Panel extends JPanel implements Runnable {
         // Open title menu
         titleMenu.open = true;
         // Default Config setting
-        backgroundMusicAllowed = Config.getBackgroundMusicConfig(); // todo move to new Panel method handleConfigUpdate()
+        backgroundMusicAllowed = Config.getBackgroundMusicConfig();
         soundEffectAllowed = Config.getSoundEffectConfig();
         difficultyLevel = Config.getDifficultyConfig();
     }

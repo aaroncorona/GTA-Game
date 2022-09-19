@@ -118,6 +118,8 @@ public class Config {
         } catch (IOException e) {
             System.out.println(e);
         }
+        // Update the setting instantly
+        Panel.backgroundMusicAllowed = getBackgroundMusicConfig();
     }
 
     // Method to set the Sound effect setting in the file
@@ -141,6 +143,8 @@ public class Config {
         } catch (IOException e) {
             System.out.println(e);
         }
+        // Update the setting instantly
+        Panel.soundEffectAllowed = getSoundEffectConfig();
     }
 
     // Method to set the difficulty level setting in the file
@@ -159,5 +163,7 @@ public class Config {
         } catch (IOException e) {
             System.out.println(e);
         }
+        // Update the setting instantly
+        Panel.difficultyLevel = getDifficultyConfig();
     }
 }
