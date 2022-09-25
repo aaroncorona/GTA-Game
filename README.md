@@ -3,12 +3,8 @@
 <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/m/aaroncorona/GTA-Game">
 <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/aaroncorona/GTA-Game">
 
-
 ## 🚔 Overview
 This is a 2D game built purely with Java. It is inspired by the original GTA game from 1997.
-
-<img width="400" alt="title_screen" src="https://user-images.githubusercontent.com/31792170/190886043-8ebd8a45-20d9-4ded-b653-f04b9ab379ce.png">
-
 
 ## 🕹️ Game Features
 1. 🌎 **World Map**: Drive around and explore the island
@@ -19,11 +15,17 @@ This is a 2D game built purely with Java. It is inspired by the original GTA gam
 6. 🥇 **High Scores**: Save and display high scores to see where you rank all time
 7. 🔉 **Sound Effects**: Enjoy retro arcade sound effects
 
-## Gameplay Short Clips:
+## 📀 Gameplay Short Clips:
+
+*Menus*
+
+https://user-images.githubusercontent.com/31792170/190935779-17ece8c0-ee1e-4db5-a6c9-8018186fd9d7.mov
+
 
 *Getting the 1st Wanted star*
 
 https://user-images.githubusercontent.com/31792170/190885397-a8100232-67bb-4fa1-8384-040d8218ca59.mov
+
 
 *NPC Cops chasing player*
 
