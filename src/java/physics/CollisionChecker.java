@@ -1,9 +1,6 @@
 package physics;
 
-import entity.Entity;
-import entity.car.SuperCar;
 import entity.car.SuperEntity;
-import entity.item.SuperItem;
 import tile.Tile;
 import tile.TileManager;
 
@@ -15,26 +12,12 @@ public class CollisionChecker {
     // Private constructor - Noninstantiable class
     private CollisionChecker() {}
 
-    // Method to check for overlap between a Car and tile collision area
-    public static boolean checkTileCollision(SuperCar car) {
+    // Method to check for overlap between an Entity (Car or Item) and the Tile collision area
+    public static <T extends SuperEntity> boolean checkTileCollision(T t) {
         boolean collision = false;
         for (int i = 0; i < TileManager.tileMapCollisionArea.length; i++) {
             for (int j = 0; j < TileManager.tileMapCollisionArea[i].length; j++) {
-                Rectangle2D overlapArea = car.collisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
-                if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
-                    collision = true;
-                }
-            }
-        }
-        return collision;
-    }
-
-    // Method to check for overlap between an Item and tile collision area
-    public static boolean checkTileCollision(SuperItem item) {
-        boolean collision = false;
-        for (int i = 0; i < TileManager.tileMapCollisionArea.length; i++) {
-            for (int j = 0; j < TileManager.tileMapCollisionArea[i].length; j++) {
-                Rectangle2D overlapArea = item.collisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
+                Rectangle2D overlapArea = t.collisionArea.createIntersection(TileManager.tileMapCollisionArea[i][j]);
                 if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
                     collision = true;
                 }
