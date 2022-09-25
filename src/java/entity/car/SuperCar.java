@@ -1,28 +1,18 @@
 package entity.car;
 
-import entity.Entity;
 import main.Panel;
+import entity.car.SuperEntity;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 // This super class provides a foundation for creating car classes
-public abstract class SuperCar implements Entity {
-    // Position tracking vars
-    public int xMapPos, yMapPos;
-    public char direction;
+public abstract class SuperCar extends SuperEntity {
+    // Car specific settings
     public final int DEFAULT_SPEED = 5; // pixels to move per frame
-    public int speed;
     public boolean nitro;
-
-    // Health tracking
-    public boolean hitTaken;
-    public int health;
     BufferedImage imageCar;
     BufferedImage imageHealth;
-
-    // Collision tracking
-    public Rectangle collisionArea;
 
     // Default method implementation for setting the reset position
     @Override

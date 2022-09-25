@@ -1,6 +1,8 @@
 package physics;
 
+import entity.Entity;
 import entity.car.SuperCar;
+import entity.car.SuperEntity;
 import entity.item.SuperItem;
 import tile.Tile;
 import tile.TileManager;
@@ -47,29 +49,9 @@ public class CollisionChecker {
         return currentTile.COLLISION;
     }
 
-    // Method to check for a car colliding with another car
-    public static boolean checkEntityCollision(SuperCar car1, SuperCar car2) {
-        Rectangle2D overlapArea = car1.collisionArea.createIntersection(car2.collisionArea);
-        if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Method to check for a car colliding with an item
-    public static boolean checkEntityCollision(SuperCar car, SuperItem item) {
-        Rectangle2D overlapArea = car.collisionArea.createIntersection(item.collisionArea);
-        if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    // Method to check for an item colliding with an item
-    public static boolean checkItemCollision(SuperItem item1, SuperItem item2) {
-        Rectangle2D overlapArea = item1.collisionArea.createIntersection(item2.collisionArea);
+    // Method to check for 2 entities colliding (i.e. car on car, car on item, or item on item)
+    public static <T extends SuperEntity> boolean checkEntityCollision(T t1, T t2) {
+        Rectangle2D overlapArea = t1.collisionArea.createIntersection(t2.collisionArea);
         if(overlapArea.getWidth() > 0 && overlapArea.getHeight() > 0) {
             return true;
         } else {

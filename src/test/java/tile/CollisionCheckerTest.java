@@ -41,7 +41,7 @@ class CollisionCheckerTest {
         SuperItem item2 = ItemManager.items.get(ItemManager.items.size()-1);
         // Assert
         boolean collisionResultExpected = true;
-        boolean collisionResultActual = CollisionChecker.checkItemCollision(item1, item2);
+        boolean collisionResultActual = CollisionChecker.checkEntityCollision(item1, item2);
         assertEquals(collisionResultExpected, collisionResultActual);
     }
 
