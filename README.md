@@ -33,7 +33,7 @@ https://user-images.githubusercontent.com/31792170/189811286-5ceb944f-74f5-4e82-
 
 
 ## 🗂️ Source Code - Java Package Descriptions
-* **entity** - Includes all possible game constituents besides the background. This package includes an Interface and Super class for creating cars. There is also a Super class for creating game items like bullets and money.
+* **entity** - Includes all possible game constituents besides the background. This package includes an Interface and Super classes (abstract) for creating entities, cars, and items. 
 * **main** - Handles core game mechanics and UI like the game loop, screen settings, key inputs, and sound.
 * **menu** -  Logic for when the menu displays and file reading for pulling high scores for the game over menu.
 * **physics** - Handles collisions and pathfinding with an A* algorithm.
