@@ -11,10 +11,23 @@ import java.util.Random;
 public class PathFinder {
 
     // Create a cache of path results to enable pre-processing where possible
-    private static HashMap<LinkedList<Node>, Node> shortestPathResults = new HashMap<>();
+    private HashMap<LinkedList<Node>, Node> shortestPathResults = new HashMap<>();
 
-    // Private constructor - Noninstantiable class
+    // Singleton instance tracking
+    private static PathFinder instance = null;
+
+    // Private constructor - Singleton class
     private PathFinder() {}
+
+    // Singleton constructor method to ensure there is only 1 Tile manager obj per game
+    public static PathFinder getInstance() {
+        if(instance == null) {
+            instance = new PathFinder();
+            return instance;
+        } else {
+            return instance;
+        }
+    }
 
     // Inner class to represent a map point as a place on a graph
     protected static class Node {
@@ -85,7 +98,7 @@ public class PathFinder {
     }
 
     // Helper method to perform a source to target BFS to find the shortest path (best parents) for every visitable node
-    private static LinkedList<Node> performBFS(Node startNode, Node destinationNode) {
+    private LinkedList<Node> performBFS(Node startNode, Node destinationNode) {
         // Set how many pixels each BFS traversal will jump on the map. Higher speed = faster BFS, less precise path
         int bfsSpeed = 50;
         // Lists to track the BFS status and shortest path found
@@ -157,7 +170,7 @@ public class PathFinder {
     }
 
     // Helper method to extract the shortest path by leveraging the best parents established in the BFS
-    private static LinkedList<Node> getShortestPathNodes(Node startNode, Node destinationNode) {
+    private LinkedList<Node> getShortestPathNodes(Node startNode, Node destinationNode) {
         LinkedList<Node> shortestPath = new LinkedList<>();
         // First, check if the path is already saved to avoid a duplicate BFS
         boolean foundPathInCache = false;
@@ -201,7 +214,7 @@ public class PathFinder {
     }
 
     // Gets the next direction to travel to follow the shortest path to a given target
-    public static char getNextBestDir(int xStartPoint, int yStartPoint,
+    public char getNextBestDir(int xStartPoint, int yStartPoint,
                                       int xTargetPoint, int yTargetPoint) {
         // Nodes for the start and end point
         Node startNode = new Node(xStartPoint, yStartPoint, null);
@@ -265,7 +278,7 @@ public class PathFinder {
     }
 
     // Method to get a random direction for NPC movement
-    public static char getRandomDir() {
+    public char getRandomDir() {
         char direction = 'R';
         int randomNumForDir = new Random().nextInt(4);
         switch(randomNumForDir) {

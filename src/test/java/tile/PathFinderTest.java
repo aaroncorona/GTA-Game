@@ -13,7 +13,7 @@ class PathFinderTest {
     void whenTargetRight_ReturnRight() {
         new Panel();
         char nextDirectionExpected = 'R';
-        char nextDirectionActual = PathFinder.getNextBestDir(900,950,1200,950);
+        char nextDirectionActual = Panel.pathFinder.getNextBestDir(900,950,1200,950);
         assertEquals(nextDirectionExpected, nextDirectionActual);
     }
 
@@ -22,7 +22,7 @@ class PathFinderTest {
     void whenTargetDown_ReturnDown() {
         new Panel();
         char nextDirectionExpected = 'D';
-        char nextDirectionActual = PathFinder.getNextBestDir(900,950,900,1050);
+        char nextDirectionActual = Panel.pathFinder.getNextBestDir(900,950,900,1050);
         assertEquals(nextDirectionExpected, nextDirectionActual);
     }
 }

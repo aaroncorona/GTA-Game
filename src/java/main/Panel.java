@@ -4,6 +4,7 @@ import entity.car.CopCarManager;
 import entity.car.PlayerCar;
 import entity.item.ItemManager;
 import menu.*;
+import physics.PathFinder;
 import tile.TileManager;
 
 import javax.swing.*;
@@ -39,6 +40,9 @@ public class Panel extends JPanel implements Runnable {
     // Entity objects
     public static PlayerCar playerCar = new PlayerCar();
     public static CopCarManager copCarManager = CopCarManager.getInstance();
+
+    // Path Finder object
+    public static PathFinder pathFinder = PathFinder.getInstance();
 
     // Menus
     public static ControlMenu controlMenu = new ControlMenu();

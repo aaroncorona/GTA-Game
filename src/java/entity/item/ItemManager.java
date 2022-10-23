@@ -16,13 +16,13 @@ import java.util.Random;
 // The Item Manager runs the Entity methods for all objects and provides functions to add more Item objects
 public class ItemManager implements Entity {
 
-    // Singleton instance tracking
-    private static ItemManager instance = null;
-
     // Total Item tracking
     public static ArrayList<SuperItem> items;
     public static int moneyValueTotal;
     BufferedImage imageBank;
+
+    // Singleton instance tracking
+    private static ItemManager instance = null;
 
     // Private Constructor - Singleton class
     private ItemManager() {
